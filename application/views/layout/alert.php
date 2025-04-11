@@ -5,7 +5,11 @@
     padding: 1rem 1.5rem;
     border-radius: 8px;
 }
-
+.colored-toast .swal2-title {
+    color: white;
+    text-align: start; /* Biar rata kiri */
+    font-weight: normal;
+}
 .colored-toast.swal2-icon-success {
     background-color: #a5dc86 !important;
 }

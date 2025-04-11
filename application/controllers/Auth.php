@@ -6,6 +6,7 @@ class Auth extends CI_Controller {
 	public function __construct()
     {
         parent::__construct();
+		
         $this->load->model('User_model');
         $this->load->library('form_validation');
     }
@@ -17,11 +18,75 @@ class Auth extends CI_Controller {
     
 	public function login()
 	{
-        $this->load->view('layout/header');
+		
+
+		if ($this->input->method() === 'post') {
+			$this->form_validation->set_rules('email', 'Email', 'required|valid_email|trim', [
+				'required'    => '%s wajib diisi.',
+				'valid_email' => 'Format %s tidak valid.',
+			]);
+			$this->form_validation->set_rules('password', 'Password', 'required|trim', [
+				'required' => '%s wajib diisi.',
+			]);
+
+			if ($this->form_validation->run() === FALSE) {
+				$this->session->set_flashdata('old', [
+					'email' => set_value('email')
+				]);
+				$this->session->set_flashdata('errors', [
+					'email'    => form_error('email'),
+					'password' => form_error('password')
+				]);
+				redirect('auth/login');
+			} else {
+				$email = $this->input->post('email', TRUE);
+				$password = $this->input->post('password', TRUE);
+
+				$user = $this->db->get_where('user', ['email' => $email])->row_array();
+
+				if ($user) {
+					if (password_verify($password, $user['password'])) {
+						$this->session->set_userdata([
+							'user_id' => $user['id'],
+							'nama'    => $user['nama'],
+							'email'   => $user['email'],
+							'role_id'   => $user['role_id'],
+						]);
+						$this->session->set_flashdata('success', 'Login berhasil!');
+						redirect('home');
+					} else {
+						$this->session->set_flashdata('old', [
+							'email' => $email,
+						]);
+						$this->session->set_flashdata('errors', [
+							'password' => 'Password salah'
+						]);
+						$this->session->set_flashdata('old', ['email' => $email]);
+						redirect('auth/login');
+					}
+				} else {
+					$this->session->set_flashdata('old', [
+						'email' => $email,
+					]);
+					$this->session->set_flashdata('errors', [
+						'email'    => 'Email tidak terdaftar',
+					]);
+					redirect('auth/login');
+				}
+			}
+		}
+
+		// Tampilkan halaman login (GET method)
+		$data['old']    = $this->session->flashdata('old') ?? [];
+		$data['errors'] = $this->session->flashdata('errors') ?? [];
+
+		
+		$this->load->view('layout/header');
 		$this->load->view('layout/alert');
-        $this->load->view('auth/login');
-        $this->load->view('layout/footer');
+		$this->load->view('auth/login', $data);
+		$this->load->view('layout/footer');
 	}
+
 
 	public function register()
 	{
@@ -59,7 +124,7 @@ class Auth extends CI_Controller {
 					'nomor'           => form_error('nomor'),
 					'password'        => form_error('password'),
 					'repeat_password' => form_error('repeat_password'),
-				]);				
+				]);
 				redirect('auth/register');
 			} else {
 				$data = [
@@ -85,6 +150,15 @@ class Auth extends CI_Controller {
 		$this->load->view('layout/footer');
 	}
 	
+	public function logout()
+	{
+		$this->session->set_flashdata('success', 'Anda telah logout.');
+		$this->session->sess_regenerate(TRUE);
+		$this->session->unset_userdata(['user_id', 'nama', 'email', 'role_id']);
+
+		redirect('auth/login');
+	}
+
 
 
 }

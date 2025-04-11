@@ -24,7 +24,7 @@
             </div>
 
         </div>
-        <form action="<?= base_url('auth/register') ?>" method="post">
+        <form action="<?= base_url('auth/login') ?>" method="post">
             <div class="card-body">
                 <input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>" />
 

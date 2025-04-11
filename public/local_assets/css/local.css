@@ -1,3 +1,10 @@
+.divider {
+    border: none;
+    height: 1px;
+    background-color: #ccc;
+    margin: 1.5rem 0;
+}
+
 .divider-text {
     display: flex;
     align-items: center;
@@ -43,4 +50,24 @@
 
 .max-height-40 {
     max-height: 40px;
+}
+
+
+
+.nav-tabs-scroll {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+}
+
+.nav-tabs-scroll::-webkit-scrollbar {
+    height: 6px;
+}
+
+.nav-tabs-scroll::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
 }
