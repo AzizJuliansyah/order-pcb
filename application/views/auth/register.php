@@ -26,8 +26,6 @@
         </div>
         <?= form_open('auth/register') ?>
         <div class="card-body">
-            <input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>" />
-
             <div class="input-group m-2">
                 <div class="input-group-prepend">
                     <span class="input-group-text border-radius-top-left-5 border-radius-bottom-left-5" id="basic-addon4"><i class="las la-user font-size-20"></i></span>

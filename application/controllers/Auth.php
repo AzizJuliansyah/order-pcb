@@ -163,6 +163,39 @@ class Auth extends CI_Controller {
 
 	public function forgot_password()
 	{
+
+		if ($this->input->method() === 'post') {
+			$this->form_validation->set_rules('email', 'Email', 'required|valid_email|trim', [
+				'required'    => '%s wajib diisi.',
+				'valid_email' => 'Format %s tidak valid.',
+			]);
+
+			if ($this->form_validation->run() === FALSE) {
+				$this->session->set_flashdata('old', [
+					'email' => set_value('email')
+				]);
+				$this->session->set_flashdata('errors', [
+					'email'    => form_error('email'),
+				]);
+				redirect('auth/forgot_password');
+			} else {
+				$email = $this->input->post('email', TRUE);
+
+				$user = $this->db->get_where('user', ['email' => $email])->row_array();
+
+				if ($user) {
+				} else {
+					$this->session->set_flashdata('old', [
+						'email' => $email,
+					]);
+					$this->session->set_flashdata('errors', [
+						'email'    => 'Email tidak terdaftar',
+					]);
+					redirect('auth/forgot_password');
+				}
+			}
+		}
+
 		if ($this->session->userdata('user_id')) {
 			$user_id = $this->session->userdata('user_id');
 	
@@ -171,8 +204,10 @@ class Auth extends CI_Controller {
 		}
 
 		$data['title'] = 'Forgot Password';
-
 		$data['has_sidebar'] = false;
+
+		$data['old']    = $this->session->flashdata('old') ?? [];
+		$data['errors'] = $this->session->flashdata('errors') ?? [];
 
 		$this->load->view('layout/header', $data);
 		$this->load->view('auth/forgot_password', $data);

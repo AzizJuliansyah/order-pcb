@@ -1,20 +1,25 @@
 <div class="d-flex justify-content-center mt-5">
     <div class="card bottom-right p-3 shadow-showcase border-radius-5 w-100" style="max-width: 450px;">
         <div class="card-header border-bottom-0 p-0">
-            <div class="d-flex justify-content-center">
-                <h3>Forgot Your Password?</h3>
+            <div class="d-flex justify-content-start">
+                <h4>Forgot Your Password?</h4>
+            </div>
+            <div class="d-flex justify-content-start">
+                <p class="font-size-14">Enter your email and we'll send you a code to reset your password</p>
             </div>
         </div>
-        <?= form_open('auth/login') ?>
+        <?= form_open('auth/forgot_password') ?>
         <!-- sudah ada csrf bawaan ci3 -->
         <div class="card-body">
-            <input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>" />
-
-            <div class="input-group m-2">
+            <div class="input-group">
                 <div class="input-group-prepend">
                     <span class="input-group-text border-radius-top-left-5 border-radius-bottom-left-5" id="basic-addon4"><i class="las la-envelope font-size-20"></i></span>
                 </div>
-                <input type="text" class="form-control <?= !empty($errors['email']) ? 'is-invalid' : '' ?> border-radius-top-right-5 border-radius-bottom-right-5 max-height-40" name="email" id="email" value="<?= isset($old['email']) ? $old['email'] : '' ?>" placeholder="Email" aria-label="Email" aria-describedby="basic-addon4">
+                <?php if (!empty($this->session->userdata('user_id'))) { ?>
+                    <input type="text" class="form-control <?= !empty($errors['email']) ? 'is-invalid' : '' ?> border-radius-top-right-5 border-radius-bottom-right-5 max-height-40" name="email" id="email" value="<?= isset($old['email']) ? $old['email'] : (isset($user['email']) ? $user['email'] : '') ?>" placeholder="Email" aria-label="Email" aria-describedby="basic-addon4">
+                <?php } else { ?>
+                    <input type="text" class="form-control <?= !empty($errors['email']) ? 'is-invalid' : '' ?> border-radius-top-right-5 border-radius-bottom-right-5 max-height-40" name="email" id="email" value="<?= isset($old['email']) ? $old['email'] : '' ?>" placeholder="Email" aria-label="Email" aria-describedby="basic-addon4">
+                <?php } ?>
                 <?php if (!empty($errors['email'])): ?>
                     <div class="invalid-feedback"><?= $errors['email'] ?></div>
                 <?php endif; ?>
@@ -28,12 +33,23 @@
                 </button>
             </div>
 
-            <div class="d-flex justify-content-center mb-5">
-                <div class="d-flex align-items-center mt-1">
-                    <h6 class="mr-2">Don't have an account?</h6>
-                    <a href="<?= base_url('auth/register') ?>">Register</a>
+            <?php if (empty($this->session->userdata('user_id'))) { ?>
+                <div class="d-flex justify-content-center">
+                    <div class="d-flex align-items-center font-size-14 mt-1">
+                        <i class="las la-angle-left"></i>
+                        <h6 class="mr-2"></h6>
+                        <a class="text-dark" href="<?= base_url('user/profile') ?>">Back to profile</a>
+                    </div>
                 </div>
-            </div>
+            <?php } else { ?>
+                <div class="d-flex justify-content-center">
+                    <div class="d-flex align-items-center font-size-14 mt-1">
+                        <i class="las la-angle-left"></i>
+                        <h6 class="mr-2"></h6>
+                        <a class="text-dark" href="<?= base_url('user/profile') ?>">Back to profile</a>
+                    </div>
+                </div>
+            <?php } ?>
         </div>
         <?= form_close() ?>
     </div>

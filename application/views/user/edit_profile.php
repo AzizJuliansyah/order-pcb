@@ -142,8 +142,8 @@
                                             <?php endif; ?>
                                         </div>
                                     </div>
-                                    <button type="submit" class="btn btn-primary mr-2">Submit</button>
-                                    <button type="reset" class="btn iq-bg-danger">Reset</button>
+                                    <button type="submit" class="btn btn-outline-primary mr-2">Submit</button>
+                                    <button type="reset" class="btn iq-bg-danger">Reset Perubahan</button>
                                     <?= form_close() ?>
                                 </div>
                                 <div class="tab-pane fade <?= ($active_tab == 'change-pwd') ? 'active show' : '' ?>" id="change-pwd" role="tabpanel" aria-labelledby="profile-tab-two">
@@ -198,8 +198,8 @@
                                             <?php endif; ?>
                                         </div>
                                     </div>
-                                    <button type="submit" class="btn btn-primary mr-2">Submit</button>
-                                    <button type="reset" class="btn iq-bg-danger">Cancel</button>
+                                    <button type="submit" class="btn btn-outline-primary mr-2">Submit</button>
+                                    <button type="reset" class="btn iq-bg-danger">Reset Perubahan</button>
                                     <?= form_close() ?>
                                 </div>
                             </div>
