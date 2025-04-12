@@ -1,3 +1,17 @@
+body.no-sidebar .iq-top-navbar {
+    margin-left: 0 !important;
+    width: 100% !important;
+}
+
+body.no-sidebar .content-page {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+}
+
+.invalid-feedback {
+    margin-bottom: -20px !important;
+}
+
 .divider {
     border: none;
     height: 1px;

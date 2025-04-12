@@ -6,8 +6,8 @@ class User extends CI_Controller {
 	public function __construct()
     {
         parent::__construct();
-		
         is_logged_in();
+        
         $this->load->model('User_model');
         $this->load->library('form_validation');
     }
@@ -18,6 +18,8 @@ class User extends CI_Controller {
     
         $data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
         $data['role'] = $this->User_model->get_user_with_role($user_id);
+
+        $data['title'] = 'User profile';
 
         $this->load->view('layout/header');
         $this->load->view('layout/navbar', $data);
@@ -33,8 +35,11 @@ class User extends CI_Controller {
     
         $data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
         $data['role'] = $this->User_model->get_user_with_role($user_id);
-        $data['errors'] = $this->session->flashdata('errors') ?? [];
 
+        $data['title'] = 'Edit profile';
+
+        $data['errors'] = $this->session->flashdata('errors') ?? [];
+        $data['old'] = $this->session->flashdata('old') ?? [];
 
         $this->load->view('layout/header');
         $this->load->view('layout/navbar', $data);
@@ -140,6 +145,65 @@ class User extends CI_Controller {
         } else {
             redirect('user/profile');
         }
+    }
+
+    public function change_password()
+    {
+        if ($this->input->method() === 'post') {
+            $this->form_validation->set_rules('cpassword', 'Current Password', 'required|trim|callback_check_current_password', [
+                'required' => '%s wajib diisi.'
+            ]);
+
+            $this->form_validation->set_rules('npassword', 'New Password', 'required|trim|min_length[6]', [
+                'required'   => '%s wajib diisi.',
+                'min_length' => '%s minimal 6 karakter.'
+            ]);
+
+            $this->form_validation->set_rules('vpassword', 'Verify Password', 'required|trim|matches[npassword]', [
+                'required' => '%s wajib diisi.',
+                'matches'  => '%s tidak cocok dengan New Password.'
+            ]);
+
+
+            if ($this->form_validation->run() === FALSE) {
+				$this->session->set_flashdata('errors', [
+                    'cpassword'           => form_error('cpassword'),
+                    'npassword'           => form_error('npassword'),
+                    'vpassword'           => form_error('vpassword'),
+                ]);
+                $this->session->set_flashdata('old', [
+                    'cpassword'           => set_value('cpassword'),
+                    'npassword'           => set_value('npassword'),
+                    'vpassword'           => set_value('vpassword'),
+                ]);
+
+                $this->session->set_flashdata('active_tab', 'change-pwd');
+
+				redirect('user/edit_profile');
+			} else {
+                $user_id = $this->session->userdata('user_id');
+                $new_password = password_hash($this->input->post('npassword'), PASSWORD_DEFAULT);
+
+                $this->User_model->update_user($user_id, ['password' => $new_password]);
+
+                $this->session->set_flashdata('success', 'Password sudah berhasil diperbarui.');
+                redirect('user/profile');
+			}
+        } else {
+            redirect('user/profile');
+        }
+    }
+
+    public function check_current_password($input)
+    {
+        $user_id = $this->session->userdata('user_id');
+        $user = $this->User_model->get_user_by_id($user_id);
+
+        if (!password_verify($input, $user['password'])) {
+            $this->form_validation->set_message('check_current_password', 'Password saat ini salah.');
+            return FALSE;
+        }
+        return TRUE;
     }
 
 }

@@ -7,18 +7,19 @@ class Auth extends CI_Controller {
     {
         parent::__construct();
 		
+
         $this->load->model('User_model');
         $this->load->library('form_validation');
     }
 
 	public function index()
 	{
-		$this->load->view('home/index');
+		redirect('auth/login');
 	}
     
 	public function login()
 	{
-		
+		is_guest_redirect();
 
 		if ($this->input->method() === 'post') {
 			$this->form_validation->set_rules('email', 'Email', 'required|valid_email|trim', [
@@ -52,7 +53,7 @@ class Auth extends CI_Controller {
 							'email'   => $user['email'],
 							'role_id'   => $user['role_id'],
 						]);
-						$this->session->set_flashdata('success', 'Login berhasil!');
+						$this->session->set_flashdata('success', 'Anda telah berhasil login!');
 						redirect('home');
 					} else {
 						$this->session->set_flashdata('old', [
@@ -76,7 +77,6 @@ class Auth extends CI_Controller {
 			}
 		}
 
-		// Tampilkan halaman login (GET method)
 		$data['old']    = $this->session->flashdata('old') ?? [];
 		$data['errors'] = $this->session->flashdata('errors') ?? [];
 
@@ -90,6 +90,8 @@ class Auth extends CI_Controller {
 
 	public function register()
 	{
+		is_guest_redirect();
+
 		if ($this->input->method() === 'post') {
 			$this->form_validation->set_rules('nama', 'Nama', 'required|trim', [
 				'required' => '%s wajib diisi.'
@@ -152,13 +154,30 @@ class Auth extends CI_Controller {
 	
 	public function logout()
 	{
-		$this->session->set_flashdata('success', 'Anda telah logout.');
+		$this->session->set_flashdata('success', 'Anda telah berhasil logout.');
 		$this->session->sess_regenerate(TRUE);
 		$this->session->unset_userdata(['user_id', 'nama', 'email', 'role_id']);
 
 		redirect('auth/login');
 	}
 
+	public function forgot_password()
+	{
+		if ($this->session->userdata('user_id')) {
+			$user_id = $this->session->userdata('user_id');
+	
+			$data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
+			$data['role'] = $this->User_model->get_user_with_role($user_id);
+		}
 
+		$data['title'] = 'Forgot Password';
+
+		$data['has_sidebar'] = false;
+
+		$this->load->view('layout/header', $data);
+		$this->load->view('auth/forgot_password', $data);
+		$this->load->view('layout/alert');
+		$this->load->view('layout/footer');
+	}
 
 }

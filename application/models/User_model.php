@@ -1,7 +1,13 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class User_model extends CI_Model {
+class User_model extends CI_Model
+{
+
+    public function get_user_by_id($user_id)
+    {
+        return $this->db->get_where('user', ['id' => $user_id])->row_array();
+    }
 
     public function insert_user($data)
     {
