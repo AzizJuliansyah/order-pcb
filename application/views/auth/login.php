@@ -5,7 +5,7 @@
                 <h3>Sign In Your Account</h3>
             </div>
             <div class="d-flex justify-content-center">
-                <p>Get started with your free account</p>
+                <p>Get started with your account</p>
             </div>
 
             <div class="d-flex justify-content-center">
