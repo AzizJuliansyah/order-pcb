@@ -8,6 +8,11 @@ body.no-sidebar .content-page {
     padding-left: 0 !important;
 }
 
+body.no-sidebar .iq-footer {
+    margin-left: 0 !important;
+    width: 100% !important;
+}
+
 .invalid-feedback {
     margin-bottom: -20px !important;
 }

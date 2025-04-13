@@ -163,7 +163,6 @@ class Auth extends CI_Controller {
 
 	public function forgot_password()
 	{
-
 		if ($this->input->method() === 'post') {
 			$this->form_validation->set_rules('email', 'Email', 'required|valid_email|trim', [
 				'required'    => '%s wajib diisi.',
@@ -184,12 +183,42 @@ class Auth extends CI_Controller {
 				$user = $this->db->get_where('user', ['email' => $email])->row_array();
 
 				if ($user) {
+					// Membuat token reset password
+					$token = bin2hex(random_bytes(50)); // Buat token unik
+
+					// Simpan token di database, misalnya di tabel password_resets
+					$this->db->insert('password_resets', [
+						'email' => $email,
+						'token' => $token,
+					]);
+
+					// Kirim email dengan link reset password
+					$reset_link = base_url("auth/reset_password/$token");
+
+					$subject = 'Reset Password Request';
+					$message = "Anda telah meminta untuk mereset password. Silakan klik link berikut untuk mereset password Anda:\n\n";
+					$message .= $reset_link;
+
+					// Kirim email menggunakan library email CodeIgniter
+					$this->load->library('email', $this->config->item('email'));
+					$this->email->from('azizjuliansyah234@gmail.com', 'Your App Name');
+					$this->email->to($email);
+					$this->email->subject($subject);
+					$this->email->message($message);
+
+					if ($this->email->send()) {
+						$this->session->set_flashdata('success', 'Link reset password telah dikirim ke email Anda.');
+					} else {
+						$this->session->set_flashdata('error', 'Gagal mengirim email, coba lagi nanti.');
+					}
+
+					redirect('auth/forgot_password');
 				} else {
 					$this->session->set_flashdata('old', [
 						'email' => $email,
 					]);
 					$this->session->set_flashdata('errors', [
-						'email'    => 'Email tidak terdaftar',
+						'email' => 'Email tidak terdaftar',
 					]);
 					redirect('auth/forgot_password');
 				}
@@ -198,7 +227,6 @@ class Auth extends CI_Controller {
 
 		if ($this->session->userdata('user_id')) {
 			$user_id = $this->session->userdata('user_id');
-	
 			$data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
 			$data['role'] = $this->User_model->get_user_with_role($user_id);
 		}
@@ -213,6 +241,59 @@ class Auth extends CI_Controller {
 		$this->load->view('auth/forgot_password', $data);
 		$this->load->view('layout/alert');
 		$this->load->view('layout/footer');
+	}
+
+
+	public function reset_password1($token)
+	{
+		// Cek apakah token valid
+		$reset = $this->db->get_where('password_resets', ['token' => $token])->row_array();
+
+		if ($reset) {
+			// Tampilkan form reset password
+			if ($this->input->method() === 'post') {
+				$this->form_validation->set_rules('password', 'Password', 'required|min_length[6]|max_length[50]', [
+					'required' => '%s wajib diisi.',
+					'min_length' => '%s minimal 6 karakter.',
+					'max_length' => '%s maksimal 50 karakter.',
+				]);
+
+				if ($this->form_validation->run() === FALSE) {
+					$this->session->set_flashdata('errors', validation_errors());
+					redirect("auth/reset_password/$token");
+				} else {
+					$password = password_hash($this->input->post('password'), PASSWORD_DEFAULT);
+
+					// Update password pengguna
+					$this->db->update('user', ['password' => $password], ['email' => $reset['email']]);
+
+					// Hapus token setelah password diubah
+					$this->db->delete('password_resets', ['token' => $token]);
+
+					$this->session->set_flashdata('message', 'Password Anda telah berhasil diubah.');
+					redirect('auth/login');
+				}
+			}
+
+			$data['title'] = 'Reset Password';
+			$data['token'] = $token;
+			$this->load->view('layout/header', $data);
+			$this->load->view('auth/reset_password', $data);
+			$this->load->view('layout/footer');
+		} else {
+			$this->session->set_flashdata('message', 'Token reset password tidak valid atau sudah kadaluarsa.');
+			redirect('auth/forgot_password');
+		}
+	}
+
+	public function reset_password()
+	{
+		
+
+			$data['title'] = 'Reset Password';
+			$this->load->view('layout/header', $data);
+			$this->load->view('auth/reset_password', $data);
+			$this->load->view('layout/footer');
 	}
 
 }

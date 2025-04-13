@@ -5,6 +5,11 @@
                 <h3>Create Account</h3>
             </div>
             <div class="d-flex justify-content-center">
+                <div class="image mb-2 position-relative d-inline-block">
+                <img src="<?= base_url('public/template_assets/images/logo.svg') ?>" alt="profile" class="img-fluid rounded-circle avatar-100 text-center">
+                </div>
+            </div>
+            <div class="d-flex justify-content-center">
                 <p>Get started with your free account</p>
             </div>
 
@@ -60,7 +65,12 @@
                 <div class="input-group-prepend">
                     <span class="input-group-text border-radius-top-left-5 border-radius-bottom-left-5" id="basic-addon4"><i class="las la-lock-open font-size-20"></i></span>
                 </div>
-                <input type="text" class="form-control <?= !empty($errors['password']) ? 'is-invalid' : '' ?> border-radius-top-right-5 border-radius-bottom-right-5 max-height-40" name="password" id="password" placeholder="Password" aria-label="Password" aria-describedby="basic-addon4">
+                <input type="password" class="form-control <?= !empty($errors['password']) ? 'is-invalid' : '' ?> border-radius-top-right-5 border-radius-bottom-right-5 max-height-40" name="password" id="password" placeholder="Password" aria-label="Password" aria-describedby="basic-addon4">
+                <div class="input-group-append">
+                    <span class="input-group-text border-left-0 border-radius-top-right-5 border-radius-bottom-right-5" onclick="togglePassword('password', 'toggleIconPassword')">
+                        <i class="las la-eye font-size-20" id="toggleIconPassword"></i>
+                    </span>
+                </div>
                 <?php if (!empty($errors['password'])): ?>
                     <div class="invalid-feedback"><?= $errors['password'] ?></div>
                 <?php endif; ?>
@@ -70,7 +80,12 @@
                 <div class="input-group-prepend">
                     <span class="input-group-text border-radius-top-left-5 border-radius-bottom-left-5" id="basic-addon4"><i class="las la-lock-open font-size-20"></i></span>
                 </div>
-                <input type="text" class="form-control <?= !empty($errors['repeat_password']) ? 'is-invalid' : '' ?> border-radius-top-right-5 border-radius-bottom-right-5 max-height-40" name="repeat_password" id="repeat_password" placeholder="Repeat Password" aria-label="Repeat Password" aria-describedby="basic-addon4">
+                <input type="password" class="form-control <?= !empty($errors['repeat_password']) ? 'is-invalid' : '' ?> border-radius-top-right-5 border-radius-bottom-right-5 max-height-40" name="repeat_password" id="repeat_password" placeholder="Repeat Password" aria-label="Repeat Password" aria-describedby="basic-addon4">
+                <div class="input-group-append">
+                    <span class="input-group-text border-left-0 border-radius-top-right-5 border-radius-bottom-right-5" onclick="togglePassword('repeat_password', 'toggleIconRepeatPassword')">
+                        <i class="las la-eye font-size-20" id="toggleIconRepeatPassword"></i>
+                    </span>
+                </div>
                 <?php if (!empty($errors['repeat_password'])): ?>
                     <div class="invalid-feedback"><?= $errors['repeat_password'] ?></div>
                 <?php endif; ?>
@@ -94,3 +109,16 @@
         <?= form_close() ?>
     </div>
 </div>
+
+<script>
+    function togglePassword(id, iconId) {
+        const input = document.getElementById(id);
+        const icon = document.getElementById(iconId);
+
+        const isPassword = input.type === 'password';
+        input.type = isPassword ? 'text' : 'password';
+
+        icon.classList.toggle('la-eye', !isPassword);
+        icon.classList.toggle('la-eye-slash', isPassword);
+    }
+</script>

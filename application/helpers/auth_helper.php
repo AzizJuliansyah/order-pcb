@@ -27,7 +27,7 @@ function check_access($allowed_roles = [])
     if (!in_array($role_id, $allowed_roles)) {
         // Akses ditolak
         $CI->session->set_flashdata('error', 'Anda tidak memiliki akses ke halaman tersebut.');
-        redirect('home');
+        redirect('user/profile');
     }
 }
 

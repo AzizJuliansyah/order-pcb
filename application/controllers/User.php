@@ -21,7 +21,7 @@ class User extends CI_Controller {
 
         $data['title'] = 'User profile';
 
-        $this->load->view('layout/header');
+        $this->load->view('layout/header', $data);
         $this->load->view('layout/navbar', $data);
         $this->load->view('layout/sidebar', $data);
 		$this->load->view('user/profile', $data);
@@ -41,7 +41,7 @@ class User extends CI_Controller {
         $data['errors'] = $this->session->flashdata('errors') ?? [];
         $data['old'] = $this->session->flashdata('old') ?? [];
 
-        $this->load->view('layout/header');
+        $this->load->view('layout/header', $data);
         $this->load->view('layout/navbar', $data);
         $this->load->view('layout/sidebar', $data);
 		$this->load->view('user/edit_profile', $data);

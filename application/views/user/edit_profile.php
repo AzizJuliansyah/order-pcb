@@ -15,10 +15,6 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body">
-                            <style>
-
-                            </style>
-
                             <ul class="nav nav-tabs nav-tabs-scroll" id="myTab-two" role="tablist">
                                 <?php $active_tab = $this->session->flashdata('active_tab'); ?>
 
@@ -142,7 +138,12 @@
                                             <?php endif; ?>
                                         </div>
                                     </div>
-                                    <button type="submit" class="btn btn-outline-primary mr-2">Submit</button>
+                                    <button type="submit" class="btn btn-outline-primary mr-2">
+                                        <div class="d-flex align-items-center">
+                                            <i class="las la-user-edit font-size-20"></i>
+                                            <span>Edit Profile</span>
+                                        </div>
+                                    </button>
                                     <button type="reset" class="btn iq-bg-danger">Reset Perubahan</button>
                                     <?= form_close() ?>
                                 </div>
@@ -198,7 +199,12 @@
                                             <?php endif; ?>
                                         </div>
                                     </div>
-                                    <button type="submit" class="btn btn-outline-primary mr-2">Submit</button>
+                                    <button type="submit" class="btn btn-outline-primary mr-2">
+                                        <div class="d-flex align-items-center">
+                                            <i class="las la-unlock font-size-20"></i>
+                                            <span>Ganti Password</span>
+                                        </div>
+                                    </button>
                                     <button type="reset" class="btn iq-bg-danger">Reset Perubahan</button>
                                     <?= form_close() ?>
                                 </div>

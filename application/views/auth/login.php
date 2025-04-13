@@ -5,8 +5,13 @@
                 <h3>Sign In Your Account</h3>
             </div>
             <div class="d-flex justify-content-center">
-                <p>Get started with your free account</p>
+                <div class="image mb-2 position-relative d-inline-block">
+                <img src="<?= base_url('public/template_assets/images/logo.svg') ?>" alt="profile" class="img-fluid rounded-circle avatar-100 text-center">
+                </div>
             </div>
+            <!-- <div class="d-flex justify-content-center">
+                <p>Get started with your free account</p>
+            </div> -->
 
             <div class="d-flex justify-content-center">
                 <a class="btn btn-outline-primary w-100 border-radius-5 mt-2" style="max-width: 400px;">

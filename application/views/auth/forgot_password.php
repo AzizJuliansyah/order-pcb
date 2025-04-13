@@ -1,11 +1,16 @@
-<div class="d-flex justify-content-center mt-5">
-    <div class="card bottom-right p-3 shadow-showcase border-radius-5 w-100" style="max-width: 450px;">
+<div class="d-flex justify-content-center align-items-center"  style="min-height: 100vh;">
+    <div class="card bottom-right p-3 shadow-showcase border-radius-5 w-100 ml-1 mr-1" style="max-width: 450px;">
         <div class="card-header border-bottom-0 p-0">
-            <div class="d-flex justify-content-start">
+            <div class="d-flex justify-content-center">
+            <div class="image mb-2 position-relative d-inline-block">
+                           <img src="<?= base_url('public/template_assets/images/logo.svg') ?>" alt="profile" class="img-fluid rounded-circle avatar-100 text-center">
+                        </div>
+            </div>
+            <div class="d-flex justify-content-center">
                 <h4>Forgot Your Password?</h4>
             </div>
-            <div class="d-flex justify-content-start">
-                <p class="font-size-14">Enter your email and we'll send you a code to reset your password</p>
+            <div class="d-flex justify-content-center text-center mt-2">
+                <p class="font-size-14">Enter your email and we'll send you a link to reset your password</p>
             </div>
         </div>
         <?= form_open('auth/forgot_password') ?>
@@ -38,7 +43,7 @@
                     <div class="d-flex align-items-center font-size-14 mt-1">
                         <i class="las la-angle-left"></i>
                         <h6 class="mr-2"></h6>
-                        <a class="text-dark" href="<?= base_url('user/profile') ?>">Back to profile</a>
+                        <a class="text-dark" href="<?= base_url('auth/login') ?>">Back to login</a>
                     </div>
                 </div>
             <?php } else { ?>
