@@ -9,6 +9,8 @@ class Administrator extends CI_Controller {
         is_logged_in();
         check_access(['1']);
 
+        $this->load->helper('time');
+
         $this->load->model('User_model');
         $this->load->library('form_validation');
     }
@@ -25,7 +27,33 @@ class Administrator extends CI_Controller {
         $data['errors'] = $this->session->flashdata('errors') ?? [];
         $data['old'] = $this->session->flashdata('old') ?? [];
 
-        $data['role_list'] = $this->db->get('role')->result_array();
+        $roles = $this->db->get('role')->result_array();
+
+        $query = $this->db->query("
+            SELECT 
+                role.role_id, 
+                COUNT(user.id) as total_user, 
+                MAX(user.date_created) as last_created,
+                TIMESTAMPDIFF(HOUR, MAX(user.date_created), NOW()) as hours_since_last_created
+            FROM role
+            LEFT JOIN user ON user.role_id = role.role_id
+            GROUP BY role.role_id
+        ");
+
+        $role_info = [];
+        foreach ($query->result_array() as $r) {
+            $role_info[$r['role_id']] = $r;
+        }
+
+        // Gabungkan ke data role
+        foreach ($roles as &$role) {
+            $rid = $role['role_id'];
+            $role['total_user'] = $role_info[$rid]['total_user'] ?? 0;
+            $role['last_created'] = $role_info[$rid]['last_created'] ?? null;
+            $role['hours_since_last_created'] = $role_info[$rid]['hours_since_last_created'] ?? null;
+        }
+
+        $data['role_list'] = $roles;
 
         $this->load->view('layout/header', $data);
         $this->load->view('layout/navbar', $data);
@@ -35,19 +63,29 @@ class Administrator extends CI_Controller {
         $this->load->view('layout/footer');
     }
 
-    public function user_list_role()
+
+    public function user_list_role($jabatan_url = null)
     {
         $user_id = $this->session->userdata('user_id');
-
         $data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
         $data['role'] = $this->User_model->get_user_with_role($user_id);
-
         $data['title'] = 'User List Per Role';
 
         $data['errors'] = $this->session->flashdata('errors') ?? [];
         $data['old'] = $this->session->flashdata('old') ?? [];
 
-        $data['role_list'] = $this->db->get('role')->result_array();
+        $jabatan_clean = str_replace('-', ' ', urldecode($jabatan_url));
+        $role = $this->db->get_where('role', ['LOWER(jabatan)' => strtolower($jabatan_clean)])->row_array();
+
+        if (!$role) {
+            $this->session->set_flashdata('error', 'Maaf, role tidak ditemukan');
+            redirect('administrator/user_list');
+        }
+
+        $role_id = $role['role_id'];
+
+        $data['users_by_role'] = $this->db->get_where('user', ['role_id' => $role_id])->result_array();
+        $data['selected_role'] = $role;
 
         $this->load->view('layout/header', $data);
         $this->load->view('layout/navbar', $data);
@@ -57,12 +95,14 @@ class Administrator extends CI_Controller {
         $this->load->view('layout/footer');
     }
 
+
     public function add_new_user()
     {
         if ($this->input->method() === 'post') {
             $this->form_validation->set_rules('role', 'Role', 'required|trim', [
                 'required' => '%s wajib diisi.'
             ]);
+            $this->form_validation->set_rules('is_active', 'User Active', 'trim');
 
             $this->form_validation->set_rules('nama', 'Nama Lengkap', 'required|trim', [
                 'required' => '%s wajib diisi.'
@@ -130,6 +170,7 @@ class Administrator extends CI_Controller {
                 ]);            
 				$this->session->set_flashdata('old', [
                     'role'            => set_value('role'),
+                    'is_active'            => set_value('is_active'),
 
                     'nama'            => set_value('nama'),
                     'nomor'           => set_value('nomor'),
@@ -147,8 +188,11 @@ class Administrator extends CI_Controller {
                 ]);            
 				redirect('administrator/add_new_user');
 			} else {
+                $is_active = $this->input->post('is_active') ? 1 : 0;
+
                 $data = [
-                    'role' => $this->input->post('role', TRUE),
+                    'role_id' => $this->input->post('role', TRUE),
+                    'is_active'  => $is_active,
 
                     'nama' => $this->input->post('nama', TRUE),
                     'nomor' => $this->input->post('nomor', TRUE),

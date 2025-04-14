@@ -29,9 +29,14 @@
                     </a>
                     <ul id="user" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
 
-                        <li class="<?= uri_string() === 'administrator/user_list' ? 'active' : '' ?>">
+                        <!-- <li class="<?= in_array(uri_string(), ['administrator/user_list', 'administrator/user_list_role/']) ? 'active' : '' ?>">
                             <a href="<?= base_url('administrator/user_list') ?>">
-                                <i class="las la-minus"></i><span>User Add</span>
+                                <i class="las la-minus"></i><span>User List</span>
+                            </a>
+                        </li> -->
+                        <li class="<?= strpos(uri_string(), 'administrator/user_list') === 0 ? 'active' : '' ?>">
+                            <a href="<?= base_url('administrator/user_list') ?>">
+                                <i class="las la-minus"></i><span>User List</span>
                             </a>
                         </li>
                         <li class="<?= uri_string() === 'administrator/add_new_user' ? 'active' : '' ?>">

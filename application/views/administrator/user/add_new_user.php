@@ -41,6 +41,9 @@
                                         <div class="checkbox">
                                             <label><input class="mr-2" name="default_profile_image" type="checkbox">Gunakan foto default</label>
                                         </div>
+                                        <div class="checkbox">
+                                            <label><input class="mr-2" name="is_active" value="1" <?= set_checkbox('is_active', '1', isset($old['is_active']) && $old['is_active'] == '1') ?> type="checkbox">User Active</label>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="form-group">

@@ -12,18 +12,31 @@
                 </nav>
             </div>
             <div class="row mt-3">
-                <?php foreach ($role_list as $item) { ?>
-                    <a href="#" class="<?= ($item['role_id'] == 1) ? 'col-lg-12 col-md-12' : 'col-md-6 col-lg-6' ?>">
-                        <div class="card mb-2">
+                <?php foreach ($role_list as $item): ?>
+                    <a href="<?= base_url('administrator/user_list_role/' . urlencode(strtolower(str_replace(' ', '-', $role['jabatan']))) ) ?>" class="<?= ($item['role_id'] == 1) ? 'col-lg-12 col-md-12' : 'col-md-6 col-lg-6' ?>">
+                        <div class="card bottom-right p-1 shadow-showcase mb-2">
                             <div class="card-body">
-                                <h4 class="card-title"><?= $item['jabatan'] ?></h4>
-                                <p class="card-text">This is a wider card with supporting text below as a natural lead-in. a little bit longer.</p>
-                                <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                                <div class="d-flex align-items-center text-primary">
+                                    <h4 class="card-title text-primary mr-2"><?= $item['jabatan'] ?></h4>
+                                    <i class="las la-angle-right font-size-20 mb-2"></i>
+                                </div>
+                                <div class="d-inline-block">
+                                    <p class="card-text text-dark">Jumlah User di Role ini:</p>
+                                    <div class="d-flex justify-content-center">
+                                        <h3><?= number_format($item['total_user'], 0, ',', '.') ?></h3>
+                                    </div>
+                                </div>
+                                <p class="card-text">
+                                    <small class="text-muted">
+                                        <?= $item['last_created'] ? 'Last updated ' . time_ago($item['last_created']) : 'Belum ada user' ?>
+                                    </small>
+                                </p>
                             </div>
                         </div>
                     </a>
-                <?php } ?>
+                <?php endforeach; ?>
             </div>
+
         </div>
     </div>
 </div>
