@@ -80,8 +80,8 @@ class Auth extends CI_Controller {
 		$data['old']    = $this->session->flashdata('old') ?? [];
 		$data['errors'] = $this->session->flashdata('errors') ?? [];
 
-		
-		$this->load->view('layout/header');
+		$data['title'] = 'Login Page';
+		$this->load->view('layout/header', $data);
 		$this->load->view('layout/alert');
 		$this->load->view('auth/login', $data);
 		$this->load->view('layout/footer');
@@ -146,7 +146,8 @@ class Auth extends CI_Controller {
 		$data['old'] = $this->session->flashdata('old') ?? [];
 		$data['errors'] = $this->session->flashdata('errors') ?? [];
 
-		$this->load->view('layout/header');
+		$data['title'] = 'Register Page';
+		$this->load->view('layout/header', $data);
 		$this->load->view('layout/alert');
 		$this->load->view('auth/register', $data);
 		$this->load->view('layout/footer');

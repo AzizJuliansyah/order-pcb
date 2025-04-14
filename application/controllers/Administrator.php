@@ -13,6 +13,50 @@ class Administrator extends CI_Controller {
         $this->load->library('form_validation');
     }
 
+    public function user_list()
+    {
+        $user_id = $this->session->userdata('user_id');
+
+        $data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
+        $data['role'] = $this->User_model->get_user_with_role($user_id);
+
+        $data['title'] = 'User List';
+
+        $data['errors'] = $this->session->flashdata('errors') ?? [];
+        $data['old'] = $this->session->flashdata('old') ?? [];
+
+        $data['role_list'] = $this->db->get('role')->result_array();
+
+        $this->load->view('layout/header', $data);
+        $this->load->view('layout/navbar', $data);
+        $this->load->view('layout/sidebar', $data);
+        $this->load->view('administrator/user/user_list', $data);
+        $this->load->view('layout/alert');
+        $this->load->view('layout/footer');
+    }
+
+    public function user_list_role()
+    {
+        $user_id = $this->session->userdata('user_id');
+
+        $data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
+        $data['role'] = $this->User_model->get_user_with_role($user_id);
+
+        $data['title'] = 'User List Per Role';
+
+        $data['errors'] = $this->session->flashdata('errors') ?? [];
+        $data['old'] = $this->session->flashdata('old') ?? [];
+
+        $data['role_list'] = $this->db->get('role')->result_array();
+
+        $this->load->view('layout/header', $data);
+        $this->load->view('layout/navbar', $data);
+        $this->load->view('layout/sidebar', $data);
+        $this->load->view('administrator/user/user_list_role', $data);
+        $this->load->view('layout/alert');
+        $this->load->view('layout/footer');
+    }
+
     public function add_new_user()
     {
         if ($this->input->method() === 'post') {
