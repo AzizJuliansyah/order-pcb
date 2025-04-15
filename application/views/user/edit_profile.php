@@ -13,7 +13,7 @@
             </div>
             <div class="row mt-3">
                 <div class="col-lg-12">
-                    <div class="card">
+                    <div class="card top-left shadow-showcase">
                         <div class="card-body">
                             <ul class="nav nav-tabs nav-tabs-scroll" id="myTab-two" role="tablist">
                                 <?php $active_tab = $this->session->flashdata('active_tab'); ?>
@@ -68,28 +68,28 @@
                                     <div class=" row align-items-center">
                                         <div class="form-group col-sm-6">
                                             <label for="nama">Nama Lengkap:</label>
-                                            <input type="text" class="form-control border-radius-5 max-height-40 <?= !empty($errors['nama']) ? 'is-invalid' : '' ?>" name="nama" id="nama" value="<?= $user['nama'] ?>">
+                                            <input type="text" class="form-control border-radius-5 max-height-40 <?= !empty($errors['nama']) ? 'is-invalid' : '' ?>" name="nama" id="nama" value="<?= (isset($old['nama'])) ? $old['nama'] : $user['nama'] ?>">
                                             <?php if (!empty($errors['nama'])): ?>
                                                 <div class="invalid-feedback"><?= $errors['nama'] ?></div>
                                             <?php endif; ?>
                                         </div>
                                         <div class="form-group col-sm-6">
                                             <label for="email">Alamat Email:</label>
-                                            <input type="text" class="form-control border-radius-5 max-height-40 <?= !empty($errors['email']) ? 'is-invalid' : '' ?>" name="email" id="email" value="<?= $user['email'] ?>">
+                                            <input type="text" class="form-control border-radius-5 max-height-40 <?= !empty($errors['email']) ? 'is-invalid' : '' ?>" name="email" id="email" value="<?= (isset($old['email'])) ? $old['email'] : $user['email'] ?>">
                                             <?php if (!empty($errors['email'])): ?>
                                                 <div class="invalid-feedback"><?= $errors['email'] ?></div>
                                             <?php endif; ?>
                                         </div>
                                         <div class="form-group col-sm-6">
                                             <label for="nomor">Nomor Telepon/Whatsapp:</label>
-                                            <input type="text" class="form-control border-radius-5 max-height-40 <?= !empty($errors['nomor']) ? 'is-invalid' : '' ?>" name="nomor" id="nomor" value="<?= $user['nomor'] ?>">
+                                            <input type="text" class="form-control border-radius-5 max-height-40 <?= !empty($errors['nomor']) ? 'is-invalid' : '' ?>" name="nomor" id="nomor" value="<?= (isset($old['nomor'])) ? $old['nomor'] : $user['nomor'] ?>">
                                             <?php if (!empty($errors['nomor'])): ?>
                                                 <div class="invalid-feedback"><?= $errors['nomor'] ?></div>
                                             <?php endif; ?>
                                         </div>
                                         <div class="form-group col-sm-6">
                                             <label for="tanggal_lahir">Tanggal Lahir:</label>
-                                            <input type="date" class="form-control border-radius-5 max-height-40 <?= !empty($errors['tanggal_lahir']) ? 'is-invalid' : '' ?>" name="tanggal_lahir" id="tanggal_lahir" value="<?= $user['tanggal_lahir'] ?>">
+                                            <input type="date" class="form-control border-radius-5 max-height-40 <?= !empty($errors['tanggal_lahir']) ? 'is-invalid' : '' ?>" name="tanggal_lahir" id="tanggal_lahir" value="<?= (isset($old['tanggal_lahir'])) ? $old['tanggal_lahir'] : $user['tanggal_lahir'] ?>">
                                             <?php if (!empty($errors['tanggal_lahir'])): ?>
                                                 <div class="invalid-feedback"><?= $errors['tanggal_lahir'] ?></div>
                                             <?php endif; ?>
@@ -103,28 +103,28 @@
 
                                         <div class="form-group col-sm-6">
                                             <label for="provinsi">Provinsi:</label>
-                                            <input type="text" class="form-control border-radius-5 max-height-40 <?= !empty($errors['provinsi']) ? 'is-invalid' : '' ?>" name="provinsi" id="provinsi" value="<?= $user['provinsi'] ?>">
+                                            <input type="text" class="form-control border-radius-5 max-height-40 <?= !empty($errors['provinsi']) ? 'is-invalid' : '' ?>" name="provinsi" id="provinsi" value="<?= (isset($old['provinsi'])) ? $old['provinsi'] : $user['provinsi'] ?>">
                                             <?php if (!empty($errors['provinsi'])): ?>
                                                 <div class="invalid-feedback"><?= $errors['provinsi'] ?></div>
                                             <?php endif; ?>
                                         </div>
                                         <div class="form-group col-sm-6">
                                             <label for="kota">Kota:</label>
-                                            <input type="text" class="form-control border-radius-5 max-height-40 <?= !empty($errors['kota']) ? 'is-invalid' : '' ?>" name="kota" id="kota" value="<?= $user['kota'] ?>">
+                                            <input type="text" class="form-control border-radius-5 max-height-40 <?= !empty($errors['kota']) ? 'is-invalid' : '' ?>" name="kota" id="kota" value="<?= (isset($old['kota'])) ? $old['kota'] : $user['kota'] ?>">
                                             <?php if (!empty($errors['kota'])): ?>
                                                 <div class="invalid-feedback"><?= $errors['kota'] ?></div>
                                             <?php endif; ?>
                                         </div>
                                         <div class="form-group col-sm-6">
                                             <label for="kecamatan">Kecamatan:</label>
-                                            <input type="text" class="form-control border-radius-5 max-height-40 <?= !empty($errors['kecamatan']) ? 'is-invalid' : '' ?>" name="kecamatan" id="kecamatan" value="<?= $user['kecamatan'] ?>">
+                                            <input type="text" class="form-control border-radius-5 max-height-40 <?= !empty($errors['kecamatan']) ? 'is-invalid' : '' ?>" name="kecamatan" id="kecamatan" value="<?= (isset($old['kecamatan'])) ? $old['kecamatan'] : $user['kecamatan'] ?>">
                                             <?php if (!empty($errors['kecamatan'])): ?>
                                                 <div class="invalid-feedback"><?= $errors['kecamatan'] ?></div>
                                             <?php endif; ?>
                                         </div>
                                         <div class="form-group col-sm-6">
                                             <label for="kode_pos">Kode Pos:</label>
-                                            <input type="number" class="form-control border-radius-5 max-height-40 <?= !empty($errors['kode_pos']) ? 'is-invalid' : '' ?>" name="kode_pos" id="kode_pos" value="<?= $user['kode_pos'] ?>">
+                                            <input type="number" class="form-control border-radius-5 max-height-40 <?= !empty($errors['kode_pos']) ? 'is-invalid' : '' ?>" name="kode_pos" id="kode_pos" value="<?= (isset($old['kode_pos'])) ? $old['kode_pos'] : $user['kode_pos'] ?>">
                                             <?php if (!empty($errors['kode_pos'])): ?>
                                                 <div class="invalid-feedback"><?= $errors['kode_pos'] ?></div>
                                             <?php endif; ?>
@@ -132,7 +132,7 @@
 
                                         <div class="form-group col-sm-12">
                                             <label>Alamat Lengkap:</label>
-                                            <textarea class="form-control <?= !empty($errors['alamat_lengkap']) ? 'is-invalid' : '' ?>" name="alamat_lengkap" id="alamat_lengkap" rows="5" style="line-height: 22px;"><?= $user['alamat_lengkap'] ?></textarea>
+                                            <textarea class="form-control <?= !empty($errors['alamat_lengkap']) ? 'is-invalid' : '' ?>" name="alamat_lengkap" id="alamat_lengkap" rows="5" style="line-height: 22px;"><?= (isset($old['alamat_lengkap'])) ? $old['alamat_lengkap'] : $user['alamat_lengkap'] ?></textarea>
                                             <?php if (!empty($errors['alamat_lengkap'])): ?>
                                                 <div class="invalid-feedback"><?= $errors['alamat_lengkap'] ?></div>
                                             <?php endif; ?>

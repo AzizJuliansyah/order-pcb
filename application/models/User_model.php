@@ -29,4 +29,24 @@ class User_model extends CI_Model
         $this->db->where('user.id', $user_id);
         return $this->db->get()->row_array();
     }
+
+    public function get_roles_with_user_count()
+    {
+        $query = $this->db->query("
+            SELECT 
+                r.role_id, 
+                r.jabatan, 
+                COUNT(u.id) AS total_user,
+                SUM(CASE WHEN u.is_active = 1 THEN 1 ELSE 0 END) AS total_aktif,
+                SUM(CASE WHEN u.is_active = 0 THEN 1 ELSE 0 END) AS total_nonaktif,
+                MAX(u.created_at) AS last_created
+            FROM role r
+            LEFT JOIN user u ON u.role_id = r.role_id
+            GROUP BY r.role_id
+            ORDER BY r.role_id ASC
+        ");
+
+        return $query->result_array();
+    }
+
 }

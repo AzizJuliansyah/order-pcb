@@ -202,9 +202,9 @@
                                 </div>
                                 <div class="iq-avatar">
                                     <?php if ($user['foto'] != null) { ?>
-                                        <img src="<?= base_url('public/' . $user['foto']) ?>" class="avatar-40 rounded-circle border border-dark" alt="user">
+                                        <img src="<?= base_url('public/' . $user['foto']) ?>" class="avatar-40 rounded-circle" alt="user">
                                     <?php } else { ?>
-                                        <img src="<?= base_url('public/local_assets/images/user_default.png') ?>" class="avatar-40 rounded-circle border border-dark" alt="user">
+                                        <img src="<?= base_url('public/local_assets/images/user_default.png') ?>" class="avatar-40 rounded-circle" alt="user">
                                     <?php } ?>
                                 </div>
                             </a>

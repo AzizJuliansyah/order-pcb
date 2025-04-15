@@ -99,6 +99,17 @@ class User extends CI_Controller {
                     'kode_pos'        => form_error('kode_pos'),
                     'alamat_lengkap'  => form_error('alamat_lengkap'),
                 ]);                
+				$this->session->set_flashdata('old', [
+                    'nama'            => set_value('nama'),
+                    'email'           => set_value('email'),
+                    'nomor'           => set_value('nomor'),
+                    'tanggal_lahir'   => set_value('tanggal_lahir'),
+                    'provinsi'        => set_value('provinsi'),
+                    'kota'            => set_value('kota'),
+                    'kecamatan'       => set_value('kecamatan'),
+                    'kode_pos'        => set_value('kode_pos'),
+                    'alamat_lengkap'  => set_value('alamat_lengkap'),
+                ]);                
 				redirect('user/edit_profile');
 			} else {
 				$user_id = $this->session->userdata('user_id');

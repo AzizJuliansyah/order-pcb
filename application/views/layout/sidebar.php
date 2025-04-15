@@ -20,32 +20,34 @@
                         <span class="ml-4">Dashboards</span>
                     </a>
                 </li>
-                <li class=" ">
-                    <a href="#user" class="collapsed" data-toggle="collapse" aria-expanded="false">
-                        <i class="las la-user-friends font-size-32"></i>
-                        <span class="ml-4">User Details</span>
-                        <i class="las la-angle-right iq-arrow-right arrow-active"></i>
-                        <i class="las la-angle-down iq-arrow-right arrow-hover"></i>
-                    </a>
-                    <ul id="user" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                <?php if (has_access(['1'])): ?>
+                    <li class=" ">
+                        <a href="#user" class="collapsed" data-toggle="collapse" aria-expanded="false">
+                            <i class="las la-user-friends font-size-32"></i>
+                            <span class="ml-4 mr-1">User Management</span>
+                            <i class="las la-angle-right iq-arrow-right arrow-active"></i>
+                            <i class="las la-angle-down iq-arrow-right arrow-hover"></i>
+                        </a>
+                        <ul id="user" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
 
-                        <!-- <li class="<?= in_array(uri_string(), ['administrator/user_list', 'administrator/user_list_role/']) ? 'active' : '' ?>">
-                            <a href="<?= base_url('administrator/user_list') ?>">
-                                <i class="las la-minus"></i><span>User List</span>
-                            </a>
-                        </li> -->
-                        <li class="<?= strpos(uri_string(), 'administrator/user_list') === 0 ? 'active' : '' ?>">
-                            <a href="<?= base_url('administrator/user_list') ?>">
-                                <i class="las la-minus"></i><span>User List</span>
-                            </a>
-                        </li>
-                        <li class="<?= uri_string() === 'administrator/add_new_user' ? 'active' : '' ?>">
-                            <a href="<?= base_url('administrator/add_new_user') ?>">
-                                <i class="las la-minus"></i><span>User Add</span>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
+                            <!-- <li class="<?= in_array(uri_string(), ['administrator/user_list', 'administrator/user_list_role/']) ? 'active' : '' ?>">
+                                <a href="<?= base_url('administrator/user_list') ?>">
+                                    <i class="las la-minus"></i><span>User List</span>
+                                </a>
+                            </li> -->
+                            <li class="<?= strpos(uri_string(), 'administrator/user_list') === 0 ? 'active' : '' ?>">
+                                <a href="<?= base_url('administrator/user_list') ?>">
+                                    <i class="las la-minus"></i><span>User List</span>
+                                </a>
+                            </li>
+                            <li class="<?= uri_string() === 'administrator/add_new_user' ? 'active' : '' ?>">
+                                <a href="<?= base_url('administrator/add_new_user') ?>">
+                                    <i class="las la-minus"></i><span>User Add</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                <?php endif; ?>
             </ul>
         </nav>
         <div class="pt-5 pb-2"></div>

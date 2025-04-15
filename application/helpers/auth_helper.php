@@ -31,3 +31,10 @@ function check_access($allowed_roles = [])
     }
 }
 
+function has_access($allowed_roles = [])
+{
+    $CI =& get_instance();
+    $role_id = $CI->session->userdata('role_id');
+    return in_array($role_id, $allowed_roles);
+}
+

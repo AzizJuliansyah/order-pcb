@@ -6,8 +6,7 @@
                 <div class="row m-1">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb mb-0">
-                            <li class="breadcrumb-item"><a href="<?= base_url('home') ?>">Home</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">User Details</li>
+                            <li class="breadcrumb-item active" aria-current="page">User Management</li>
                             <li class="breadcrumb-item active" aria-current="page">User Add</li>
                         </ol>
                     </nav>
@@ -15,7 +14,7 @@
                 <?= form_open_multipart('administrator/add_new_user') ?>
                 <div class="row mt-3">
                     <div class="col-xl-3 col-lg-4">
-                        <div class="card">
+                        <div class="card bottom-right shadow-showcase">
                             <div class="card-header d-flex justify-content-between">
                                 <div class="header-title">
                                 <h4 class="card-title">Add New User</h4>
@@ -64,7 +63,7 @@
                         </div>
                     </div>
                     <div class="col-xl-9 col-lg-8">
-                        <div class="card">
+                        <div class="card bottom-right shadow-showcase">
                             <div class="card-header d-flex justify-content-between">
                                 <div class="header-title">
                                 <h4 class="card-title">New User Information</h4>

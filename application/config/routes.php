@@ -54,3 +54,5 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 $route['administrator/user_list_role/(:any)'] = 'administrator/user_list_role/$1';
+
+$route['csrf/get'] = 'csrf/get_token';
