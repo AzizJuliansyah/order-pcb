@@ -45,7 +45,6 @@ class Administrator extends CI_Controller {
             $role_info[$r['role_id']] = $r;
         }
 
-        // Gabungkan ke data role
         foreach ($roles as &$role) {
             $rid = $role['role_id'];
             $role['total_user'] = $role_info[$rid]['total_user'] ?? 0;
@@ -94,6 +93,42 @@ class Administrator extends CI_Controller {
         $this->load->view('layout/alert');
         $this->load->view('layout/footer');
     }
+
+    public function ubah_status($status)
+    {
+        
+        if ($this->input->method() === 'post') {
+            $this->form_validation->set_rules('user_id', 'user_id', 'required|trim', [
+                'required' => '%s wajib diisi.'
+            ]);
+
+            if ($this->form_validation->run() === FALSE) {
+                $this->session->set_flashdata('old', [
+                    'user_id'  => set_value('user_id'),
+                    
+                ]);
+                $this->session->set_flashdata('errors', [
+                    'user_id'            => form_error('user_id'),
+                    
+                ]);
+                redirect('administrator/user_list');
+            } else {
+                $user_id = $this->input->post('user_id');
+
+                $data = [
+                    'is_active'     => $status,
+                ];
+
+                $this->User_model->update_user($user_id, ['is_active' => $status]);
+                $this->session->set_flashdata('success', 'Status user berhasil di ubah.');
+                redirect('administrator/user_list');
+            }
+        } else {
+            $this->session->set_flashdata('error', 'Status user gagal di ubah.');
+            redirect('administrator/user_list');
+        }
+    }
+
 
 
     public function add_new_user()

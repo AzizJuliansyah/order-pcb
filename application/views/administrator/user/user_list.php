@@ -13,7 +13,7 @@
             </div>
             <div class="row mt-3">
                 <?php foreach ($role_list as $item): ?>
-                    <a href="<?= base_url('administrator/user_list_role/' . urlencode(strtolower(str_replace(' ', '-', $role['jabatan']))) ) ?>" class="<?= ($item['role_id'] == 1) ? 'col-lg-12 col-md-12' : 'col-md-6 col-lg-6' ?>">
+                    <a href="<?= base_url('administrator/user_list_role/' . urlencode(strtolower(str_replace(' ', '-', $item['jabatan']))) ) ?>" class="<?= ($item['role_id'] == 1) ? 'col-lg-12 col-md-12' : 'col-md-6 col-lg-6' ?>">
                         <div class="card bottom-right p-1 shadow-showcase mb-2">
                             <div class="card-body">
                                 <div class="d-flex align-items-center text-primary">
