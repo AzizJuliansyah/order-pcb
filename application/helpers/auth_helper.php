@@ -15,7 +15,7 @@ function is_guest_redirect()
     $CI =& get_instance();
     if ($CI->session->userdata('user_id')) {
         $CI->session->set_flashdata('error', 'Anda sudah login, silakan logout terlebih dahulu.');
-        redirect('home');
+        redirect('index/home');
     }
 }
 

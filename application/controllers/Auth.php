@@ -46,31 +46,54 @@ class Auth extends CI_Controller {
 				$user = $this->db->get_where('user', ['email' => $email])->row_array();
 
 				if ($user) {
+					if ($user['is_active'] != 1) {
+						$this->session->set_flashdata('old', ['email' => $email]);
+						$this->session->set_flashdata('errors', [
+							'email' => ' '
+						]);
+						$this->session->set_flashdata('error', 'Akun Anda belum aktif atau dinonaktifkan.');
+						redirect('auth/login');
+					}
+
 					if (password_verify($password, $user['password'])) {
 						$this->session->set_userdata([
 							'user_id' => $user['id'],
 							'nama'    => $user['nama'],
 							'email'   => $user['email'],
-							'role_id'   => $user['role_id'],
+							'role_id' => $user['role_id'],
 						]);
 						$this->session->set_flashdata('success', 'Anda telah berhasil login!');
-						redirect('home');
+
+						switch ($user['role_id']) {
+							case 1:
+								redirect('superadmin/dashboard'); // Superadmin
+								break;
+							case 2:
+								redirect('admin/dashboard'); // Vendor Admin
+								break;
+							case 3:
+								redirect('operator/dashboard'); // Vendor Operator
+								break;
+							case 4:
+								redirect('customerservice/dashboard'); // Customer Service
+								break;
+							case 5:
+								redirect('customer/dashboard'); // Customer
+								break;
+							default:
+								redirect('home'); // fallback
+						}
 					} else {
-						$this->session->set_flashdata('old', [
-							'email' => $email,
-						]);
+						$this->session->set_flashdata('old', ['email' => $email]);
 						$this->session->set_flashdata('errors', [
 							'password' => 'Password salah'
 						]);
-						$this->session->set_flashdata('old', ['email' => $email]);
 						redirect('auth/login');
 					}
 				} else {
-					$this->session->set_flashdata('old', [
-						'email' => $email,
-					]);
+					$this->session->set_flashdata('old', ['email' => $email]);
 					$this->session->set_flashdata('errors', [
-						'email'    => 'Email tidak terdaftar',
+						'email' => 'Email tidak terdaftar',
 					]);
 					redirect('auth/login');
 				}
@@ -86,6 +109,7 @@ class Auth extends CI_Controller {
 		$this->load->view('auth/login', $data);
 		$this->load->view('layout/footer');
 	}
+
 
 
 	public function register()

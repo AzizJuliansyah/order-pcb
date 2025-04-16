@@ -11,7 +11,7 @@
                         </ol>
                     </nav>
                 </div>
-                <?= form_open_multipart('administrator/add_new_user') ?>
+                <?= form_open_multipart('superadmin/add_new_user') ?>
                 <div class="row mt-3">
                     <div class="col-xl-3 col-lg-4">
                         <div class="card bottom-right shadow-showcase">

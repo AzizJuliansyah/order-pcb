@@ -29,7 +29,7 @@
                         $icon = $role_styles[$item['role_id']]['icon'] ?? 'las la-users';
                         $color = $role_styles[$item['role_id']]['color'] ?? 'text-secondary';
                     ?>
-                    <a href="<?= base_url('administrator/user_list_role/' . urlencode(strtolower(str_replace(' ', '-', $item['jabatan']))) ) ?>" class="<?= ($item['role_id'] == 1) ? 'col-lg-12 col-md-12' : 'col-md-6 col-lg-6' ?>">
+                    <a href="<?= base_url('superadmin/user_list_role/' . urlencode(strtolower(str_replace(' ', '-', $item['jabatan']))) ) ?>" class="<?= ($item['role_id'] == 1) ? 'col-lg-12 col-md-12' : 'col-md-6 col-lg-6' ?>">
                         <div class="card bottom-right p-1 shadow-showcase mb-2">
                             <div class="card-body">
                                 <div class="d-flex align-items-center <?= $color ?>">
@@ -56,7 +56,7 @@
                                 
                                 <p class="card-text mt-2">
                                     <small class="text-muted">
-                                        <?= $item['last_created'] ? 'Last updated ' . time_ago($item['last_created']) : 'Belum ada user' ?>
+                                        <?= $item['last_created'] ? 'Last added user ' . time_ago($item['last_created']) : 'Belum ada user' ?>
                                     </small>
                                 </p>
                             </div>

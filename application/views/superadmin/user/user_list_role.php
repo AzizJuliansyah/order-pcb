@@ -6,7 +6,7 @@
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0">
                         <li class="breadcrumb-item active" aria-current="page">User Management</li>
-                        <li class="breadcrumb-item"><a href="<?= base_url('administrator/user_list') ?>">User List</a></li>
+                        <li class="breadcrumb-item"><a href="<?= base_url('superadmin/user_list') ?>">User List</a></li>
                         <li class="breadcrumb-item active" aria-current="page">User List by Role</li>
                     </ol>
                 </nav>
@@ -16,7 +16,7 @@
                     <div class="card top-left shadow-showcase">
                         <div class="card-header d-flex justify-content-between">
                             <div class="header-title">
-                                <h4 class="card-title"><a href="<?= base_url('administrator/user_list') ?>"><i class="las la-angle-left mr-2"></i></a> User list dari role: <u><?= $selected_role['jabatan'] ?></u></h4>
+                                <h4 class="card-title"><a href="<?= base_url('superadmin/user_list') ?>"><i class="las la-angle-left mr-2"></i></a> User list dari role: <u><?= $selected_role['jabatan'] ?></u></h4>
                             </div>
                         </div>
                         <div class="card-body">
@@ -77,7 +77,7 @@
                                                                                 </button>
                                                                             </div>
                                                                             <div class="modal-body">
-                                                                                <?= form_open('administrator/change_status', ['id' => 'ChangeStatusInactiveForm' . $item['id']]) ?>
+                                                                                <?= form_open('superadmin/change_status', ['id' => 'ChangeStatusInactiveForm' . $item['id']]) ?>
                                                                                 <input type="hidden" name="user_id" value="<?= $item['id'] ?>">
                                                                                 <input type="hidden" name="status" value="0">
                                                                                 <div class="d-flex align-items-center">
@@ -116,7 +116,7 @@
                                                                                 </button>
                                                                             </div>
                                                                             <div class="modal-body">
-                                                                                <?= form_open('administrator/change_status', ['id' => 'ChangeStatusActiveForm' . $item['id']]) ?>
+                                                                                <?= form_open('superadmin/change_status', ['id' => 'ChangeStatusActiveForm' . $item['id']]) ?>
                                                                                 <input type="hidden" name="user_id" value="<?= $item['id'] ?>">
                                                                                 <input type="hidden" name="status" value="1">
                                                                                 <div class="d-flex align-items-center">
@@ -199,7 +199,7 @@
                                                                                 </button>
                                                                             </div>
                                                                             <div class="modal-body">
-                                                                                    <?= form_open('administrator/change_password', ['id' => 'ChangePasswordUserForm' . $item['id']]) ?>
+                                                                                    <?= form_open('superadmin/change_password', ['id' => 'ChangePasswordUserForm' . $item['id']]) ?>
                                                                                     <input type="hidden" name="user_id" value="<?= $item['id'] ?>">
                                                                                     <div class="form-group">
                                                                                         <label for="npassword<?= $item['id'] ?>">New Password:</label>
@@ -242,7 +242,7 @@
                                                                                 </button>
                                                                             </div>
                                                                             <div class="modal-body">
-                                                                                <?= form_open('administrator/delete_user', ['id' => 'hapusUserForm' . $item['id']]) ?>
+                                                                                <?= form_open('superadmin/delete_user', ['id' => 'hapusUserForm' . $item['id']]) ?>
                                                                                 <input type="hidden" name="user_id" value="<?= $item['id'] ?>">
                                                                                     <div class="d-flex align-items-center">
                                                                                         <div class="form-group">

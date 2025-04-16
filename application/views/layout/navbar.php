@@ -211,7 +211,7 @@
                             <ul class="dropdown-menu dropdown-menu-right border-none" aria-labelledby="dropdownMenuButton">
                                 <li class="dropdown-item d-flex align-items-center">
                                     <i class="las la-home font-size-20 text-primary"></i>
-                                    <a href="<?= base_url('home') ?>">Home</a>
+                                    <a href="<?= base_url('index/home') ?>">Home</a>
                                 </li>
                                 <li class="dropdown-item d-flex align-items-center">
                                     <i class="las la-user-circle font-size-20 text-primary"></i>

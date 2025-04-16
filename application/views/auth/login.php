@@ -63,7 +63,7 @@
             </div>
         </div>
 
-        <div class="card-footer border-top-0">
+        <div class="card-footer bg-transparent border-top-0">
             <div class="d-flex justify-content-center">
                 <button type="submit" class="btn btn-primary w-100 border-radius-5 mt-2" style="max-width: 400px;">
                     Log In

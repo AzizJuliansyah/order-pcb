@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Administrator extends CI_Controller {
+class Superadmin extends CI_Controller {
     
 	public function __construct()
     {
@@ -15,55 +15,70 @@ class Administrator extends CI_Controller {
         $this->load->library('form_validation');
     }
 
+    public function dashboard()
+	{
+		$user_id = $this->session->userdata('user_id');
+		$data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
+
+		$data['title'] = 'Superadmin Dashboard';
+        
+
+		$this->load->view('layout/header', $data);
+		$this->load->view('layout/navbar', $data);
+        $this->load->view('layout/sidebar', $data);
+		$this->load->view('superadmin/dashboard', $data);
+		$this->load->view('layout/alert');
+		$this->load->view('layout/footer');
+	}
+
     public function user_list()
-{
-    $user_id = $this->session->userdata('user_id');
+    {
+        $user_id = $this->session->userdata('user_id');
+        $data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
 
-    $data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
-    $data['role'] = $this->User_model->get_user_with_role($user_id);
-    $data['title'] = 'User List';
+        $data['title'] = 'User List';
 
-    $data['errors'] = $this->session->flashdata('errors') ?? [];
-    $data['old'] = $this->session->flashdata('old') ?? [];
+        $data['errors'] = $this->session->flashdata('errors') ?? [];
+        $data['old'] = $this->session->flashdata('old') ?? [];
 
-    $roles = $this->db->get('role')->result_array();
+        $roles = $this->db->get('role')->result_array();
 
-    $query = $this->db->query("
-        SELECT 
-            role.role_id, 
-            COUNT(user.id) AS total_user,
-            SUM(CASE WHEN user.is_active = 1 THEN 1 ELSE 0 END) AS total_aktif,
-            SUM(CASE WHEN user.is_active = 0 THEN 1 ELSE 0 END) AS total_nonaktif,
-            MAX(user.date_created) AS last_created,
-            TIMESTAMPDIFF(HOUR, MAX(user.date_created), NOW()) AS hours_since_last_created
-        FROM role
-        LEFT JOIN user ON user.role_id = role.role_id
-        GROUP BY role.role_id
-    ");
+        $query = $this->db->query("
+            SELECT 
+                role.role_id, 
+                COUNT(user.id) AS total_user,
+                SUM(CASE WHEN user.is_active = 1 THEN 1 ELSE 0 END) AS total_aktif,
+                SUM(CASE WHEN user.is_active = 0 THEN 1 ELSE 0 END) AS total_nonaktif,
+                MAX(user.date_created) AS last_created,
+                TIMESTAMPDIFF(HOUR, MAX(user.date_created), NOW()) AS hours_since_last_created
+            FROM role
+            LEFT JOIN user ON user.role_id = role.role_id
+            GROUP BY role.role_id
+        ");
 
-    $role_info = [];
-    foreach ($query->result_array() as $r) {
-        $role_info[$r['role_id']] = $r;
+        $role_info = [];
+        foreach ($query->result_array() as $r) {
+            $role_info[$r['role_id']] = $r;
+        }
+
+        foreach ($roles as &$role) {
+            $rid = $role['role_id'];
+            $role['total_user'] = $role_info[$rid]['total_user'] ?? 0;
+            $role['total_aktif'] = $role_info[$rid]['total_aktif'] ?? 0;
+            $role['total_nonaktif'] = $role_info[$rid]['total_nonaktif'] ?? 0;
+            $role['last_created'] = $role_info[$rid]['last_created'] ?? null;
+            $role['hours_since_last_created'] = $role_info[$rid]['hours_since_last_created'] ?? null;
+        }
+
+        $data['role_list'] = $roles;
+
+        $this->load->view('layout/header', $data);
+        $this->load->view('layout/navbar', $data);
+        $this->load->view('layout/sidebar', $data);
+        $this->load->view('superadmin/user/user_list', $data);
+        $this->load->view('layout/alert');
+        $this->load->view('layout/footer');
     }
-
-    foreach ($roles as &$role) {
-        $rid = $role['role_id'];
-        $role['total_user'] = $role_info[$rid]['total_user'] ?? 0;
-        $role['total_aktif'] = $role_info[$rid]['total_aktif'] ?? 0;
-        $role['total_nonaktif'] = $role_info[$rid]['total_nonaktif'] ?? 0;
-        $role['last_created'] = $role_info[$rid]['last_created'] ?? null;
-        $role['hours_since_last_created'] = $role_info[$rid]['hours_since_last_created'] ?? null;
-    }
-
-    $data['role_list'] = $roles;
-
-    $this->load->view('layout/header', $data);
-    $this->load->view('layout/navbar', $data);
-    $this->load->view('layout/sidebar', $data);
-    $this->load->view('administrator/user/user_list', $data);
-    $this->load->view('layout/alert');
-    $this->load->view('layout/footer');
-}
 
 
 
@@ -71,7 +86,7 @@ class Administrator extends CI_Controller {
     {
         $user_id = $this->session->userdata('user_id');
         $data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
-        $data['role'] = $this->User_model->get_user_with_role($user_id);
+        
         $data['title'] = 'User List Per Role';
 
         $data['errors'] = $this->session->flashdata('errors') ?? [];
@@ -82,7 +97,7 @@ class Administrator extends CI_Controller {
 
         if (!$role) {
             $this->session->set_flashdata('error', 'Maaf, role tidak ditemukan');
-            redirect('administrator/user_list');
+            redirect('superadmin/user_list');
         }
 
         $role_id = $role['role_id'];
@@ -93,7 +108,7 @@ class Administrator extends CI_Controller {
         $this->load->view('layout/header', $data);
         $this->load->view('layout/navbar', $data);
         $this->load->view('layout/sidebar', $data);
-        $this->load->view('administrator/user/user_list_role', $data);
+        $this->load->view('superadmin/user/user_list_role', $data);
         $this->load->view('layout/alert');
         $this->load->view('layout/footer');
     }
@@ -115,7 +130,7 @@ class Administrator extends CI_Controller {
                     'user_id'            => form_error('user_id'),
                     
                 ]);
-                redirect('administrator/user_list');
+                redirect('superadmin/user_list');
             } else {
                 $user_id = $this->input->post('user_id');
                 $status = $this->input->post('status');
@@ -129,11 +144,11 @@ class Administrator extends CI_Controller {
                 $this->User_model->update_user($user_id, ['is_active' => $status]);
                 $this->session->set_flashdata('success', 'Status user berhasil di ubah.');
 
-                redirect('administrator/user_list_role/' . $jabatan_slug);
+                redirect('superadmin/user_list_role/' . $jabatan_slug);
             }
         } else {
             $this->session->set_flashdata('error', 'Status user gagal di ubah.');
-            redirect('administrator/user_list');
+            redirect('superadmin/user_list');
         }
     }
 
@@ -154,7 +169,7 @@ class Administrator extends CI_Controller {
                     'user_id'            => form_error('user_id'),
                     
                 ]);
-                redirect('administrator/user_list');
+                redirect('superadmin/user_list');
             } else {
                 $user_id = $this->input->post('user_id');
                 $new_password = password_hash($this->input->post('npassword'), PASSWORD_DEFAULT);
@@ -166,11 +181,11 @@ class Administrator extends CI_Controller {
 
                 $this->User_model->update_user($user_id, ['password' => $new_password]);
                 $this->session->set_flashdata('success', 'Password sudah berhasil diperbarui.');
-                redirect('administrator/user_list_role/' . $jabatan_slug);
+                redirect('superadmin/user_list_role/' . $jabatan_slug);
             }
         } else {
             $this->session->set_flashdata('error', 'Gagal mengubah password user.');
-            redirect('administrator/user_list');
+            redirect('superadmin/user_list');
         }
     }
 
@@ -190,14 +205,14 @@ class Administrator extends CI_Controller {
                     'user_id'            => form_error('user_id'),
                     
                 ]);
-                redirect('administrator/user_list');
+                redirect('superadmin/user_list');
             } else {
                 $user_id = $this->input->post('user_id');
                 $user = $this->db->get_where('user', ['id' => $user_id])->row_array();
 
                 if (!$user) {
                     $this->session->set_flashdata('error', 'User tidak ditemukan.');
-                    redirect('administrator/user_list');
+                    redirect('superadmin/user_list');
                 }
 
                 if (!empty($user['foto']) && file_exists(FCPATH . 'public/' . $user['foto'])) {
@@ -212,11 +227,11 @@ class Administrator extends CI_Controller {
                 $this->db->delete('user', ['id' => $user_id]);
                 $this->session->set_flashdata('success', 'User berhasil dihapus.');
 
-                redirect('administrator/user_list_role/' . $jabatan_slug);
+                redirect('superadmin/user_list_role/' . $jabatan_slug);
             }
         } else {
             $this->session->set_flashdata('error', 'Gagal menghapus user.');
-            redirect('administrator/user_list');
+            redirect('superadmin/user_list');
         }
         
     }
@@ -313,7 +328,7 @@ class Administrator extends CI_Controller {
                     'password'        => set_value('password'),
                     'repeat_password'       => set_value('repeat_password'),
                 ]);            
-				redirect('administrator/add_new_user');
+				redirect('superadmin/add_new_user');
 			} else {
                 $is_active = $this->input->post('is_active') ? 1 : 0;
 
@@ -350,20 +365,22 @@ class Administrator extends CI_Controller {
     
                     } else {
                         $this->session->set_flashdata('error', $this->upload->display_errors());
-                        redirect('administrator/add_new_user');
+                        redirect('superadmin/add_new_user');
                     }
                 }
     
                 $this->User_model->insert_user($data);
                 $this->session->set_flashdata('success', 'Data profile berhasil diperbarui.');
-                redirect('user/profile');
+
+                $role = $this->db->get_where('role', ['role_id' => $this->input->post('role', TRUE)])->row_array();
+
+                $jabatan_slug = strtolower(str_replace(' ', '-', $role['jabatan']));
+                redirect('superadmin/user_list_role/' . $jabatan_slug);
 			}
         }
 
         $user_id = $this->session->userdata('user_id');
-    
         $data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
-        $data['role'] = $this->User_model->get_user_with_role($user_id);
 
         $data['title'] = 'Add New User';
 
@@ -375,7 +392,7 @@ class Administrator extends CI_Controller {
         $this->load->view('layout/header', $data);
         $this->load->view('layout/navbar', $data);
         $this->load->view('layout/sidebar', $data);
-		$this->load->view('administrator/user/add_new_user', $data);
+		$this->load->view('superadmin/user/add_new_user', $data);
 		$this->load->view('layout/alert');
 		$this->load->view('layout/footer');
     }

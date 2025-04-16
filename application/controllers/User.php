@@ -32,9 +32,7 @@ class User extends CI_Controller {
 	public function edit_profile()
 	{
         $user_id = $this->session->userdata('user_id');
-    
         $data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
-        $data['role'] = $this->User_model->get_user_with_role($user_id);
 
         $data['title'] = 'Edit profile';
 
@@ -55,10 +53,11 @@ class User extends CI_Controller {
             $this->form_validation->set_rules('nama', 'Nama Lengkap', 'required|trim', [
                 'required' => '%s wajib diisi.'
             ]);
-            $this->form_validation->set_rules('email', 'Email', 'required|valid_email|trim', [
-                'required'    => '%s wajib diisi.',
-                'valid_email' => 'Format %s tidak valid.'
-            ]);
+            // $this->form_validation->set_rules('email', 'Email', 'required|valid_email|trim|is_unique[user.email]', [
+            //     'required'    => '%s wajib diisi.',
+            //     'valid_email' => 'Format %s tidak valid.',
+            //     'is_unique'   => '%s sudah terdaftar.',
+            // ]);
             $this->form_validation->set_rules('nomor', 'Nomor WhatsApp', 'required|numeric|min_length[10]|max_length[15]|trim', [
                 'required'    => '%s wajib diisi.',
                 'numeric'     => '%s harus berupa angka.',
@@ -90,7 +89,7 @@ class User extends CI_Controller {
             if ($this->form_validation->run() === FALSE) {
 				$this->session->set_flashdata('errors', [
                     'nama'            => form_error('nama'),
-                    'email'           => form_error('email'),
+                    // 'email'           => form_error('email'),
                     'nomor'           => form_error('nomor'),
                     'tanggal_lahir'   => form_error('tanggal_lahir'),
                     'provinsi'        => form_error('provinsi'),
@@ -101,7 +100,7 @@ class User extends CI_Controller {
                 ]);                
 				$this->session->set_flashdata('old', [
                     'nama'            => set_value('nama'),
-                    'email'           => set_value('email'),
+                    // 'email'           => set_value('email'),
                     'nomor'           => set_value('nomor'),
                     'tanggal_lahir'   => set_value('tanggal_lahir'),
                     'provinsi'        => set_value('provinsi'),
@@ -118,7 +117,7 @@ class User extends CI_Controller {
     
                 $data = [
                     'nama' => $this->input->post('nama', TRUE),
-                    'email' => $this->input->post('email', TRUE),
+                    // 'email' => $this->input->post('email', TRUE),
                     'nomor' => $this->input->post('nomor', TRUE),
                     'tanggal_lahir' => $this->input->post('tanggal_lahir', TRUE),
                     'provinsi' => $this->input->post('provinsi', TRUE),
