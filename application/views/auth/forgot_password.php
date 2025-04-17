@@ -12,6 +12,7 @@
             <div class="d-flex justify-content-center text-center mt-2">
                 <p class="font-size-14">Enter your email and we'll send you a link to reset your password</p>
             </div>
+            
         </div>
         <?= form_open('auth/forgot_password') ?>
         <!-- sudah ada csrf bawaan ci3 -->
@@ -25,13 +26,17 @@
                 <?php } else { ?>
                     <input type="text" class="form-control <?= !empty($errors['email']) ? 'is-invalid' : '' ?> border-radius-top-right-5 border-radius-bottom-right-5 max-height-40" name="email" id="email" value="<?= isset($old['email']) ? $old['email'] : '' ?>" placeholder="Email" aria-label="Email" aria-describedby="basic-addon4">
                 <?php } ?>
+                    <div class="text-success" style="margin-bottom: -40px;">
+                        <p class="font-size-14">Email berhasil terkirim, jika email tidak tampil coba periksa spam, atau kirim ulang email</p>
+                    </div>
+                <?php endif; ?>
                 <?php if (!empty($errors['email'])): ?>
                     <div class="invalid-feedback"><?= $errors['email'] ?></div>
                 <?php endif; ?>
             </div>
         </div>
 
-        <div class="card-footer border-top-0">
+        <div class="card-footer bg-transparent border-top-0">
             <div class="d-flex justify-content-center">
                 <button type="submit" class="btn btn-primary w-100 border-radius-5 mt-2">
                     Send Email

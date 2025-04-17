@@ -11,10 +11,11 @@
                 <h4>Forgot Your Password?</h4>
             </div>
             <div class="d-flex justify-content-center text-center mt-2">
-                <p class="font-size-14">Enter your email and we'll send you a link to reset your password</p>
+                <p class="font-size-14">Enter your new password and you can login again</p>
             </div>
+            
         </div>
-        <?= form_open('auth/reset_password/$token') ?>
+        <?= form_open('auth/reset_password/' . $token) ?>
         <!-- sudah ada csrf bawaan ci3 -->
         <div class="card-body">
             <div class="form-group">
@@ -54,7 +55,7 @@
             </div>
         </div>
 
-        <div class="card-footer border-top-0">
+        <div class="card-footer bg-transparent border-top-0">
             <div class="d-flex justify-content-center">
                 <button type="submit" class="btn btn-primary w-100 border-radius-5 mt-2">
                     Reset Password

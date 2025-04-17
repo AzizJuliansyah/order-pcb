@@ -165,11 +165,11 @@
                                                 <div class="invalid-feedback"><?= $errors['cpassword'] ?></div>
                                             <?php endif; ?>
                                         </div>
-                                        <div class="d-flex justify-content-end">
+                                        <!-- <div class="d-flex justify-content-end">
                                             <div class="d-flex align-items-center">
                                                 <a href="<?= base_url('auth/forgot_password') ?>" class="font-size-14">Forgot Password?</a>
                                             </div>
-                                        </div>
+                                        </div> -->
                                     </div>
                                     <div class="form-group">
                                         <label for="npassword">New Password:</label>
