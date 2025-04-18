@@ -37,6 +37,7 @@
                                     aria-describedby="user-list-page-info">
                                     <thead>
                                         <tr class="ligth">
+                                            <th>#</th>
                                             <th>Profile</th>
                                             <th>Name</th>
                                             <th>Contact</th>
@@ -49,6 +50,9 @@
                                     <tbody>
                                         <?php foreach ($users_by_role as $index => $item) { ?>
                                             <tr>
+                                                <td>
+                                                    <?= $index + 1 ?>
+                                                </td>
                                                 <td>
                                                     <?php if ($item['foto'] != null) { ?>
                                                         <img src="<?= base_url('public/' . $item['foto']) ?>" class="avatar-40 rounded-circle" alt="user">
@@ -147,7 +151,7 @@
                                                 <td>
                                                     <?php if ($item['id'] == $user['id'] && $user['role_id'] == 1): ?>
                                                     <?php else: ?>
-                                                        <div class="row">
+                                                        <div class="d-flex align-items-center">
                                                             <div class="form-group m-1">
                                                                 <button type="button" class="btn btn-sm bg-primary" data-toggle="modal" data-target="#alamat<?= $item['id'] ?>">
                                                                     <i class="las la-eye font-size-16 mt-1 mr-0"></i>

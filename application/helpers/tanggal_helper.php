@@ -18,11 +18,12 @@ if (!function_exists('format_bulan')) {
         '12' => 'Desember',
     ];
 
-    $tanggal = date('d', strtotime($timestamp));
-    $bulanNum = date('m', strtotime($timestamp));
-    $tahun = date('Y', strtotime($timestamp));
+    $tanggal   = date('d', strtotime($timestamp));
+    $bulanNum  = date('m', strtotime($timestamp));
+    $tahun     = date('Y', strtotime($timestamp));
+    $jam       = date('H:i:s', strtotime($timestamp));
 
-    return $tanggal . ' ' . $bulan[$bulanNum] . ' ' . $tahun;
+    return $tanggal . ' ' . $bulan[$bulanNum] . ' ' . $tahun . ' ' . $jam;
 }
 
 }
