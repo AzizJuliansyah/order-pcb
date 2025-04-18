@@ -19,7 +19,7 @@
                             <script>
                                 document.write(new Date().getFullYear())
                             </script>©
-                        </span> <a href="#" class="">Webkit</a>.
+                        </span> <a href="#" class=""><?= get_website_name() ?></a>.
                     </div>
                 </div>
             </div>

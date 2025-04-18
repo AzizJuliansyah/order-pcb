@@ -14,7 +14,7 @@
             </div>
 
             <div class="d-flex justify-content-center">
-                <a class="btn btn-outline-primary w-100 border-radius-5 mt-2" style="max-width: 400px;">
+                <a href="<?= base_url('auth/login_google') ?>" class="btn btn-outline-primary w-100 border-radius-5 mt-2" style="max-width: 400px;">
                     <div class="d-flex justify-content-center">
                         <div class="d-flex align-items-center">
                             <img src="<?= base_url('public/local_assets/images/logo_google.png') ?>" class="img-fluid mr-2" width="20" alt="">

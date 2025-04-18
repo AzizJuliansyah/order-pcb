@@ -9,4 +9,10 @@ class Settings_model extends CI_Model
         $this->db->where('id', $settings_id);
         return $this->db->update('settings', $data);
     }
+
+    public function get_website_logo()
+    {
+        $query = $this->db->get_where('settings', ['id' => 3])->row_array();
+        return $query['item'] ?? null;
+    }
 }

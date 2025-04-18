@@ -3,8 +3,8 @@
         <nav class="navbar navbar-expand-lg navbar-light p-0">
             <div class="iq-navbar-logo d-flex align-items-center justify-content-between">
                 <i class="ri-menu-line wrapper-menu"></i>
-                <a href="../backend/index.html" class="header-logo">
-                    <h4 class="logo-title text-uppercase">Webkit</h4>
+                <a href="<?= base_url('') ?>" class="header-logo">
+                    <h4 class="logo-title text-uppercase"><?= get_website_name() ?></h4>
 
                 </a>
             </div>
@@ -211,7 +211,7 @@
                             <ul class="dropdown-menu dropdown-menu-right border-none" aria-labelledby="dropdownMenuButton">
                                 <li class="dropdown-item d-flex align-items-center">
                                     <i class="las la-home font-size-20 text-primary"></i>
-                                    <a href="<?= base_url('index/home') ?>">Home</a>
+                                    <a href="<?= base_url('home') ?>">Home</a>
                                 </li>
                                 <li class="dropdown-item d-flex align-items-center">
                                     <i class="las la-user-circle font-size-20 text-primary"></i>

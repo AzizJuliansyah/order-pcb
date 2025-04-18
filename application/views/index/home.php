@@ -4,10 +4,10 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Webkit | <?= $title ?></title>
+    <title><?= get_website_name() ?> | <?= $title ?></title>
 
     <!-- Favicon -->
-    <link rel="shortcut icon" href="<?= base_url('public/template_assets/images/favicon.ico') ?>">
+    <link rel="shortcut icon" href="<?= base_url('public/' . get_website_logo()) ?>">
     <link rel="stylesheet" href="<?= base_url('public/template_assets/css/backend-plugin.min.css') ?>">
     <link rel="stylesheet" href="<?= base_url('public/template_assets/css/backend.css?v=1.0.0') ?>">
     <link rel="stylesheet" href="<?= base_url('public/template_assets/vendor/line-awesome/dist/line-awesome/css/line-awesome.min.css') ?>">
@@ -43,7 +43,7 @@ $has_sidebar = isset($has_sidebar) ? $has_sidebar : true;
                 <div class="iq-navbar-logo d-flex align-items-center justify-content-between">
                     <i class="ri-menu-line wrapper-menu"></i>
                     <a href="../backend/index.html" class="header-logo">
-                        <h4 class="logo-title text-uppercase">Webkit</h4>
+                        <h4 class="logo-title text-uppercase"><?= get_website_name() ?></h4>
 
                     </a>
                 </div>
@@ -338,7 +338,7 @@ $has_sidebar = isset($has_sidebar) ? $has_sidebar : true;
                             <script>
                                 document.write(new Date().getFullYear())
                             </script>©
-                        </span> <a href="#" class="">Webkit</a>.
+                        </span> <a href="#" class=""><?= get_website_name() ?></a>.
                     </div>
                 </div>
             </div>

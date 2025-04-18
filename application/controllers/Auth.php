@@ -112,6 +112,84 @@ class Auth extends CI_Controller {
 		$this->load->view('layout/footer');
 	}
 
+	public function login_google()
+	{
+		$google_id = $this->db->get_where('settings', ['id' => '1'])->row_array()['item'];
+		$google_secret = $this->db->get_where('settings', ['id' => '2'])->row_array()['item'];
+
+		require_once APPPATH . '../vendor/autoload.php';
+
+		$client = new Google_Client();
+		$client->setClientId($google_id);
+		$client->setClientSecret($google_secret);
+		$client->setRedirectUri(base_url('auth/google_callback'));
+		$client->addScope('email');
+		$client->addScope('profile');
+
+		$auth_url = $client->createAuthUrl();
+		redirect($auth_url);
+	}
+
+
+	public function google_callback()
+	{
+		$google_id = $this->db->get_where('settings', ['id' => '1'])->row_array()['item'];
+		$google_secret = $this->db->get_where('settings', ['id' => '2'])->row_array()['item'];
+
+		require_once APPPATH . '../vendor/autoload.php';
+
+		$client = new Google_Client();
+		$client->setClientId($google_id);
+		$client->setClientSecret($google_secret);
+		$client->setRedirectUri(base_url('auth/google_callback'));
+
+		if ($this->input->get('code')) {
+			$token = $client->fetchAccessTokenWithAuthCode($this->input->get('code'));
+			$client->setAccessToken($token);
+
+			$oauth = new Google_Service_Oauth2($client);
+			$userinfo = $oauth->userinfo->get();
+
+			$email = $userinfo->email;
+			$name = $userinfo->name;
+
+			$user = $this->db->get_where('user', ['email' => $email])->row_array();
+
+			if ($user) {
+				$this->session->set_userdata([
+					'user_id' => $user['id'],
+					'nama'    => $user['nama'],
+					'email'   => $user['email'],
+					'role_id' => $user['role_id']
+				]);
+			} else {
+				$this->db->insert('user', [
+					'nama'     => $name,
+					'email'    => $email,
+					'password' => password_hash(uniqid(), PASSWORD_DEFAULT),
+					'role_id'  => 5,
+					'is_active' => 1,
+				]);
+
+				$user_id = $this->db->insert_id();
+				$this->session->set_userdata([
+					'user_id' => $user_id,
+					'nama'    => $name,
+					'email'   => $email,
+					'role_id' => 5
+				]);
+			}
+
+			$this->session->set_flashdata('success', 'Berhasil login dengan Google.');
+			redirect('customer/dashboard');
+		} else {
+			$this->session->set_flashdata('error', 'Login Google gagal.');
+			redirect('auth/login');
+		}
+	}
+
+
+
 
 
 	public function register()

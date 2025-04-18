@@ -5,7 +5,7 @@
             <div class="row m-1">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0">
-                        <li class="breadcrumb-item"><a href="<?= base_url('index/home') ?>">Home</a></li>
+                        <li class="breadcrumb-item"><a href="<?= base_url('home') ?>">Home</a></li>
                         <li class="breadcrumb-item"><a href="<?= base_url('user/profile') ?>">Profile</a></li>
                         <li class="breadcrumb-item active" aria-current="page">Edit Profile</li>
                     </ol>
