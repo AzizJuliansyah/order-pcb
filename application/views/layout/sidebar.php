@@ -78,12 +78,6 @@
                             <i class="las la-angle-down iq-arrow-right arrow-hover"></i>
                         </a>
                         <ul id="user" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
-
-                            <!-- <li class="<?= in_array(uri_string(), ['superadmin/user_list', 'superadmin/user_list_role/']) ? 'active' : '' ?>">
-                                <a href="<?= base_url('superadmin/user_list') ?>">
-                                    <i class="las la-minus"></i><span>User List</span>
-                                </a>
-                            </li> -->
                             <li class="<?= strpos(uri_string(), 'superadmin/user_list') === 0 ? 'active' : '' ?>">
                                 <a href="<?= base_url('superadmin/user_list') ?>">
                                     <i class="las la-minus"></i><span>User List</span>
@@ -92,6 +86,28 @@
                             <li class="<?= uri_string() === 'superadmin/add_new_user' ? 'active' : '' ?>">
                                 <a href="<?= base_url('superadmin/add_new_user') ?>">
                                     <i class="las la-minus"></i><span>User Add</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                <?php } ?>
+                <?php if (has_access(['2'])) { ?>
+                    <li class="">
+                        <a href="#order" class="collapsed" data-toggle="collapse" aria-expanded="false">
+                            <i class="las la-clipboard-list font-size-32"></i>
+                            <span class="ml-4 mr-1">Data Order</span>
+                            <i class="las la-angle-right iq-arrow-right arrow-active"></i>
+                            <i class="las la-angle-down iq-arrow-right arrow-hover"></i>
+                        </a>
+                        <ul id="order" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                            <li class="<?= in_array(uri_string(), ['admin/order_management']) ? 'active' : '' ?>">
+                                <a href="<?= base_url('admin/order_management') ?>">
+                                    <i class="las la-minus"></i><span>Order Management</span>
+                                </a>
+                            </li>
+                            <li class="<?= in_array(uri_string(), ['admin/order_list', 'admin/order_detail']) ? 'active' : '' ?>">
+                                <a href="<?= base_url('admin/order_list') ?>">
+                                    <i class="las la-minus"></i><span>Order List</span>
                                 </a>
                             </li>
                         </ul>

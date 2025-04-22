@@ -21,6 +21,17 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <style>
+        #loading-center {
+            background: url("<?= base_url('public/' . get_website_logo()) ?>") no-repeat center center;
+            background-size: 20%;
+            width: 100%;
+            height: 100%;
+            position: relative;
+            animation: loader 1.5s alternate infinite ease-in-out;
+        }
+    </style>
+
 </head>
 
 <?php

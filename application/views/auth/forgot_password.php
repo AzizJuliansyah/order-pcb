@@ -2,9 +2,9 @@
     <div class="card bottom-right p-3 shadow-showcase border-radius-5 w-100 ml-1 mr-1" style="max-width: 450px;">
         <div class="card-header border-bottom-0 p-0">
             <div class="d-flex justify-content-center">
-            <div class="image mb-2 position-relative d-inline-block">
-                           <img src="<?= base_url('public/template_assets/images/logo.svg') ?>" alt="profile" class="img-fluid rounded-circle avatar-100 text-center">
-                        </div>
+                <div class="image mb-2 position-relative d-inline-block">
+                    <img src="<?= base_url('public/' . get_website_logo()) ?>" alt="profile" class="img-fluid rounded-circle avatar-100 text-center">
+                </div>
             </div>
             <div class="d-flex justify-content-center">
                 <h4>Forgot Your Password?</h4>
@@ -26,13 +26,14 @@
                 <?php } else { ?>
                     <input type="text" class="form-control <?= !empty($errors['email']) ? 'is-invalid' : '' ?> border-radius-top-right-5 border-radius-bottom-right-5 max-height-40" name="email" id="email" value="<?= isset($old['email']) ? $old['email'] : '' ?>" placeholder="Email" aria-label="Email" aria-describedby="basic-addon4">
                 <?php } ?>
+                <?php if ($this->session->flashdata('success')) { ?>
                     <div class="text-success" style="margin-bottom: -40px;">
                         <p class="font-size-14">Email berhasil terkirim, jika email tidak tampil coba periksa spam, atau kirim ulang email</p>
                     </div>
-                <?php endif; ?>
-                <?php if (!empty($errors['email'])): ?>
+                <?php } ?>
+                <?php if (!empty($errors['email'])) { ?>
                     <div class="invalid-feedback"><?= $errors['email'] ?></div>
-                <?php endif; ?>
+                <?php } ?>
             </div>
         </div>
 

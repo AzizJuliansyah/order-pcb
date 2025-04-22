@@ -4,7 +4,7 @@
         <div class="card-header border-bottom-0 p-0">
             <div class="d-flex justify-content-center">
                 <div class="image mb-2 position-relative d-inline-block">
-                <img src="<?= base_url('public/template_assets/images/logo.svg') ?>" alt="profile" class="img-fluid rounded-circle avatar-100 text-center">
+                <img src="<?= base_url('public/' . get_website_logo()) ?>" alt="profile" class="img-fluid rounded-circle avatar-100 text-center">
                 </div>
             </div>
             <div class="d-flex justify-content-center">
