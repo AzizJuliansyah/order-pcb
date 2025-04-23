@@ -12,6 +12,7 @@ class Admin extends CI_Controller {
         $this->load->helper('time');
 
         $this->load->model('User_model');
+        $this->load->model('Order_model');
         $this->load->library('form_validation');
     }
 
@@ -39,7 +40,6 @@ class Admin extends CI_Controller {
 
 		$payment_status = $this->input->get('payment_status');
 		$order_status = $this->input->get('order_status');
-		$keyword = $this->input->get('q');
 
 		$this->db->select('orders.*, user.nama, user.email, user.foto');
 		$this->db->from('orders');
@@ -51,13 +51,6 @@ class Admin extends CI_Controller {
 		if (!empty($order_status)) {
 			$this->db->where('orders.order_status', $order_status);
 		}
-		if (!empty($keyword)) {
-			$this->db->group_start();
-			$this->db->like('user.nama', $keyword);
-			$this->db->or_like('user.email', $keyword);
-			$this->db->or_like('orders.order_code', $keyword);
-			$this->db->group_end();
-		}
 
 		$this->db->order_by('orders.date_created', 'DESC');
 		$data['orders'] = $this->db->get()->result_array();
@@ -65,7 +58,6 @@ class Admin extends CI_Controller {
 
 		$data['selected_payment_status'] = $payment_status;
 		$data['selected_order_status'] = $order_status;
-		$data['search_keyword'] = $keyword;
 
 		$this->load->view('layout/header', $data);
 		$this->load->view('layout/navbar', $data);
@@ -75,8 +67,66 @@ class Admin extends CI_Controller {
 		$this->load->view('layout/footer');
 	}
 
+	public function delete_order()
+	{
+		$bulkIdsJson = $this->input->post('delete_order_ids_bulk');
+		$singleId    = $this->input->post('order_id');
 
-    public function order_list()
+		if ($bulkIdsJson) {
+			$order_ids = json_decode($bulkIdsJson, true);
+
+			if (is_array($order_ids)) {
+				foreach ($order_ids as $id) {
+					$this->Order_model->delete_order_with_items($id);
+				}
+				$this->session->set_flashdata('success', count($order_ids) . " order berhasil dihapus.");
+			} else {
+				$this->session->set_flashdata('error', "Format data tidak valid.");
+			}
+		} elseif ($singleId) {
+			$this->Order_model->delete_order_with_items($singleId);
+			$this->session->set_flashdata('success', "Order berhasil dihapus.");
+		} else {
+			$this->session->set_flashdata('error', "Tidak ada ID order yang dikirim.");
+		}
+
+		redirect($_SERVER['HTTP_REFERER']);
+	}
+
+	public function ubah_status_order()
+	{
+		
+		$bulkIdsJson   = $this->input->post('ubahStatus_order_ids_bulk');
+		$singleId      = $this->input->post('order_id');
+		$paymentStatus = $this->input->post('payment_status');
+		$orderStatus   = $this->input->post('order_status');
+
+		if ($bulkIdsJson) {
+			$order_ids = json_decode($bulkIdsJson, true);
+
+			if (is_array($order_ids)) {
+				foreach ($order_ids as $id) {
+					$this->Order_model->updateOrderStatuses([$id], $paymentStatus, $orderStatus);
+				}
+				$this->session->set_flashdata('success', count($order_ids) . " order berhasil diupdate statusnya.");
+			} else {
+				$this->session->set_flashdata('error', "Format data tidak valid.");
+			}
+		} elseif ($singleId) {
+			$this->Order_model->updateOrderStatuses([$singleId], $paymentStatus, $orderStatus);
+			$this->session->set_flashdata('success', "Status order berhasil diperbarui.");
+		} else {
+			$this->session->set_flashdata('error', "Tidak ada ID order yang dikirim.");
+		}
+
+		redirect($_SERVER['HTTP_REFERER']);
+	}
+
+
+
+
+
+	public function order_list()
 	{
 		$user_id = $this->session->userdata('user_id');
 		$data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
