@@ -3,6 +3,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Order_model extends CI_Model
 {
+
+    public function update_orders($order_id, $data)
+    {
+        $this->db->where('order_id', $order_id);
+        return $this->db->update('orders', $data);
+    }
+
     public function delete_order_with_items($order_id)
     {
         $this->db->where('order_id', $order_id);

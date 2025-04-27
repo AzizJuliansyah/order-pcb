@@ -58,3 +58,5 @@ $route['administrator/user_list_role/(:any)'] = 'administrator/user_list_role/$1
 $route['csrf/get'] = 'csrf/get_token';
 
 $route['home'] = 'index/home';
+
+$route['admin/order_detail/(:any)'] = 'admin/order_detail/$1';

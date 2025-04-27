@@ -49,6 +49,8 @@ class User extends CI_Controller {
 
     public function edit_personal_info()
     {
+        $redirect = $this->input->server('HTTP_REFERER') ?? base_url('user/edit_profile');
+
         if ($this->input->method() === 'post') {
             $this->form_validation->set_rules('nama', 'Nama Lengkap', 'required|trim', [
                 'required' => '%s wajib diisi.'
@@ -109,11 +111,20 @@ class User extends CI_Controller {
                     'kode_pos'        => set_value('kode_pos'),
                     'alamat_lengkap'  => set_value('alamat_lengkap'),
                 ]);                
-				redirect('user/edit_profile');
+				redirect($redirect);
 			} else {
-				$user_id = $this->session->userdata('user_id');
+                $user_id = $this->session->userdata('user_id');
+
+                if (empty($user_id)) {
+                    $this->session->set_flashdata('error', 'Gagal mengakses halaman, user ID tidak ada.');
+                    redirect($redirect);
+                }
 
                 $user = $this->db->get_where('user', ['id' => $user_id])->row_array();
+                if (!$user) {
+                    $this->session->set_flashdata('error', 'Data user tidak ditemukan.');
+                    redirect($redirect);
+                }
     
                 $data = [
                     'nama' => $this->input->post('nama', TRUE),
@@ -144,7 +155,7 @@ class User extends CI_Controller {
                         }
                     } else {
                         $this->session->set_flashdata('upload_error', $this->upload->display_errors());
-                        redirect('user/edit_profile');
+                        redirect($redirect);
                     }
                 }
     
@@ -153,12 +164,14 @@ class User extends CI_Controller {
                 redirect('user/profile');
 			}
         } else {
-            redirect('user/profile');
+            redirect($redirect);
         }
     }
 
     public function change_password()
     {
+        $redirect = $this->input->server('HTTP_REFERER') ?? base_url('user/edit_profile');
+
         if ($this->input->method() === 'post') {
             $this->form_validation->set_rules('cpassword', 'Current Password', 'required|trim|callback_check_current_password', [
                 'required' => '%s wajib diisi.'
@@ -189,9 +202,20 @@ class User extends CI_Controller {
 
                 $this->session->set_flashdata('active_tab', 'change-pwd');
 
-				redirect('user/edit_profile');
+				redirect($redirect);
 			} else {
                 $user_id = $this->session->userdata('user_id');
+
+                if (empty($user_id)) {
+                    $this->session->set_flashdata('error', 'Gagal mengakses halaman, user ID tidak ada.');
+                    redirect($redirect);
+                }
+
+                $user = $this->db->get_where('user', ['id' => $user_id])->row_array();
+                if (!$user) {
+                    $this->session->set_flashdata('error', 'Data user tidak ditemukan.');
+                    redirect($redirect);
+                }
                 $new_password = password_hash($this->input->post('npassword'), PASSWORD_DEFAULT);
 
                 $this->User_model->update_user($user_id, ['password' => $new_password]);
@@ -200,14 +224,24 @@ class User extends CI_Controller {
                 redirect('user/profile');
 			}
         } else {
-            redirect('user/profile');
+            redirect($redirect);
         }
     }
 
     public function check_current_password($input)
     {
         $user_id = $this->session->userdata('user_id');
+
+        if (empty($user_id)) {
+            $this->session->set_flashdata('error', 'Gagal mengakses halaman, user ID tidak ada.');
+            return FALSE;
+        }
+
         $user = $this->User_model->get_user_by_id($user_id);
+        if (!$user) {
+            $this->session->set_flashdata('error', 'Data user tidak ditemukan.');
+            return FALSE;
+        }
 
         if (!password_verify($input, $user['password'])) {
             $this->form_validation->set_message('check_current_password', 'Password saat ini salah.');

@@ -66,11 +66,11 @@
                                                                         <div class="modal-body">
                                                                             <?php if ($item['id'] == 4) { ?>
                                                                                 <?= form_open('superadmin/edit_settings', ['id' => 'EditSettingsForm' . $item['id']]) ?>
-                                                                                    <input type="hidden" name="settings_id" value="<?= $item['id'] ?>">
+                                                                                    <input type="hidden" name="settings_id" value="<?= encrypt_id($item['id']) ?>">
                                                                                     <div class="form-group">
                                                                                         <label for="item<?= $item['id'] ?>">Settings:</label>
                                                                                         <div class="input-group">
-                                                                                            <div class="input-group-prepend">
+                                                                                            <div class="input-group-prepend">   
                                                                                                 <span class="input-group-text border-radius-top-left-5 border-radius-bottom-left-5" id="basic-addon4"><i class="las la-at font-size-20"></i></span>
                                                                                             </div>
                                                                                             <input type="text" class="form-control <?= !empty($errors['item']) ? 'is-invalid' : '' ?> max-height-40" name="item" id="item<?= $item['id'] ?>" value="<?= isset($old['item']) ? $old['item'] : $item['item'] ?>" aria-label="New Password" aria-describedby="basic-addon4">
@@ -86,7 +86,7 @@
                                                                                 <?= form_close() ?>
                                                                             <?php } elseif ($item['id'] == 3) { ?>
                                                                                 <?= form_open_multipart('superadmin/edit_settings', ['id' => 'file-upload-form']) ?>
-                                                                                    <input type="hidden" name="settings_id" value="<?= $item['id'] ?>">
+                                                                                    <input type="hidden" name="settings_id" value="<?= encrypt_id($item['id']) ?>">
                                                                                     <div class="uploader-file">
                                                                                         <input id="file-upload" type="file" name="item" accept="image/*" style="display: none;" />
                                                                                         <label id="file-drag" for="file-upload">
@@ -96,7 +96,7 @@
                                                                                                 <i class="fa fa-download" aria-hidden="true"></i>
                                                                                                 <span class="d-block">Select a file or drag here</span>
                                                                                                 <span id="notimage" class="hidden d-block text-danger">Please select image</span>
-                                                                                                <span id="file-upload-btn" class="btn btn-primary mt-2">Select a file</span>
+                                                                                                <span id="file-upload-btn" class="btn btn-primary text-white mt-2">Select a file</span>
                                                                                             </span>
 
                                                                                             <span id="response" class="hidden">

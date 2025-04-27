@@ -26,6 +26,18 @@
         </footer>
     <?php endif; ?>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const forms = document.querySelectorAll('form');
+            forms.forEach(form => {
+                form.addEventListener('submit', function () {
+                    document.getElementById('loading').style.display = 'block';
+                });
+            });
+        });
+    </script>
+
+
 
     <script src="<?= base_url('public/template_assets/js/backend-bundle.min.js') ?>"></script>
 

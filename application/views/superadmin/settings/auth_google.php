@@ -50,7 +50,7 @@
                                                                             </div>
                                                                             <div class="modal-body">
                                                                                     <?= form_open('superadmin/edit_settings', ['id' => 'EditSettingsForm' . $item['id']]) ?>
-                                                                                    <input type="hidden" name="settings_id" value="<?= $item['id'] ?>">
+                                                                                    <input type="hidden" name="settings_id" value="<?= encrypt_id($item['id']) ?>">
                                                                                     <div class="form-group">
                                                                                         <label for="item<?= $item['id'] ?>">Credential:</label>
                                                                                         <div class="input-group">

@@ -32,6 +32,133 @@ class Superadmin extends CI_Controller {
 		$this->load->view('layout/footer');
 	}
 
+
+
+    public function edit_settings()
+    {
+        $redirect = $this->input->server('HTTP_REFERER') ?? base_url('default-url');
+
+
+        if ($this->input->method() === 'post') {
+            $this->form_validation->set_rules('settings_id', 'settings_id', 'required|trim', [
+                'required' => '%s wajib diisi.'
+            ]);
+
+            $encrypted_settings_id = $this->input->post('settings_id');
+            $settings_id = decrypt_id($encrypted_settings_id);
+
+            if (empty($settings_id)) {
+                $this->session->set_flashdata('error', 'Gagal mengakses halaman, Settings ID tidak ada.');
+                redirect($redirect);
+            }
+
+            $settings = $this->db->get_where('settings', ['settings_id' => $settings_id])->row_array();
+            if (!$settings) {
+                $this->session->set_flashdata('error', 'Data Settings tidak ditemukan.');
+                redirect($redirect);
+            }
+
+
+            if (isset($_FILES['item']) && $_FILES['item']['name']) {
+                $config['upload_path']   = './public/web_assets/images/settings_images/';
+                $config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+                $config['max_size']      = 2048; // 2MB
+                $config['file_name'] = 'settings_' . $user_id . '_' . time(); // biar unik
+
+                $this->load->library('upload', $config);
+
+                if (!$this->upload->do_upload('item')) {
+                    $this->session->set_flashdata('errors', [
+                        'item' => $this->upload->display_errors('', ''),
+                    ]);
+                    $this->session->set_flashdata('old', [
+                        'settings_id' => set_value('settings_id'),
+                    ]);
+
+                    
+                    redirect($redirect);
+                } else {
+                    
+                    $uploadData = $this->upload->data();
+                    $item = 'web_assets/images/settings_images/' . $uploadData['file_name'];
+                    
+                    $settings = $this->db->get_where('settings', ['id' => $settings_id])->row_array();
+
+                    if (!empty($settings['item']) && file_exists('./public/' . $settings['item'])) {
+                        unlink('./public/' . $settings['item']);
+                    }
+                }
+            } else {
+                $this->form_validation->set_rules('item', 'item', 'required|trim', [
+                    'required' => '%s wajib diisi.'
+                ]);
+
+                if ($this->form_validation->run() === FALSE) {
+                    $this->session->set_flashdata('old', [
+                        'settings_id' => set_value('settings_id'),
+                        'item'        => set_value('item'),
+                    ]);
+                    $this->session->set_flashdata('errors', [
+                        'item'        => form_error('item'),
+                        'settings_id' => form_error('settings_id'),
+                    ]);
+                    
+                    redirect($redirect);
+                } else {
+                    $item = $this->input->post('item', TRUE);
+                }
+            }
+
+            $this->Settings_model->update_settings($settings_id, ['item' => $item]);
+
+            $this->session->set_flashdata('success', 'Item berhasil diubah.');
+            redirect($redirect);
+        } else {
+            $this->session->set_flashdata('error', 'Item gagal diubah.');
+            
+            redirect($redirect);
+        }
+    }
+
+    public function auth_google()
+	{
+		$user_id = $this->session->userdata('user_id');
+		$data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
+
+		$data['title'] = 'Auth Google Settings';
+
+        $data['settings'] = $this->db->where_in('settings_id', [1, 2])->get('settings')->result_array();
+        
+
+		$this->load->view('layout/header', $data);
+		$this->load->view('layout/navbar', $data);
+        $this->load->view('layout/sidebar', $data);
+		$this->load->view('superadmin/settings/auth_google', $data);
+		$this->load->view('layout/alert');
+		$this->load->view('layout/footer');
+	}
+
+    public function ui_ux()
+	{
+		$user_id = $this->session->userdata('user_id');
+		$data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
+
+		$data['title'] = 'UI UX Settings';
+
+        $data['settings'] = $this->db->where_in('settings_id', [3, 4])->get('settings')->result_array();
+        
+
+		$this->load->view('layout/header', $data);
+		$this->load->view('layout/navbar', $data);
+        $this->load->view('layout/sidebar', $data);
+		$this->load->view('superadmin/settings/ui_ux', $data);
+		$this->load->view('layout/alert');
+		$this->load->view('layout/footer');
+	}
+
+
+
+
     public function user_list()
     {
         $user_id = $this->session->userdata('user_id');
@@ -101,6 +228,7 @@ class Superadmin extends CI_Controller {
 
         $role_id = $role['role_id'];
 
+        $this->db->order_by('date_created', 'DESC');
         $data['users_by_role'] = $this->db->get_where('user', ['role_id' => $role_id])->result_array();
         $data['selected_role'] = $role;
 
@@ -114,6 +242,7 @@ class Superadmin extends CI_Controller {
 
     public function change_status()
     {
+        $redirect = $this->input->server('HTTP_REFERER') ?? base_url('superadmin/user_list');
         
         if ($this->input->method() === 'post') {
             $this->form_validation->set_rules('user_id', 'user_id', 'required|trim', [
@@ -129,30 +258,39 @@ class Superadmin extends CI_Controller {
                     'user_id'            => form_error('user_id'),
                     
                 ]);
-                redirect('superadmin/user_list');
+                redirect($redirect);
             } else {
-                $user_id = $this->input->post('user_id');
-                $status = $this->input->post('status');
-                
+                $encrypted_user_id = $this->input->post('user_id');
+                $user_id = decrypt_id($encrypted_user_id);
+
+                if (empty($user_id)) {
+                    $this->session->set_flashdata('error', 'Gagal mengakses halaman, user ID tidak ada.');
+                    redirect($redirect);
+                }
 
                 $user = $this->db->get_where('user', ['id' => $user_id])->row_array();
-                $role = $this->db->get_where('role', ['role_id' => $user['role_id']])->row_array();
-
-                $jabatan_slug = strtolower(str_replace(' ', '-', $role['jabatan']));
+                if (!$user) {
+                    $this->session->set_flashdata('error', 'Data user tidak ditemukan.');
+                    redirect($redirect);
+                }
+                $status = $this->input->post('status');
+                
 
                 $this->User_model->update_user($user_id, ['is_active' => $status]);
                 $this->session->set_flashdata('success', 'Status user berhasil di ubah.');
 
-                redirect('superadmin/user_list_role/' . $jabatan_slug);
+                redirect($redirect);
             }
         } else {
             $this->session->set_flashdata('error', 'Status user gagal di ubah.');
-            redirect('superadmin/user_list');
+            redirect($redirect);
         }
     }
 
     public function change_password()
     {
+
+        $redirect = $this->input->server('HTTP_REFERER') ?? base_url('superadmin/user_list');
         
         if ($this->input->method() === 'post') {
             $this->form_validation->set_rules('user_id', 'user_id', 'required|trim', [
@@ -168,28 +306,39 @@ class Superadmin extends CI_Controller {
                     'user_id'            => form_error('user_id'),
                     
                 ]);
-                redirect('superadmin/user_list');
+                redirect($redirect);
             } else {
-                $user_id = $this->input->post('user_id');
-                $new_password = password_hash($this->input->post('npassword'), PASSWORD_DEFAULT);
+                $encrypted_user_id = $this->input->post('user_id');
+                $user_id = decrypt_id($encrypted_user_id);
+
+                if (empty($user_id)) {
+                    $this->session->set_flashdata('error', 'Gagal mengakses halaman, user ID tidak ada.');
+                    redirect($redirect);
+                }
 
                 $user = $this->db->get_where('user', ['id' => $user_id])->row_array();
-                $role = $this->db->get_where('role', ['role_id' => $user['role_id']])->row_array();
+                if (!$user) {
+                    $this->session->set_flashdata('error', 'Data user tidak ditemukan.');
+                    redirect($redirect);
+                }
 
-                $jabatan_slug = strtolower(str_replace(' ', '-', $role['jabatan']));
+                $new_password = password_hash($this->input->post('npassword'), PASSWORD_DEFAULT);
+                
 
                 $this->User_model->update_user($user_id, ['password' => $new_password]);
                 $this->session->set_flashdata('success', 'Password sudah berhasil diperbarui.');
-                redirect('superadmin/user_list_role/' . $jabatan_slug);
+                redirect($redirect);
             }
         } else {
             $this->session->set_flashdata('error', 'Gagal mengubah password user.');
-            redirect('superadmin/user_list');
+            redirect($redirect);
         }
     }
 
     public function delete_user()
     {
+        $redirect = $this->input->server('HTTP_REFERER') ?? base_url('superadmin/user_list');
+
         if ($this->input->method() === 'post') {
             $this->form_validation->set_rules('user_id', 'user_id', 'required|trim', [
                 'required' => '%s wajib diisi.'
@@ -204,33 +353,35 @@ class Superadmin extends CI_Controller {
                     'user_id'            => form_error('user_id'),
                     
                 ]);
-                redirect('superadmin/user_list');
+                redirect($redirect);
             } else {
-                $user_id = $this->input->post('user_id');
-                $user = $this->db->get_where('user', ['id' => $user_id])->row_array();
+                $encrypted_user_id = $this->input->post('user_id');
+                $user_id = decrypt_id($encrypted_user_id);
 
+                if (empty($user_id)) {
+                    $this->session->set_flashdata('error', 'Gagal mengakses halaman, user ID tidak ada.');
+                    redirect($redirect);
+                }
+
+                $user = $this->db->get_where('user', ['id' => $user_id])->row_array();
                 if (!$user) {
-                    $this->session->set_flashdata('error', 'User tidak ditemukan.');
-                    redirect('superadmin/user_list');
+                    $this->session->set_flashdata('error', 'Data user tidak ditemukan.');
+                    redirect($redirect);
                 }
 
                 if (!empty($user['foto']) && file_exists(FCPATH . 'public/' . $user['foto'])) {
                     unlink(FCPATH . 'public/' . $user['foto']);
                 }
 
-                $user = $this->db->get_where('user', ['id' => $user_id])->row_array();
-                $role = $this->db->get_where('role', ['role_id' => $user['role_id']])->row_array();
-
-                $jabatan_slug = strtolower(str_replace(' ', '-', $role['jabatan']));
 
                 $this->db->delete('user', ['id' => $user_id]);
                 $this->session->set_flashdata('success', 'User berhasil dihapus.');
 
-                redirect('superadmin/user_list_role/' . $jabatan_slug);
+                redirect($redirect);
             }
         } else {
             $this->session->set_flashdata('error', 'Gagal menghapus user.');
-            redirect('superadmin/user_list');
+            redirect($redirect);
         }
         
     }
@@ -398,111 +549,7 @@ class Superadmin extends CI_Controller {
 
 
 
-    public function edit_settings()
-    {
-        if ($this->input->method() === 'post') {
-            $this->form_validation->set_rules('settings_id', 'settings_id', 'required|trim', [
-                'required' => '%s wajib diisi.'
-            ]);
-
-            if (isset($_FILES['item']) && $_FILES['item']['name']) {
-                $config['upload_path']   = './public/web_assets/images/settings_images/';
-                $config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
-                $config['max_size']      = 2048; // 2MB
-                $config['file_name'] = 'settings_' . $user_id . '_' . time(); // biar unik
-
-                $this->load->library('upload', $config);
-
-                if (!$this->upload->do_upload('item')) {
-                    $this->session->set_flashdata('errors', [
-                        'item' => $this->upload->display_errors('', ''),
-                    ]);
-                    $this->session->set_flashdata('old', [
-                        'settings_id' => set_value('settings_id'),
-                    ]);
-
-                    $redirect = $this->input->server('HTTP_REFERER') ?? base_url('default-url');
-                    redirect($redirect);
-                } else {
-                    $uploadData = $this->upload->data();
-                    $item = 'web_assets/images/settings_images/' . $uploadData['file_name'];
-
-                    $settings_id = $this->input->post('settings_id');
-                    $settings = $this->db->get_where('settings', ['id' => $settings_id])->row_array();
-
-                    if (!empty($settings['item']) && file_exists('./public/' . $settings['item'])) {
-                        unlink('./public/' . $settings['item']);
-                    }
-                }
-            } else {
-                $this->form_validation->set_rules('item', 'item', 'required|trim', [
-                    'required' => '%s wajib diisi.'
-                ]);
-
-                if ($this->form_validation->run() === FALSE) {
-                    $this->session->set_flashdata('old', [
-                        'settings_id' => set_value('settings_id'),
-                        'item'        => set_value('item'),
-                    ]);
-                    $this->session->set_flashdata('errors', [
-                        'item'        => form_error('item'),
-                        'settings_id' => form_error('settings_id'),
-                    ]);
-                    $redirect = $this->input->server('HTTP_REFERER') ?? base_url('default-url');
-                    redirect($redirect);
-                } else {
-                    $item = $this->input->post('item', TRUE);
-                }
-            }
-
-            $settings_id = $this->input->post('settings_id');
-            $this->Settings_model->update_settings($settings_id, ['item' => $item]);
-
-            $this->session->set_flashdata('success', 'Item berhasil diubah.');
-            $redirect = $this->input->server('HTTP_REFERER') ?? base_url('default-url');
-            redirect($redirect);
-        } else {
-            $this->session->set_flashdata('error', 'Item gagal diubah.');
-            $redirect = $this->input->server('HTTP_REFERER') ?? base_url('default-url');
-            redirect($redirect);
-        }
-    }
-
-    public function auth_google()
-	{
-		$user_id = $this->session->userdata('user_id');
-		$data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
-
-		$data['title'] = 'Auth Google Settings';
-
-        $data['settings'] = $this->db->where_in('settings_id', [1, 2])->get('settings')->result_array();
-        
-
-		$this->load->view('layout/header', $data);
-		$this->load->view('layout/navbar', $data);
-        $this->load->view('layout/sidebar', $data);
-		$this->load->view('superadmin/settings/auth_google', $data);
-		$this->load->view('layout/alert');
-		$this->load->view('layout/footer');
-	}
-
-    public function ui_ux()
-	{
-		$user_id = $this->session->userdata('user_id');
-		$data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
-
-		$data['title'] = 'UI UX Settings';
-
-        $data['settings'] = $this->db->where_in('settings_id', [3, 4])->get('settings')->result_array();
-        
-
-		$this->load->view('layout/header', $data);
-		$this->load->view('layout/navbar', $data);
-        $this->load->view('layout/sidebar', $data);
-		$this->load->view('superadmin/settings/ui_ux', $data);
-		$this->load->view('layout/alert');
-		$this->load->view('layout/footer');
-	}
+    
 }
 
 ?>

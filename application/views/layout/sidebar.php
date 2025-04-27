@@ -12,42 +12,13 @@
         <nav class="iq-sidebar-menu">
             <ul id="iq-sidebar-toggle" class="iq-menu">
                 <?php if (has_access(['1'])) { ?>
-                    <li class="<?= strpos(uri_string(), 'superadmin/dashboard') === 0 ? 'active' : '' ?>">
+                    <li class="<?= set_active(['superadmin/dashboard'], 'active', null) ?>">
                         <a href="<?= base_url('superadmin/dashboard') ?>">
                             <i class="las la-tachometer-alt font-size-32"></i>
                             <span class="ml-4">Dashboards</span>
                         </a>
                     </li>
-                <?php } elseif (has_access(['2'])) { ?>
-                    <li class="<?= strpos(uri_string(), 'admin/dashboard') === 0 ? 'active' : '' ?>">
-                        <a href="<?= base_url('admin/dashboard') ?>">
-                            <i class="las la-tachometer-alt font-size-32"></i>
-                            <span class="ml-4">Dashboards</span>
-                        </a>
-                    </li>
-                <?php } elseif (has_access(['3'])) { ?>
-                    <li class="<?= strpos(uri_string(), 'operator/dashboard') === 0 ? 'active' : '' ?>">
-                        <a href="<?= base_url('operator/dashboard') ?>">
-                            <i class="las la-tachometer-alt font-size-32"></i>
-                            <span class="ml-4">Dashboards</span>
-                        </a>
-                    </li>
-                <?php } elseif (has_access(['4'])) { ?>
-                    <li class="<?= strpos(uri_string(), 'customerservice/dashboard') === 0 ? 'active' : '' ?>">
-                        <a href="<?= base_url('customerservice/dashboard') ?>">
-                            <i class="las la-tachometer-alt font-size-32"></i>
-                            <span class="ml-4">Dashboards</span>
-                        </a>
-                    </li>
-                <?php } elseif (has_access(['5'])) { ?>
-                    <li class="<?= strpos(uri_string(), 'customer/dashboard') === 0 ? 'active' : '' ?>">
-                        <a href="<?= base_url('customer/dashboard') ?>">
-                            <i class="las la-tachometer-alt font-size-32"></i>
-                            <span class="ml-4">Dashboards</span>
-                        </a>
-                    </li>
-                <?php } ?>
-                <?php if (has_access(['1'])) { ?>
+
                     <li class="">
                         <a href="#settings" class="collapsed" data-toggle="collapse" aria-expanded="false">
                             <i class="las la-cog font-size-32"></i>
@@ -56,20 +27,19 @@
                             <i class="las la-angle-down iq-arrow-right arrow-hover"></i>
                         </a>
                         <ul id="settings" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
-                            <li class="<?= strpos(uri_string(), 'superadmin/ui_ux') === 0 ? 'active' : '' ?>">
+                            <li class="<?= set_active(['superadmin/ui_ux'], 'active', null) ?>">
                                 <a href="<?= base_url('superadmin/ui_ux') ?>">
                                     <i class="las la-minus"></i><span>UI / UX</span>
                                 </a>
                             </li>
-                            <li class="<?= strpos(uri_string(), 'superadmin/auth_google') === 0 ? 'active' : '' ?>">
+                            <li class="<?= set_active(['superadmin/auth_google'], 'active', null) ?>">
                                 <a href="<?= base_url('superadmin/auth_google') ?>">
                                     <i class="las la-minus"></i><span>Auth Google</span>
                                 </a>
                             </li>
                         </ul>
                     </li>
-                <?php } ?>
-                <?php if (has_access(['1'])) { ?>
+                    
                     <li class="">
                         <a href="#user" class="collapsed" data-toggle="collapse" aria-expanded="false">
                             <i class="las la-user-friends font-size-32"></i>
@@ -78,12 +48,12 @@
                             <i class="las la-angle-down iq-arrow-right arrow-hover"></i>
                         </a>
                         <ul id="user" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
-                            <li class="<?= strpos(uri_string(), 'superadmin/user_list') === 0 ? 'active' : '' ?>">
+                            <li class="<?= set_active(['user_list', 'user_list_role']) ?>">
                                 <a href="<?= base_url('superadmin/user_list') ?>">
                                     <i class="las la-minus"></i><span>User List</span>
                                 </a>
                             </li>
-                            <li class="<?= uri_string() === 'superadmin/add_new_user' ? 'active' : '' ?>">
+                            <li class="<?= set_active(['superadmin/add_new_user'], 'active', null) ?>">
                                 <a href="<?= base_url('superadmin/add_new_user') ?>">
                                     <i class="las la-minus"></i><span>User Add</span>
                                 </a>
@@ -91,7 +61,15 @@
                         </ul>
                     </li>
                 <?php } ?>
+
                 <?php if (has_access(['2'])) { ?>
+                    <li class="<?= set_active(['admin/dashboard'], 'active', null) ?>">
+                        <a href="<?= base_url('admin/dashboard') ?>">
+                            <i class="las la-tachometer-alt font-size-32"></i>
+                            <span class="ml-4">Dashboards</span>
+                        </a>
+                    </li>
+
                     <li class="">
                         <a href="#order" class="collapsed" data-toggle="collapse" aria-expanded="false">
                             <i class="las la-clipboard-list font-size-32"></i>
@@ -100,17 +78,68 @@
                             <i class="las la-angle-down iq-arrow-right arrow-hover"></i>
                         </a>
                         <ul id="order" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
-                            <li class="<?= in_array(uri_string(), ['admin/order_management']) ? 'active' : '' ?>">
+                            <li class="<?= set_active(['admin/order_management'], 'active', null) ?>">
                                 <a href="<?= base_url('admin/order_management') ?>">
                                     <i class="las la-minus"></i><span>Order Management</span>
                                 </a>
                             </li>
-                            <li class="<?= in_array(uri_string(), ['admin/order_list', 'admin/order_detail']) ? 'active' : '' ?>">
+                            <li class="<?= set_active(['order_list', 'order_detail']) ?>">
                                 <a href="<?= base_url('admin/order_list') ?>">
                                     <i class="las la-minus"></i><span>Order List</span>
                                 </a>
                             </li>
+                            <li class="<?= set_active(['order_list_today', 'order_detail']) ?>">
+                                <a href="<?= base_url('admin/order_list_today') ?>">
+                                    <i class="las la-minus"></i><span>Order List Today</span>
+                                </a>
+                            </li>
+
                         </ul>
+                    </li>
+                <?php } ?>
+                <?php if (has_access(['3'])) { ?>
+                    <li class="<?= set_active(['operator/dashboard'], 'active', null) ?>">
+                        <a href="<?= base_url('operator/dashboard') ?>">
+                            <i class="las la-tachometer-alt font-size-32"></i>
+                            <span class="ml-4">Dashboards</span>
+                        </a>
+                    </li>
+
+                    <li class="">
+                        <a href="#order" class="collapsed" data-toggle="collapse" aria-expanded="false">
+                            <i class="las la-clipboard-list font-size-32"></i>
+                            <span class="ml-4 mr-1">Data Order</span>
+                            <i class="las la-angle-right iq-arrow-right arrow-active"></i>
+                            <i class="las la-angle-down iq-arrow-right arrow-hover"></i>
+                        </a>
+                        <ul id="order" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                            <li class="<?= set_active(['order_list', 'order_detail']) ?>">
+                                <a href="<?= base_url('operator/order_list') ?>">
+                                    <i class="las la-minus"></i><span>Order List</span>
+                                </a>
+                            </li>
+                            <li class="<?= set_active(['order_list_today', 'order_detail']) ?>">
+                                <a href="<?= base_url('operator/order_list_today') ?>">
+                                    <i class="las la-minus"></i><span>Order List Today</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                <?php } ?>
+                <?php if (has_access(['4'])) { ?>
+                    <li class="<?= set_active(['customerservice/dashboard'], 'active', null) ?>">
+                        <a href="<?= base_url('customerservice/dashboard') ?>">
+                            <i class="las la-tachometer-alt font-size-32"></i>
+                            <span class="ml-4">Dashboards</span>
+                        </a>
+                    </li>
+                <?php } ?>
+                <?php if (has_access(['5'])) { ?>
+                    <li class="<?= set_active(['customer/dashboard'], 'active', null) ?>">
+                        <a href="<?= base_url('customer/dashboard') ?>">
+                            <i class="las la-tachometer-alt font-size-32"></i>
+                            <span class="ml-4">Dashboards</span>
+                        </a>
                     </li>
                 <?php } ?>
             </ul>

@@ -82,7 +82,7 @@
                                                                             </div>
                                                                             <div class="modal-body">
                                                                                 <?= form_open('superadmin/change_status', ['id' => 'ChangeStatusInactiveForm' . $item['id']]) ?>
-                                                                                <input type="hidden" name="user_id" value="<?= $item['id'] ?>">
+                                                                                <input type="hidden" name="user_id" value="<?= encrypt_id($item['id']) ?>">
                                                                                 <input type="hidden" name="status" value="0">
                                                                                 <div class="d-flex align-items-center">
                                                                                     <div class="form-group">
@@ -121,7 +121,7 @@
                                                                             </div>
                                                                             <div class="modal-body">
                                                                                 <?= form_open('superadmin/change_status', ['id' => 'ChangeStatusActiveForm' . $item['id']]) ?>
-                                                                                <input type="hidden" name="user_id" value="<?= $item['id'] ?>">
+                                                                                <input type="hidden" name="user_id" value="<?= encrypt_id($item['id']) ?>">
                                                                                 <input type="hidden" name="status" value="1">
                                                                                 <div class="d-flex align-items-center">
                                                                                     <div class="form-group">
@@ -204,7 +204,7 @@
                                                                             </div>
                                                                             <div class="modal-body">
                                                                                     <?= form_open('superadmin/change_password', ['id' => 'ChangePasswordUserForm' . $item['id']]) ?>
-                                                                                    <input type="hidden" name="user_id" value="<?= $item['id'] ?>">
+                                                                                    <input type="hidden" name="user_id" value="<?= encrypt_id($item['id']) ?>">
                                                                                     <div class="form-group">
                                                                                         <label for="npassword<?= $item['id'] ?>">New Password:</label>
                                                                                         <div class="input-group">
@@ -247,7 +247,7 @@
                                                                             </div>
                                                                             <div class="modal-body">
                                                                                 <?= form_open('superadmin/delete_user', ['id' => 'hapusUserForm' . $item['id']]) ?>
-                                                                                <input type="hidden" name="user_id" value="<?= $item['id'] ?>">
+                                                                                <input type="hidden" name="user_id" value="<?= encrypt_id($item['id']) ?>">
                                                                                     <div class="d-flex align-items-center">
                                                                                         <div class="form-group">
                                                                                             <img src="<?= base_url('public/local_assets/images/logo_danger_2.png') ?>" class="img-fluid mr-2" width="120" alt="">

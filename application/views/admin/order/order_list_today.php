@@ -7,26 +7,19 @@
                         <div class="card bottom-right shadow-showcase">
                             <div class="card-body">
                                 <?= form_open('admin/order_list', ['method' => 'post']) ?>
-                                    <div class="row breadcrumb-content">
-                                        <div class="flex-grow-1 mb-2" style="min-width: 250px;">
+                                    <div class="d-flex justify-content-between row breadcrumb-content">
+                                        <div class="flex-grow-1 mb-2 ml-1">
                                             <div class="iq-search-bar">
                                                 <div class="searchbox">
                                                     <input type="text" class="text search-input" name="q" placeholder="Cari nama/email/order code..." value="<?= html_escape($search_keyword) ?>">
                                                 </div>
                                             </div>
                                         </div>
-
-                                        <div class="flex-grow-1 mb-2 ml-2" style="min-width: 250px;">
-                                            <div class="d-flex align-items-center">
-                                                <input type="date" class="form-control border-radius-5 max-height-40" name="dari" value="<?= html_escape($dari) ?>" required>
-                                                <strong class="ml-2 mr-2">-</strong>
-                                                <input type="date" class="form-control border-radius-5 max-height-40" name="sampai" value="<?= html_escape($sampai) ?>" required>
-                                            </div>
-                                        </div>
+                                        
                                     
-                                        <div class="flex-grow-1 mb-2 ml-2" style="min-width: 250px;">
-                                            <div class="d-flex align-items-center">
-                                                <div class="flex-grow-1">
+                                        <div class="flex-grow-1 mb-2 ml-1">
+                                            <div class="row">
+                                                <div class="col-lg-6 col-sm-12">
                                                     <div class="dropdown dropdown-project">
                                                         <div class="dropdown-toggle" id="dropdownMenuButton03" data-toggle="dropdown">
                                                             <div class="btn bg-body">
@@ -75,7 +68,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="flex-grow-1">
+                                                <div class="col-lg-6 col-sm-12">
                                                     <div class="list-grid-toggle d-flex align-items-center">
                                                         <div class="active">
                                                             <button type="submit" class="grid-icon border-0 mr-2 ml-2"><i class="ri-search-line mr-0"></i></button>

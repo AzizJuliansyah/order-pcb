@@ -15,7 +15,7 @@
                     <div class="card bottom-right shadow-showcase">
                         <div class="card-body">
                             <div class="d-flex flex-wrap align-items-center justify-content-between breadcrumb-content">
-                                <div class="d-flex flex-wrap align-items-center">
+                                <!-- <div class="d-flex flex-wrap align-items-center">
                                     <div class="border-right btn-new mr-3 pr-3">
                                         <div class="dropdown dropdown-project">
                                             <div class="dropdown-toggle" id="dropdownMenuButton03" data-toggle="dropdown">
@@ -28,37 +28,51 @@
                                                     <?php else: ?>
                                                         Semua Status
                                                     <?php endif; ?>
-
                                                     <i class="ri-arrow-down-s-line ml-2 mr-0"></i>
                                                 </div>
                                             </div>
-                                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton03">
-                                                <?php
-                                                $statuses = [
-                                                    'payment_status' => ['payment_pending', 'payment_process', 'payment_success', 'payment_cancelled'],
-                                                    'order_status' => ['order_pending', 'order_processing', 'order_packing', 'order_shipping', 'order_completed', 'order_cancelled', 'order_refunded', 'order_failed']
-                                                ];
-                                                ?>
 
-                                                <a class="dropdown-item" href="<?= base_url('admin/order_management') ?>">Semua Status</a>
-                                                <div class="dropdown-divider"></div>
-
-                                                <?php foreach ($statuses as $type => $list): ?>
-                                                    <?php foreach ($list as $status): ?>
-                                                        <a class="dropdown-item" href="<?= base_url('admin/order_management?' . $type . '=' . $status) ?>" <?= (isset($_GET[$type]) && $_GET[$type] === $status) ? '<strong>✔</strong> ' : '' ?>>
-                                                            <?= ucfirst(str_replace('_', ' ', $status)) ?>
-                                                        </a>
+                                            <div class="dropdown-menu dropdown-menu-right p-3" aria-labelledby="dropdownMenuButton03">
+                                                <?= form_open('admin/order_management') ?>
+                                                    <div class="mb-2"><strong>Payment Status</strong></div>
+                                                    <?php 
+                                                    $payment_statuses = ['payment_pending', 'payment_process', 'payment_success', 'payment_cancelled'];
+                                                    foreach ($payment_statuses as $status): ?>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="radio" name="payment_status" id="payment_<?= $status ?>" value="<?= $status ?>"
+                                                                <?= (!empty($selected_payment_status) && $selected_payment_status == $status) ? 'checked' : '' ?>>
+                                                            <label class="form-check-label" for="payment_<?= $status ?>">
+                                                                <?= ucfirst(str_replace('_', ' ', $status)) ?>
+                                                            </label>
+                                                        </div>
                                                     <?php endforeach; ?>
+
                                                     <div class="dropdown-divider"></div>
-                                                <?php endforeach; ?>
+                                                    <div class="mb-2"><strong>Order Status</strong></div>
+                                                    <?php 
+                                                    $order_statuses = ['order_pending', 'order_processing', 'order_packing', 'order_shipping', 'order_completed', 'order_cancelled', 'order_refunded', 'order_failed'];
+                                                    foreach ($order_statuses as $status): ?>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="radio" name="order_status" id="order_<?= $status ?>" value="<?= $status ?>"
+                                                                <?= (!empty($selected_order_status) && $selected_order_status == $status) ? 'checked' : '' ?>>
+                                                            <label class="form-check-label" for="order_<?= $status ?>">
+                                                                <?= ucfirst(str_replace('_', ' ', $status)) ?>
+                                                            </label>
+                                                        </div>
+                                                    <?php endforeach; ?>
 
-
+                                                    <div class="dropdown-divider"></div>
+                                                    <div class="d-flex justify-content-between">
+                                                        <button type="reset" class="btn btn-sm btn-light">Reset</button>
+                                                        <button type="submit" class="btn btn-sm btn-primary">Filter</button>
+                                                    </div>
+                                                <?= form_close() ?>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
                                 <div class="p-0">
-                                    <strong class="row p-0">Action Terpilih :</strong>
+                                    <strong class="row ml-1 p-0">Action Terpilih :</strong>
                                     <div class="row d-flex flex-wrap align-items-center">
                                         <div class="border-right btn-new mr-3 pr-3">
                                             <?= form_open('admin/ubah_status_order') ?>
@@ -198,7 +212,7 @@
             </div>
             <div class="row">
                 <div class="col-sm-12">
-                    <div class="card">
+                    <div class="card bottom-right shadow-showcase">
                         <div class="card-header d-flex justify-content-between">
                         </div>
                         <div class="card-body">
@@ -216,7 +230,7 @@
                                             <th>Name</th>
                                             <th>Email</th>
                                             <th>Status</th>
-                                            <th>Join Date</th>
+                                            <th>Order Created Date</th>
                                             <th style="min-width: 100px">Action</th>
                                         </tr>
                                     </thead>
@@ -228,7 +242,7 @@
                                                     <input type="checkbox"
                                                         class="checkbox-input single-checkbox"
                                                         name="order_ids[]"
-                                                        value="<?= $item['order_id'] ?>"
+                                                        value="<?= encrypt_id($item['order_id']) ?>"
                                                         data-code="<?= $item['order_code'] ?>">
                                                 </td>
                                                 <td>
@@ -282,47 +296,11 @@
                                                 <td>
                                                     <div class="d-flex align-items-center">
                                                         <div class="form-group m-1">
-                                                            
 
                                                             <a href="#" type="button" class="btn btn-sm bg-primary">
                                                                 <i class="las la-eye font-size-16 mt-1 mr-0"></i>
                                                             </a>
 
-                                                            <button type="button" class="btn btn-sm bg-danger" data-toggle="modal" data-target="#delete<?= $item['order_id'] ?>">
-                                                                <i class="las la-trash-alt font-size-16 mt-1 mr-0"></i>
-                                                            </button>
-                                                            <div id="delete<?= $item['order_id'] ?>" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="delete<?= $item['order_id'] ?>Title" aria-hidden="true">
-                                                                <div class="modal-dialog modal-dialog-scrollable" role="document">
-                                                                    <div class="modal-content border-radius-10">
-                                                                        <div class="modal-header border-bottom-0">
-                                                                            <h5 class="modal-title" id="delete<?= $item['order_id'] ?>Title">Hapus order:# <?= $item['order_code'] ?></h5>
-                                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                                <span aria-hidden="true">×</span>
-                                                                            </button>
-                                                                        </div>
-                                                                        <div class="modal-body">
-                                                                            <?= form_open('admin/delete_order', ['id' => 'hapusorderForm' . $item['order_id']]) ?>
-                                                                            <input type="hidden" name="order_id" value="<?= $item['order_id'] ?>">
-                                                                            <div class="d-flex align-items-center">
-                                                                                <div class="form-group">
-                                                                                    <img src="<?= base_url('public/local_assets/images/logo_danger_2.png') ?>" class="img-fluid mr-2" width="120" alt="">
-                                                                                </div>
-                                                                                <div class="form-group ml-4">
-                                                                                    <div class="row">
-                                                                                        <h6>Yakin ingin menghapus order?</h6>
-                                                                                        <span>order <strong class="text-danger"># <?= $item['order_code'] ?></strong> akan <span class="text-danger">terhapus</span> secara pemranen!</span>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="float-right">
-                                                                                <button type="submit" class="btn btn-outline-danger">Hapus order</button>
-                                                                                <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
-                                                                            </div>
-                                                                            <?= form_close() ?>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
                                                         </div>
                                                     </div>
                                                 </td>

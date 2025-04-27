@@ -6,7 +6,7 @@
                     <div class="col-lg-12">
                         <div class="card bottom-right shadow-showcase">
                             <div class="card-body">
-                                <?= form_open('admin/order_list', ['method' => 'post']) ?>
+                                <?= form_open('operator/order_list', ['method' => 'post']) ?>
                                     <div class="row breadcrumb-content">
                                         <div class="flex-grow-1 mb-2" style="min-width: 250px;">
                                             <div class="iq-search-bar">
@@ -26,55 +26,6 @@
                                     
                                         <div class="flex-grow-1 mb-2 ml-2" style="min-width: 250px;">
                                             <div class="d-flex align-items-center">
-                                                <div class="flex-grow-1">
-                                                    <div class="dropdown dropdown-project">
-                                                        <div class="dropdown-toggle" id="dropdownMenuButton03" data-toggle="dropdown">
-                                                            <div class="btn bg-body">
-                                                                <span class="h6">Status :</span>
-                                                                <?php if (!empty($selected_payment_status)): ?>
-                                                                    <?= ucfirst(str_replace('_', ' ', $selected_payment_status)) ?>
-                                                                <?php elseif (!empty($selected_order_status)): ?>
-                                                                    <?= ucfirst(str_replace('_', ' ', $selected_order_status)) ?>
-                                                                <?php else: ?>
-                                                                    Semua Status
-                                                                <?php endif; ?>
-                                                                <i class="ri-arrow-down-s-line ml-2 mr-0"></i>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="dropdown-menu dropdown-menu-right p-3" aria-labelledby="dropdownMenuButton03">
-                                                            <div class="mb-2"><strong>Payment Status</strong></div>
-                                                                <?php 
-                                                                $payment_statuses = ['payment_pending', 'payment_process', 'payment_success', 'payment_cancelled'];
-                                                                foreach ($payment_statuses as $status): ?>
-                                                                    <div class="form-check">
-                                                                        <input class="form-check-input" type="radio" name="payment_status" id="payment_<?= $status ?>" value="<?= $status ?>"
-                                                                            <?= (!empty($selected_payment_status) && $selected_payment_status == $status) ? 'checked' : '' ?>>
-                                                                        <label class="form-check-label" for="payment_<?= $status ?>">
-                                                                            <?= ucfirst(str_replace('_', ' ', $status)) ?>
-                                                                        </label>
-                                                                    </div>
-                                                                <?php endforeach; ?>
-
-                                                                <div class="dropdown-divider"></div>
-
-                                                                <div class="mb-2"><strong>Order Status</strong></div>
-                                                                <?php 
-                                                                $order_statuses = ['order_pending', 'order_processing', 'order_packing', 'order_shipping', 'order_completed', 'order_cancelled', 'order_refunded', 'order_failed'];
-                                                                foreach ($order_statuses as $status): ?>
-                                                                    <div class="form-check">
-                                                                        <input class="form-check-input" type="radio" name="order_status" id="order_<?= $status ?>" value="<?= $status ?>"
-                                                                            <?= (!empty($selected_order_status) && $selected_order_status == $status) ? 'checked' : '' ?>>
-                                                                        <label class="form-check-label" for="order_<?= $status ?>">
-                                                                            <?= ucfirst(str_replace('_', ' ', $status)) ?>
-                                                                        </label>
-                                                                    </div>
-                                                                <?php endforeach; ?>
-
-                                                                <div class="dropdown-divider"></div>
-                                                        </div>
-                                                    </div>
-                                                </div>
                                                 <div class="flex-grow-1">
                                                     <div class="list-grid-toggle d-flex align-items-center">
                                                         <div class="active">
@@ -173,7 +124,7 @@
                                                     
                                                     <div class="border-top ml-3 mr-3">
                                                         <div class="mt-2 d-flex justify-content-end">
-                                                            <a href="<?= base_url('admin/order_detail/' . encrypt_id($item['order_id'])) ?>" class="btn btn-primary font-size-14 d-flex align-items-center pr-0">
+                                                            <a href="<?= base_url('operator/order_detail/' . encrypt_id($item['order_id'])) ?>" class="btn btn-primary font-size-14 d-flex align-items-center pr-0">
                                                                 <span class="mr-2">Detail Order</span>
                                                                 <i class="las la-angle-right"></i>
                                                             </a>
@@ -256,7 +207,7 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <a href="<?= base_url('admin/order_detail/' . encrypt_id($item['order_id'])) ?>" class="btn btn-primary font-size-14 d-flex align-items-center pr-0">
+                                                <a href="<?= base_url('operator/order_detail/' . encrypt_id($item['order_id'])) ?>" class="btn btn-primary font-size-14 d-flex align-items-center pr-0">
                                                     <span class="mr-2">Detail Order</span>
                                                     <i class="las la-angle-right"></i>
                                                 </a>
