@@ -6,7 +6,7 @@
     }
 </style>
 
-    </style>
+
 
 <div class="wrapper">
     <div class="content-page">

@@ -93,3 +93,58 @@ body.no-sidebar .iq-footer {
     background-color: rgba(0, 0, 0, 0.2);
     border-radius: 10px;
 }
+
+
+#file-drag.dragover {
+            border: 2px dashed #007bff;
+            background-color: #f0f8ff;
+        }
+        .custom-file-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .custom-file-label-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid #ced4da;
+            padding: 4px 10px;
+            border-radius: 10px;
+            background-color: #fff;
+            width: 100%;
+            height: 40px;
+            cursor: pointer;
+            transition: box-shadow 0.2s ease-in-out;
+        }
+
+        .custom-file-label-wrapper:hover {
+            box-shadow: 0 0 0 0.1rem rgba(0,123,255,.25);
+        }
+
+        .file-text {
+            flex-grow: 1;
+            font-size: 14px;
+            color: #495057;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        .browse-btn {
+            margin-left: 10px;
+            padding: 3px 10px;
+            font-size: 13px;
+        }
+
+        .custom-file-input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            height: 100%;
+            width: 100%;
+            cursor: pointer;
+            z-index: 2;
+        }

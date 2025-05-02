@@ -71,6 +71,21 @@
                     </li>
 
                     <li class="">
+                        <a href="#ordersettings" class="collapsed" data-toggle="collapse" aria-expanded="false">
+                            <i class="las la-sliders-h font-size-32"></i>
+                            <span class="ml-4 mr-1">Order Settings</span>
+                            <i class="las la-angle-right iq-arrow-right arrow-active"></i>
+                            <i class="las la-angle-down iq-arrow-right arrow-hover"></i>
+                        </a>
+                        <ul id="ordersettings" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                            <li class="<?= set_active(['admin/order_settings_cnc'], 'active', null) ?>">
+                                <a href="<?= base_url('admin/order_settings_cnc') ?>">
+                                    <i class="las la-minus"></i><span>CNC</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="">
                         <a href="#order" class="collapsed" data-toggle="collapse" aria-expanded="false">
                             <i class="las la-clipboard-list font-size-32"></i>
                             <span class="ml-4 mr-1">Data Order</span>
@@ -106,13 +121,13 @@
                     </li>
 
                     <li class="">
-                        <a href="#order" class="collapsed" data-toggle="collapse" aria-expanded="false">
+                        <a href="#orderdata" class="collapsed" data-toggle="collapse" aria-expanded="false">
                             <i class="las la-clipboard-list font-size-32"></i>
                             <span class="ml-4 mr-1">Data Order</span>
                             <i class="las la-angle-right iq-arrow-right arrow-active"></i>
                             <i class="las la-angle-down iq-arrow-right arrow-hover"></i>
                         </a>
-                        <ul id="order" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                        <ul id="orderdata" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
                             <li class="<?= set_active(['order_list', 'order_detail']) ?>">
                                 <a href="<?= base_url('operator/order_list') ?>">
                                     <i class="las la-minus"></i><span>Order List</span>

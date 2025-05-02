@@ -34,6 +34,242 @@ class Admin extends CI_Controller {
 		$this->load->view('layout/footer');
 	}
 
+    public function order_settings_cnc()
+	{
+		$user_id = $this->session->userdata('user_id');
+		$data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
+		$data['title'] = 'Admin Order Settings Cnc';
+        
+		$data['cnc_material'] = $this->db->get('cnc_material')->result_array();
+		$data['cnc_finishing'] = $this->db->get('cnc_finishing')->result_array();
+
+		$this->load->view('layout/header', $data);
+		$this->load->view('layout/navbar', $data);
+        $this->load->view('layout/sidebar', $data);
+		$this->load->view('admin/order/order_settings_cnc', $data);
+		$this->load->view('layout/alert');
+		$this->load->view('layout/footer');
+	}
+
+	public function tambah_cnc_material()
+    {
+        $redirect = $this->input->server('HTTP_REFERER') ?? base_url('default-url');
+
+
+        if ($this->input->method() === 'post') {
+            $this->form_validation->set_rules('nama', 'nama', 'required|trim', [
+                'required' => '%s wajib diisi.'
+            ]);
+
+                if ($this->form_validation->run() === FALSE) {
+                    $this->session->set_flashdata('old', [
+                        'nama'        => set_value('nama'),
+                    ]);
+                    $this->session->set_flashdata('errors', [
+                        'nama'        => form_error('nama'),
+                    ]);
+                    redirect($redirect);
+                } else {
+                    $nama = $this->input->post('nama', TRUE);
+					$this->Order_model->insert_cnc_material(['nama' => $nama]);
+					$this->session->set_flashdata('success', 'CNC Material berhasil ditambah.');
+                }
+
+            redirect($redirect);
+        } else {
+            $this->session->set_flashdata('error', 'CNC Material gagal ditambah.');
+            redirect($redirect);
+        }
+    }
+
+	public function edit_cnc_material()
+    {
+        $redirect = $this->input->server('HTTP_REFERER') ?? base_url('default-url');
+
+
+        if ($this->input->method() === 'post') {
+            $this->form_validation->set_rules('nama', 'nama', 'required|trim', [
+                'required' => '%s wajib diisi.'
+            ]);
+
+			$encrypted_material_id = $this->input->post('material_id');
+            $material_id = decrypt_id($encrypted_material_id);
+
+            if (empty($material_id)) {
+                $this->session->set_flashdata('error', 'Gagal mengakses halaman, CNC Material ID tidak ada.');
+                redirect($redirect);
+            }
+
+            $material = $this->db->get_where('cnc_material', ['id' => $material_id])->row_array();
+            if (!$material) {
+                $this->session->set_flashdata('error', 'Data CNC Material tidak ditemukan.');
+                redirect($redirect);
+            }
+
+            if ($this->form_validation->run() === FALSE) {
+                $this->session->set_flashdata('old', [
+                    'nama'        => set_value('nama'),
+                ]);
+                $this->session->set_flashdata('errors', [
+                    'nama'        => form_error('nama'),
+                ]);
+                redirect($redirect);
+            } else {
+                $nama = $this->input->post('nama', TRUE);
+				$this->Order_model->edit_cnc_material($material_id, ['nama' => $nama]);
+				$this->session->set_flashdata('success', 'CNC Material berhasil diubah.');
+            }
+
+            redirect($redirect);
+        } else {
+            $this->session->set_flashdata('error', 'CNC Material gagal diubah.');
+            redirect($redirect);
+        }
+    }
+
+	
+
+	public function delete_cnc_material()
+    {
+        $redirect = $this->input->server('HTTP_REFERER') ?? base_url('default-url');
+
+
+        if ($this->input->method() === 'post') {
+
+			$encrypted_material_id = $this->input->post('material_id');
+            $material_id = decrypt_id($encrypted_material_id);
+
+            if (empty($material_id)) {
+                $this->session->set_flashdata('error', 'Gagal mengakses halaman, CNC Material ID tidak ada.');
+                redirect($redirect);
+            }
+
+            $material = $this->db->get_where('cnc_material', ['id' => $material_id])->row_array();
+            if (!$material) {
+                $this->session->set_flashdata('error', 'Data CNC Material tidak ditemukan.');
+                redirect($redirect);
+            }
+
+			$this->Order_model->delete_cnc_material($material_id);
+			$this->session->set_flashdata('success', 'CNC Material berhasil dihapus.');
+            redirect($redirect);
+        } else {
+            $this->session->set_flashdata('error', 'CNC Material gagal dihapus.');
+            redirect($redirect);
+        }
+    }
+
+	public function tambah_cnc_finishing()
+    {
+        $redirect = $this->input->server('HTTP_REFERER') ?? base_url('default-url');
+
+
+        if ($this->input->method() === 'post') {
+            $this->form_validation->set_rules('nama', 'nama', 'required|trim', [
+                'required' => '%s wajib diisi.'
+            ]);
+
+                if ($this->form_validation->run() === FALSE) {
+                    $this->session->set_flashdata('old', [
+                        'nama'        => set_value('nama'),
+                    ]);
+                    $this->session->set_flashdata('errors', [
+                        'nama'        => form_error('nama'),
+                    ]);
+                    redirect($redirect);
+                } else {
+                    $nama = $this->input->post('nama', TRUE);
+					$this->Order_model->insert_cnc_finishing(['nama' => $nama]);
+					$this->session->set_flashdata('success', 'CNC Finishing berhasil ditambah.');
+                }
+
+            redirect($redirect);
+        } else {
+            $this->session->set_flashdata('error', 'CNC Finishing gagal ditambah.');
+            redirect($redirect);
+        }
+    }
+
+	public function edit_cnc_finishing()
+    {
+        $redirect = $this->input->server('HTTP_REFERER') ?? base_url('default-url');
+
+
+        if ($this->input->method() === 'post') {
+            $this->form_validation->set_rules('nama', 'nama', 'required|trim', [
+                'required' => '%s wajib diisi.'
+            ]);
+
+			$encrypted_finishing_id = $this->input->post('finishing_id');
+            $finishing_id = decrypt_id($encrypted_finishing_id);
+
+            if (empty($finishing_id)) {
+                $this->session->set_flashdata('error', 'Gagal mengakses halaman, CNC Finishing ID tidak ada.');
+                redirect($redirect);
+            }
+
+            $finishing = $this->db->get_where('cnc_finishing', ['id' => $finishing_id])->row_array();
+            if (!$finishing) {
+                $this->session->set_flashdata('error', 'Data CNC Finishing tidak ditemukan.');
+                redirect($redirect);
+            }
+
+            if ($this->form_validation->run() === FALSE) {
+                $this->session->set_flashdata('old', [
+                    'nama'        => set_value('nama'),
+                ]);
+                $this->session->set_flashdata('errors', [
+                    'nama'        => form_error('nama'),
+                ]);
+                redirect($redirect);
+            } else {
+                $nama = $this->input->post('nama', TRUE);
+				$this->Order_model->edit_cnc_finishing($finishing_id, ['nama' => $nama]);
+				$this->session->set_flashdata('success', 'CNC inishing berhasil diubah.');
+            }
+
+            redirect($redirect);
+        } else {
+            $this->session->set_flashdata('error', 'CNC Finishing gagal diubah.');
+            redirect($redirect);
+        }
+    }
+
+	
+
+	public function delete_cnc_finishing()
+    {
+        $redirect = $this->input->server('HTTP_REFERER') ?? base_url('default-url');
+
+
+        if ($this->input->method() === 'post') {
+
+			$encrypted_finishing_id = $this->input->post('finishing_id');
+            $finishing_id = decrypt_id($encrypted_finishing_id);
+
+            if (empty($finishing_id)) {
+                $this->session->set_flashdata('error', 'Gagal mengakses halaman, CNC Finishing ID tidak ada.');
+                redirect($redirect);
+            }
+
+            $finishing = $this->db->get_where('cnc_finishing', ['id' => $finishing_id])->row_array();
+            if (!$finishing) {
+                $this->session->set_flashdata('error', 'Data CNC Finishing tidak ditemukan.');
+                redirect($redirect);
+            }
+
+			$this->Order_model->delete_cnc_finishing($finishing_id);
+			$this->session->set_flashdata('success', 'CNC Finishing berhasil dihapus.');
+            redirect($redirect);
+        } else {
+            $this->session->set_flashdata('error', 'CNC Finishing gagal dihapus.');
+            redirect($redirect);
+        }
+    }
+
+	
+
+
     public function order_management()
 	{
 		$user_id = $this->session->userdata('user_id');

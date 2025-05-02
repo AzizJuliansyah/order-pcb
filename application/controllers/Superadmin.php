@@ -9,8 +9,6 @@ class Superadmin extends CI_Controller {
         is_logged_in();
         check_access(['1']);
 
-        $this->load->helper('time');
-
         $this->load->model('User_model');
         $this->load->model('Settings_model');
         $this->load->library('form_validation');
@@ -460,7 +458,7 @@ class Superadmin extends CI_Controller {
                 ]);            
 				$this->session->set_flashdata('old', [
                     'role'            => set_value('role'),
-                    'is_active'            => set_value('is_active'),
+                    'is_active'       => set_value('is_active'),
 
                     'nama'            => set_value('nama'),
                     'nomor'           => set_value('nomor'),

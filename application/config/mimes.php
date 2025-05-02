@@ -94,7 +94,7 @@ return array(
 	'html'	=>	array('text/html', 'text/plain'),
 	'htm'	=>	array('text/html', 'text/plain'),
 	'shtml'	=>	array('text/html', 'text/plain'),
-	'txt'	=>	'text/plain',
+	'txt'	=>	array('text/plain', 'text/x-asm', 'application/octet-stream'),
 	'text'	=>	'text/plain',
 	'log'	=>	array('text/plain', 'text/x-log'),
 	'rtx'	=>	'text/richtext',

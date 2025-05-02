@@ -1,5 +1,5 @@
 <div class="d-flex justify-content-center mt-5">
-    <div class="card basic-drop-shadow p-3 shadow-showcase border-radius-5 w-100" style="max-width: 500px;">
+    <div class="card basic-drop-shadow p-3 shadow-showcase border-radius-5 m-2 w-100" style="max-width: 450px;">
         <div class="card-header border-bottom-0 p-0">
             <div class="d-flex justify-content-center">
                 <h3>Create Account</h3>
@@ -31,7 +31,7 @@
         </div>
         <?= form_open('auth/register') ?>
         <div class="card-body">
-            <div class="input-group m-2">
+            <div class="input-group mb-2">
                 <div class="input-group-prepend">
                     <span class="input-group-text border-radius-top-left-5 border-radius-bottom-left-5" id="basic-addon4"><i class="las la-user font-size-20"></i></span>
                 </div>
@@ -41,7 +41,7 @@
                 <?php endif; ?>
             </div>
 
-            <div class="input-group m-2">
+            <div class="input-group mb-2">
                 <div class="input-group-prepend">
                     <span class="input-group-text border-radius-top-left-5 border-radius-bottom-left-5" id="basic-addon4"><i class="las la-envelope font-size-20"></i></span>
                 </div>
@@ -51,7 +51,7 @@
                 <?php endif; ?>
             </div>
 
-            <div class="input-group m-2">
+            <div class="input-group mb-2">
                 <div class="input-group-prepend">
                     <span class="input-group-text border-radius-top-left-5 border-radius-bottom-left-5" id="basic-addon4"><i class="las la-phone font-size-20"></i></span>
                 </div>
@@ -61,7 +61,7 @@
                 <?php endif; ?>
             </div>
 
-            <div class="input-group m-2">
+            <div class="input-group mb-2">
                 <div class="input-group-prepend">
                     <span class="input-group-text border-radius-top-left-5 border-radius-bottom-left-5" id="basic-addon4"><i class="las la-lock-open font-size-20"></i></span>
                 </div>
@@ -76,7 +76,7 @@
                 <?php endif; ?>
             </div>
 
-            <div class="input-group m-2">
+            <div class="input-group">
                 <div class="input-group-prepend">
                     <span class="input-group-text border-radius-top-left-5 border-radius-bottom-left-5" id="basic-addon4"><i class="las la-lock-open font-size-20"></i></span>
                 </div>
