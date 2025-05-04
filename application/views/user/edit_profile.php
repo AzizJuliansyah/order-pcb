@@ -65,7 +65,7 @@
                                         </div>
                                     </div>
 
-                                    <div class=" row align-items-center">
+                                    <div class="row align-items-center">
                                         <div class="form-group col-sm-6">
                                             <label for="nama">Nama Lengkap:</label>
                                             <input type="text" class="form-control border-radius-5 max-height-40 <?= !empty($errors['nama']) ? 'is-invalid' : '' ?>" name="nama" id="nama" value="<?= (isset($old['nama'])) ? $old['nama'] : $user['nama'] ?>">

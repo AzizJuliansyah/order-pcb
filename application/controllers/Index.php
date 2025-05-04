@@ -66,6 +66,7 @@ class Index extends CI_Controller {
 		$this->db->where('user_id', $user_id);
 		$query = $this->db->get('cart');
 		$data['carts'] = $query->result();
+		$data['cart_item_count'] = $query->num_rows();
 
 		$data['errors'] = $this->session->flashdata('errors') ?? [];
         $data['old'] = $this->session->flashdata('old') ?? [];
@@ -83,7 +84,7 @@ class Index extends CI_Controller {
 	{
 		is_logged_in();
 		
-		$redirect = $this->input->server('HTTP_REFERER') ?? base_url('order');
+		$redirect = base_url('order?pcb') ?? base_url('order');
 		$user_id = $this->session->userdata('user_id');
 
 		if (empty($user_id)) {
@@ -93,15 +94,6 @@ class Index extends CI_Controller {
 		
 
 		if ($this->input->method() === 'post') {
-			// $this->form_validation->set_rules('gerberfile', 'Gerber File', 'required', [
-			// 	'required'    => '%s wajib diisi.',
-			// ]);
-			// $this->form_validation->set_rules('bomfile', 'BOM File', 'required', [
-			// 	'required'    => '%s wajib diisi.',
-			// ]);
-			// $this->form_validation->set_rules('pickandplacefile', 'Pick and Place File', 'required', [
-			// 	'required'    => '%s wajib diisi.',
-			// ]);
 
 			$this->form_validation->set_rules('leadfree', 'Lead Free', 'trim');
 			$this->form_validation->set_rules('functionaltest', 'Functional Test', 'trim');
@@ -144,15 +136,14 @@ class Index extends CI_Controller {
 
 				
 				$file_fields = [
-					'gerberfile' => ['path' => './public/web_assets/pcb_file/gerberfile/', 'allowed' => 'zip|rar'],
-					'bomfile' => ['path' => './public/web_assets/pcb_file/bomfile/', 'allowed' => 'txt|csv'],
-					'pickandplacefile' => ['path' => './public/web_assets/pcb_file/pickandplacefile/', 'allowed' => 'txt|csv']
+					'gerberfile' => ['path' => './public/web_assets/pcb_file/gerberfile/', 'allowed' => 'zip|rar', 'max_size' => 20480],
+					'bomfile' => ['path' => './public/web_assets/pcb_file/bomfile/', 'allowed' => 'txt|csv', 'max_size' => 2048],
+					'pickandplacefile' => ['path' => './public/web_assets/pcb_file/pickandplacefile/', 'allowed' => 'txt|csv', 'max_size' => 2048]
 				];
 
 				$this->load->library('upload');
 
 				$errors = [];
-				$data = [];
 				$uploaded_files = [];
 
 				foreach ($file_fields as $field => $config_data) {
@@ -161,8 +152,6 @@ class Index extends CI_Controller {
 						continue;
 					}
 
-					
-
 					$ext = strtolower(pathinfo($_FILES[$field]['name'], PATHINFO_EXTENSION));
 					$allowed_ext = explode('|', $config_data['allowed']);
 					if (!in_array($ext, $allowed_ext)) {
@@ -170,10 +159,12 @@ class Index extends CI_Controller {
 						continue;
 					}
 
-					$config['upload_path'] = $config_data['path'];
+					$config['upload_path']   = $config_data['path'];
 					// $config['allowed_types'] = $config_data['allowed'];
 					$config['allowed_types'] = '*';
-					$config['file_name'] = $field . '_' . $user_id . '_' . uniqid() . '_' . time();
+					$config['max_size']      = $config_data['max_size'];
+					$config['file_name']     = $field . '_' . $user_id . '_' . uniqid() . '_' . time();
+					$config['detect_mime']   = FALSE;
 
 					$this->upload->initialize($config);
 
@@ -186,8 +177,6 @@ class Index extends CI_Controller {
 				}
 
 				if (!empty($errors)) {
-					
-
 					foreach ($uploaded_files as $uploaded_file) {
 						if (file_exists('./public/' . $uploaded_file)) {
 							unlink('./public/' . $uploaded_file); 
@@ -206,13 +195,10 @@ class Index extends CI_Controller {
 					redirect($redirect);
 				}
 
-
-
-
 				$product_info = [
-					'gerberfile'       => isset($data['gerberfile']) ? $data['gerberfile'] : null,
-					'bomfile'          => isset($data['bomfile']) ? $data['bomfile'] : null,
-					'pickandplacefile' => isset($data['pickandplacefile']) ? $data['pickandplacefile'] : null,
+					'gerberfile'       => isset($uploaded_files['gerberfile']) ? $uploaded_files['gerberfile'] : null,
+					'bomfile'          => isset($uploaded_files['bomfile']) ? $uploaded_files['bomfile'] : null,
+					'pickandplacefile' => isset($uploaded_files['pickandplacefile']) ? $uploaded_files['pickandplacefile'] : null,
 					'leadfree'         => $leadfree,
 					'functionaltest'   => $functionaltest,
 					'note'             => $this->input->post('note'),
@@ -236,68 +222,366 @@ class Index extends CI_Controller {
             $this->session->set_flashdata('error', 'Gagal');
             redirect($redirect);
         }
-
 	}
 
-
-	public function validate_gerberfile()
+	public function order_cnc_form()
 	{
-		if (!empty($_FILES['gerberfile']['name'])) {
-			$ext = pathinfo($_FILES['gerberfile']['name'], PATHINFO_EXTENSION);
-			$size = $_FILES['gerberfile']['size'] / 1024; // KB
+		is_logged_in();
+		
+		$redirect = base_url('order?cnc') ?? base_url('order');
+		$user_id = $this->session->userdata('user_id');
 
-			$allowed_ext = explode('|', $config_data['allowed']);
-			if (!in_array(strtolower($ext), $allowed_ext)) {
-				$this->form_validation->set_message('validate_gerberfile', 'Gerber File harus berupa file ZIP atau RAR.');
-				return FALSE;
-			}
+		if (empty($user_id)) {
+            $this->session->set_flashdata('error', 'Gagal mengakses halaman, user ID tidak ada.');
+            redirect($redirect);
+        }
+		
 
-			if ($size > 10240) { // 10 MB
-				$this->form_validation->set_message('validate_gerberfile', 'Gerber File maksimal 10 MB.');
-				return FALSE;
+		if ($this->input->method() === 'post') {
+			$this->form_validation->set_rules('material', 'Material', 'required|numeric|trim', [
+                'required'     => '%s wajib diisi.',
+                'numeric'      => '%s harus berupa angka.',
+            ]);
+			$this->form_validation->set_rules('finishing', 'Finishing', 'required|numeric|trim', [
+                'required'     => '%s wajib diisi.',
+                'numeric'      => '%s harus berupa angka.',
+            ]);
+
+			$this->form_validation->set_rules('note', 'Note', 'required|min_length[10]|trim', [
+                'required'    => '%s wajib diisi.',
+                'min_length'  => '%s minimal 10 karakter.'
+            ]);
+			$this->form_validation->set_rules('quantity', 'Quantity', 'required|numeric|trim', [
+                'required'     => '%s wajib diisi.',
+                'numeric'      => '%s harus berupa angka.',
+            ]);
+			$this->form_validation->set_rules('leadtime', 'Lead Time', 'required|numeric|trim', [
+                'required'     => '%s wajib diisi.',
+                'numeric'      => '%s harus berupa angka.',
+            ]);
+
+			if ($this->form_validation->run() == FALSE) {
+				$this->session->set_flashdata('errors', [
+                    'material'        	  => form_error('material'),
+                    'finishing'        	  => form_error('finishing'),
+
+                    'note'        		  => form_error('note'),
+                    'quantity'    		  => form_error('quantity'),
+                    'leadtime'    		  => form_error('leadtime'),
+                ]);            
+				$this->session->set_flashdata('old', [
+                    'material'			  => set_value('material'),
+                    'finishing'       	  => set_value('finishing'),
+
+                    'note'        		  => set_value('note'),
+                    'quantity'            => set_value('quantity'),
+                    'leadtime'       	  => set_value('leadtime'),
+                ]);
+				redirect($redirect);
+			} else {
+				$file_fields = [
+					'3dfile' => ['path' => './public/web_assets/cnc_file/3dfile/', 'allowed' => 'step|igs', 'max_size' => 20480],
+					'2dfile' => ['path' => './public/web_assets/cnc_file/2dfile/', 'allowed' => 'pdf|dwg', 'max_size' => 20480],
+				];
+
+				$this->load->library('upload');
+
+				$errors = [];
+				$uploaded_files = [];
+
+				foreach ($file_fields as $field => $config_data) {
+					if (empty($_FILES[$field]['name'])) {
+						$errors[$field] = ucfirst($field) . " wajib diunggah.";
+						continue;
+					}
+
+					$ext = strtolower(pathinfo($_FILES[$field]['name'], PATHINFO_EXTENSION));
+					$allowed_ext = explode('|', $config_data['allowed']);
+					if (!in_array($ext, $allowed_ext)) {
+						$errors[$field] = ucfirst($field) . " harus berupa file: " . implode(', ', $allowed_ext) . ".";
+						continue;
+					}
+
+					$config['upload_path']   = $config_data['path'];
+					// $config['allowed_types'] = $config_data['allowed'];
+					$config['allowed_types'] = '*';
+					$config['max_size']      = $config_data['max_size'];
+					$config['file_name']     = $field . '_' . $user_id . '_' . uniqid() . '_' . time();
+					$config['detect_mime']   = FALSE;
+
+					$this->upload->initialize($config);
+
+					if ($this->upload->do_upload($field)) {
+						$uploadData = $this->upload->data();
+						$uploaded_files[$field] = 'web_assets/cnc_file/' . $field . '/' . $uploadData['file_name'];
+					} else {
+						$errors[$field] = strip_tags($this->upload->display_errors());
+					}
+				}
+
+				if (!empty($errors)) {
+					foreach ($uploaded_files as $uploaded_file) {
+						if (file_exists('./public/' . $uploaded_file)) {
+							unlink('./public/' . $uploaded_file); 
+						}
+						
+					}
+					
+					$this->session->set_flashdata('errors', $errors);
+					$this->session->set_flashdata('old', [
+						'material'       => set_value('material'),
+						'finishing'      => set_value('finishing'),
+						'note'           => set_value('note'),
+						'quantity'       => set_value('quantity'),
+						'leadtime'       => set_value('leadtime'),
+					]);
+					redirect($redirect);
+				}
+
+				$product_info = [
+					'3dfile'          => isset($uploaded_files['3dfile']) ? $uploaded_files['3dfile'] : null,
+					'2dfile'          => isset($uploaded_files['2dfile']) ? $uploaded_files['2dfile'] : null,
+					
+					'material'         => (int)$this->input->post('material'),
+					'finishing'        => (int)$this->input->post('finishing'),
+
+					'note'             => $this->input->post('note'),
+					'quantity'         => (int)$this->input->post('quantity'),
+					'leadtime'         => (int)$this->input->post('leadtime'),
+				];
+
+				$insert_data = [
+					'user_id'        => $user_id,
+					'product_type'   => 'cnc',
+					'product_info'   => json_encode($product_info),
+				];
+
+				$this->Order_model->insert_to_cart($insert_data);
+
+				$this->session->set_flashdata('success', 'Order berhasil dimasukkan ke keranjang.');
+				redirect($redirect);
+
 			}
-		}
-		return TRUE;
+		} else {
+            $this->session->set_flashdata('error', 'Gagal');
+            redirect($redirect);
+        }
 	}
 
-	public function validate_bomfile()
+	public function delete_cart_item()
 	{
-		if (!empty($_FILES['bomfile']['name'])) {
-			$ext = pathinfo($_FILES['bomfile']['name'], PATHINFO_EXTENSION);
-			$size = $_FILES['bomfile']['size'] / 1024; // KB
+		is_logged_in();
+		
+		$user_id = $this->session->userdata('user_id');
+		$redirect = $this->input->server('HTTP_REFERER') ?? base_url('order');
+		if (empty($user_id)) {
+            $this->session->set_flashdata('error', 'Gagal mengakses halaman, user ID tidak ada.');
+            redirect($redirect);
+        }
 
-			$allowed_ext = explode('|', $config_data['allowed']);
-			if (!in_array(strtolower($ext), $allowed_ext)) {
-				$this->form_validation->set_message('validate_bomfile', 'BOM File harus berupa file TXT atau CSV.');
-				return FALSE;
-			}
+		if ($this->input->method() === 'post') {
+			$this->form_validation->set_rules('cart_id', 'cart_id', 'required|trim', [
+				'required' => '%s wajib diisi.'
+			]);
 
-			if ($size > 5120) { // 5 MB
-				$this->form_validation->set_message('validate_bomfile', 'BOM File maksimal 5 MB.');
-				return FALSE;
+			if ($this->form_validation->run() === FALSE) {
+				$this->session->set_flashdata('old', [
+					'cart_id'  => set_value('cart_id'),
+				]);
+				$this->session->set_flashdata('errors', [
+					'cart_id' => form_error('cart_id'),
+				]);
+				redirect($redirect);
+			} else {
+				$encrypted_cart_id = $this->input->post('cart_id');
+				$cart_id = decrypt_id($encrypted_cart_id);
+
+				if (empty($cart_id)) {
+					$this->session->set_flashdata('error', 'Gagal mengakses halaman, Item cart ID tidak ada.');
+					redirect($redirect);
+				}
+
+				$cart = $this->db->get_where('cart', ['cart_id' => $cart_id])->row_array();
+				if (!$cart) {
+					$this->session->set_flashdata('error', 'Data cart tidak ditemukan.');
+					redirect($redirect);
+				}
+
+				// Decode product_info JSON
+				$product_info = json_decode($cart['product_info'], true);
+
+				if ($cart['product_type'] == 'pcb') {
+					$file_fields = ['gerberfile', 'bomfile', 'pickandplacefile'];
+				} elseif ($cart['product_type'] == 'cnc') {
+					$file_fields = ['3dfile', '2dfile'];
+				} else {
+					$file_fields = [];
+				}
+
+				foreach ($file_fields as $field) {
+					if (!empty($product_info[$field])) {
+						$clean_path = str_replace('\\', '/', $product_info[$field]);
+						$full_path = FCPATH . 'public/' . $clean_path;
+
+						if (file_exists($full_path)) {
+							unlink($full_path);
+						}
+					}
+				}
+
+				$this->db->delete('cart', ['cart_id' => $cart_id]);
+				$this->session->set_flashdata('success', 'Item cart berhasil dihapus.');
+
+				redirect($redirect);
 			}
+		} else {
+			$this->session->set_flashdata('error', 'Item Gagal dihapus.');
+			redirect($redirect);
 		}
-		return TRUE;
 	}
 
-	public function validate_pickandplacefile()
+
+	public function checkout()
+    {
+		is_logged_in();
+		
+		$user_id = $this->session->userdata('user_id');
+		$redirect = $this->input->server('HTTP_REFERER') ?? base_url('order');
+		if (empty($user_id)) {
+            $this->session->set_flashdata('error', 'Gagal mengakses halaman, user ID tidak ada.');
+            redirect($redirect);
+        }
+
+
+        if ($this->input->method() === 'post') {
+            $this->form_validation->set_rules('nama', 'Nama Penerima', 'required|trim', [
+                'required' => '%s wajib diisi.'
+            ]);
+            $this->form_validation->set_rules('nomor', 'Informasi Kontak', 'required|numeric|min_length[10]|max_length[15]|trim', [
+                'required'    => '%s wajib diisi.',
+                'numeric'     => '%s harus berupa angka.',
+                'min_length'  => '%s minimal 10 digit.',
+                'max_length'  => '%s maksimal 15 digit.'
+            ]);
+			
+
+            $this->form_validation->set_rules('provinsi', 'Provinsi', 'required|trim', [
+                'required' => '%s wajib dipilih.'
+            ]);
+            $this->form_validation->set_rules('kota', 'Kota/Kabupaten', 'required|trim', [
+                'required' => '%s wajib dipilih.'
+            ]);
+            $this->form_validation->set_rules('kecamatan', 'Kecamatan', 'required|trim', [
+                'required' => '%s wajib dipilih.'
+            ]);
+            $this->form_validation->set_rules('kode_pos', 'Kode Pos', 'required|numeric|exact_length[5]|trim', [
+                'required'     => '%s wajib diisi.',
+                'numeric'      => '%s harus berupa angka.',
+                'exact_length' => '%s harus terdiri dari 5 digit.'
+            ]);
+            $this->form_validation->set_rules('alamat_lengkap', 'Alamat Lengkap', 'required|min_length[10]|trim', [
+                'required'    => '%s wajib diisi.',
+                'min_length'  => '%s minimal 10 karakter.'
+            ]);
+			
+
+            if ($this->form_validation->run() === FALSE) {
+				$this->session->set_flashdata('errors', [
+                    'nama'            => form_error('nama'),
+                    'nomor'           => form_error('nomor'),
+
+                    'provinsi'        => form_error('provinsi'),
+                    'kota'            => form_error('kota'),
+                    'kecamatan'       => form_error('kecamatan'),
+                    'kode_pos'        => form_error('kode_pos'),
+                    'alamat_lengkap'  => form_error('alamat_lengkap'),
+                ]);            
+				$this->session->set_flashdata('old', [
+                    'nama'            => set_value('nama'),
+                    'nomor'           => set_value('nomor'),
+
+                    'provinsi'        => set_value('provinsi'),
+                    'kota'            => set_value('kota'),
+                    'kecamatan'       => set_value('kecamatan'),
+                    'kode_pos'        => set_value('kode_pos'),
+                    'alamat_lengkap'  => set_value('alamat_lengkap'),
+                ]);
+				$this->session->set_flashdata('error', 'Gagal melakukan order.');  
+				redirect($redirect);
+			} else {
+				$this->db->trans_start();
+
+				$data = [
+                    'nama' => $this->input->post('nama', TRUE),
+                    'nomor' => $this->input->post('nomor', TRUE),
+
+                    'provinsi' => $this->input->post('provinsi', TRUE),
+                    'kota' => $this->input->post('kota', TRUE),
+                    'kecamatan' => $this->input->post('kecamatan', TRUE),
+                    'kode_pos' => $this->input->post('kode_pos', TRUE),
+                    'alamat_lengkap' => $this->input->post('alamat_lengkap', TRUE),
+                ];
+
+				do {
+					$order_code = substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'), 0, 6);
+					$this->db->where('order_code', $order_code);
+					$exists = $this->db->get('orders')->num_rows();
+				} while ($exists > 0);
+
+				$order_data = [
+					'user_id'        => $user_id,
+					'shipping_info'  => json_encode($data),
+					'order_code'     => $order_code,
+				];
+				$this->db->insert('orders', $order_data);
+				$order_id = $this->db->insert_id();
+
+				$this->db->where('user_id', $user_id);
+				$cart_items = $this->db->get('cart')->result();
+
+				foreach ($cart_items as $item) {
+					$item_data = [
+						'order_id'      => $order_id,
+						'user_id'       => $user_id,
+						'product_type'  => $item->product_type,
+						'product_info'  => $item->product_info,
+					];
+					$this->db->insert('order_items', $item_data);
+				}
+
+				$this->db->where('user_id', $user_id);
+				$this->db->delete('cart');
+
+				$this->db->trans_complete();
+
+				$this->session->set_flashdata('success', 'Berhasil melakukan order.');
+				redirect('index/checkout_success');
+			}
+        } else {
+			$this->session->set_flashdata('error', 'Gagal melakukan order.');
+			redirect($redirect);
+		}
+    }
+
+
+	public function checkout_success()
 	{
-		if (!empty($_FILES['pickandplacefile']['name'])) {
-			$ext = pathinfo($_FILES['pickandplacefile']['name'], PATHINFO_EXTENSION);
-			$size = $_FILES['pickandplacefile']['size'] / 1024; // KB
+		if ($this->session->userdata('user_id')) {
+			$user_id = $this->session->userdata('user_id');
 
-			$allowed_ext = explode('|', $config_data['allowed']);
-			if (!in_array(strtolower($ext), $allowed_ext)) {
-				$this->form_validation->set_message('validate_pickandplacefile', 'Pick and Place File harus berupa file TXT atau CSV.');
-				return FALSE;
-			}
-
-			if ($size > 7168) { // 7 MB
-				$this->form_validation->set_message('validate_pickandplacefile', 'Pick and Place File maksimal 7 MB.');
-				return FALSE;
-			}
+			$user = $this->db->get_where('user', ['id' => $user_id])->row_array();
+			$data['user'] = $user;
+			$data['role_id'] = $user['role_id'];
 		}
-		return TRUE;
+
+		$data['title'] = 'Checkout Success';
+		$data['has_sidebar'] = false;
+
+		$this->load->view('layout/header', $data);
+		$this->load->view('index/order/checkout_success', $data);
+		$this->load->view('layout/alert');
+		$this->load->view('layout/footer');
 	}
 
+	
 }

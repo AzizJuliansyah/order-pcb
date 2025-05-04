@@ -157,6 +157,12 @@
                         </a>
                     </li>
                 <?php } ?>
+                <li class="<?= set_active(['order'], 'active', null) ?>">
+                    <a href="<?= base_url('order') ?>">
+                        <i class="las la-shopping-bag font-size-32"></i>
+                        <span class="ml-4">Order</span>
+                    </a>
+                </li>
             </ul>
         </nav>
         <div class="pt-5 pb-2"></div>
