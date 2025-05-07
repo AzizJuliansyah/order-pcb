@@ -15,6 +15,7 @@
     ],
     "minimum-stability": "stable",
     "require": {
-        "google/apiclient": "^2.16"
+        "google/apiclient": "^2.16",
+        "dompdf/dompdf": "^3.1"
     }
 }

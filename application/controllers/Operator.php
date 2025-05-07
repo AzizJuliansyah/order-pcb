@@ -179,7 +179,7 @@ class Operator extends CI_Controller {
 		$data['orders'] = $this->db->get()->result_array();
 
 		// Pagination
-		$config['base_url'] = base_url('admin/order_list');
+		$config['base_url'] = base_url('operator/order_list');
 		$config['total_rows'] = $total_rows;
 		$config['per_page'] = $limit;
 		$config['page_query_string'] = TRUE;
@@ -219,6 +219,191 @@ class Operator extends CI_Controller {
 		$this->load->view('layout/alert');
 		$this->load->view('layout/footer');
 	}
+
+
+	public function order_detail($encrypted_id = null)
+	{
+		if (empty($encrypted_id)) {
+			$this->session->set_flashdata('error', 'Gagal mengakses halaman, Order ID tidak ada.');
+			redirect("operator/order_list");
+		}
+
+		$order_id = decrypt_id($encrypted_id);
+		if (empty($order_id)) {
+			$this->session->set_flashdata('error', 'Gagal mengakses halaman, Order ID tidak ada.');
+			redirect("operator/order_list");
+		}
+
+		$order = $this->db->get_where('orders', ['order_id' => $order_id])->row_array();
+		if (!$order) {
+			$this->session->set_flashdata('error', 'Gagal mengakses halaman, Order ID tidak ada.');
+			redirect("operator/order_list");
+		}
+
+		$data['order'] = $order;
+
+		$this->db->where('order_id', $order['order_id']);
+		$query = $this->db->get('order_items');
+		$order_items = $query->result();
+		
+		
+		$pcb_items = [];
+		$cnc_items = [];
+
+		foreach ($order_items as $item) {
+			if ($item->product_type === 'pcb') {
+				$pcb_items[] = $item;
+			} elseif ($item->product_type === 'cnc') {
+				$cnc_items[] = $item;
+			}
+		}
+
+		$data['order_items'] = $order_items;
+		$data['pcb_items'] = $pcb_items;
+		$data['cnc_items'] = $cnc_items;
+		$data['user_info'] = $this->db->get_where('user', ['id' => $order['user_id']])->row_array();
+		$data['shipping_status'] = $this->db->get('shipping_status')->result_array();
+
+		$shipping_status_list = [];
+
+		if (!empty($order['shipping_status'])) {
+			$shipping_status_list = json_decode($order['shipping_status'], true);
+			if (!is_array($shipping_status_list)) {
+				$shipping_status_list = [];
+			}
+		}
+		$data['shipping_status_list'] = $shipping_status_list;
+		
+		$user_id = $this->session->userdata('user_id');
+		$data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
+		$data['title'] = 'Order Detail Page';
+
+		$data['errors'] = $this->session->flashdata('errors') ?? [];
+        $data['old'] = $this->session->flashdata('old') ?? [];
+
+		$this->load->view('layout/header', $data);
+		$this->load->view('layout/navbar', $data);
+		$this->load->view('layout/sidebar', $data);
+		$this->load->view('operator/order/order_detail', $data);
+		$this->load->view('layout/alert');
+		$this->load->view('layout/footer');
+			
+	}
+
+
+	public function ubah_shipping_status()
+	{
+		$redirect = $this->input->server('HTTP_REFERER') ?? base_url('default-url');
+
+		if ($this->input->method() === 'post') {
+			$this->form_validation->set_rules('shipping_status', 'Shipping Status', 'required|numeric|trim', [
+				'required' => '%s wajib diisi.',
+				'numeric'  => 'Error, Shipping Status tidak terbaca.',
+			]);
+
+			$encrypted_order_id = $this->input->post('order_id');
+			$order_id = decrypt_id($encrypted_order_id);
+			if (empty($order_id)) {
+				$this->session->set_flashdata('error', 'Gagal mengakses halaman, Order ID tidak ada.');
+				redirect($redirect);
+			}
+
+			$order = $this->db->get_where('orders', ['order_id' => $order_id])->row_array();
+			if (!$order) {
+				$this->session->set_flashdata('error', 'Data Order tidak ditemukan.');
+				redirect($redirect);
+			}
+
+			if ($this->form_validation->run() === FALSE) {
+				$this->session->set_flashdata('old', [
+					'shipping_status' => set_value('shipping_status'),
+				]);
+				$this->session->set_flashdata('errors', [
+					'shipping_status' => form_error('shipping_status'),
+				]);
+				redirect($redirect);
+			} else {
+				$shipping_status = $this->input->post('shipping_status', TRUE);
+
+				$old_status_json = $order['shipping_status'];
+				$status_list = [];
+
+				if (!empty($old_status_json)) {
+					$status_list = json_decode($old_status_json, true);
+					if (!is_array($status_list)) {
+						$status_list = [];
+					}
+				}
+
+				$new_no = count($status_list) + 1;
+
+				$status_list[] = [
+					'no'           => $new_no,
+					'shipping_id' => (int)$shipping_status,
+					'date'        => date('Y-m-d H:i:s'),
+				];
+
+				$update_data = [
+					'shipping_status' => json_encode($status_list),
+				];
+				$this->db->where('order_id', $order_id)->update('orders', $update_data);
+
+				$this->session->set_flashdata('success', 'Shipping Status berhasil diubah.');
+				redirect($redirect);
+			}
+		} else {
+			$this->session->set_flashdata('error', 'Shipping Status gagal diubah.');
+			redirect($redirect);
+		}
+	}
+
+	public function hapus_shipping_status()
+	{
+		$redirect = $this->input->server('HTTP_REFERER') ?? base_url('default-url');
+
+		if ($this->input->method() === 'post') {
+			$encrypted_order_id = $this->input->post('order_id');
+			$shipping_no = $this->input->post('shipping_no');
+
+			$order_id = decrypt_id($encrypted_order_id);
+			if (empty($order_id)) {
+				$this->session->set_flashdata('error', 'Gagal mengakses halaman, Order ID tidak valid.');
+				redirect($redirect);
+			}
+
+			$order = $this->db->get_where('orders', ['order_id' => $order_id])->row_array();
+			if (!$order) {
+				$this->session->set_flashdata('error', 'Data order tidak ditemukan.');
+				redirect($redirect);
+			}
+
+			$shipping_status_json = $order['shipping_status'];
+			$shipping_status_data = json_decode($shipping_status_json, true);
+
+			if (!is_array($shipping_status_data)) {
+				$shipping_status_data = [];
+			}
+
+			$shipping_status_data = array_filter($shipping_status_data, function($item) use ($shipping_no) {
+				return $item['no'] != $shipping_no;
+			});
+
+			$shipping_status_data = array_values($shipping_status_data);
+			$new_shipping_status_json = json_encode($shipping_status_data);
+
+			$this->db->where('order_id', $order_id)->update('orders', [
+				'shipping_status' => $new_shipping_status_json
+			]);
+
+			$this->session->set_flashdata('success', 'Shipping status berhasil dihapus.');
+			redirect($redirect);
+		} else {
+			$this->session->set_flashdata('error', 'Gagal menghapus shipping status.');
+			redirect($redirect);
+		}
+	}
+
+
 }
 
 ?>

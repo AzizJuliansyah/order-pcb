@@ -10,14 +10,12 @@
                                  <div class="form-group">
                                     <?php
                                        $from = $this->input->get('from');
-                                       $back_url = base_url('admin/order_list');
+                                       $back_url = base_url('operator/order_list');
 
-                                       if ($from == 'management') {
-                                          $back_url = base_url('admin/order_management');
-                                       } elseif ($from == 'list') {
-                                          $back_url = base_url('admin/order_list');
+                                       if ($from == 'list') {
+                                          $back_url = base_url('operator/order_list');
                                        } elseif ($from == 'list_today') {
-                                          $back_url = base_url('admin/order_list_today');
+                                          $back_url = base_url('operator/order_list_today');
                                        }
                                     ?>
                                     <a href="<?= $back_url ?>" class="d-flex align-items-center">
@@ -26,16 +24,15 @@
                                     </a>
                                  </div>
                                  <div class="form-group">
-                                    <?= form_open('admin/terima_order', ['id' => 'TerimaOrderForm']) ?>
-                                       <?php if (!empty($order['total_price'])) { ?>
-                                          <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#TerimaOrder">
-                                             Orderan Diterima
-                                          </button>
-                                       <?php } else { ?>
-                                          <button type="button" class="btn btn-outline-success" data-toggle="modal" data-target="#TerimaOrder">
-                                             Terima Orderan
-                                          </button>
-                                       <?php } ?>
+                                    <?php if ($order['payment_status'] == 'payment_success') : ?>
+                                       <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#TerimaOrder">
+                                          History Shipping Status
+                                       </button>
+                                    <?php else : ?>
+                                       <button type="button" class="btn btn-outline-secondary" disabled>
+                                          History Shipping Status
+                                       </button>
+                                    <?php endif ; ?>
                                        <div id="TerimaOrder" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="TerimaOrderTitle" aria-hidden="true">
                                           <div class="modal-dialog modal-dialog-scrollable" role="document">
                                           <div class="modal-content border-radius-10">
@@ -46,58 +43,79 @@
                                                    </button>
                                                 </div>
                                                 <div class="modal-body">
-                                                   <input type="hidden" name="order_id" value="<?= encrypt_id($order['order_id']) ?>">
                                                    
                                                    <div class="form-group">
                                                       <h6 class="card-title mb-0">Admin : <?= get_admin_name($order['admin']) ?></h6>
                                                    </div>
-
+                                                   
+                                                   <?= form_open('operator/ubah_shipping_status', ['id' => 'TerimaOrderForm']) ?>
+                                                   <input type="hidden" name="order_id" value="<?= encrypt_id($order['order_id']) ?>">
                                                    <div class="form-group">
-                                                      <label for="total_price" class="font-size-14" style="margin-bottom: -13px;">Total Price :</label>
+                                                      <label for="shipping_status" class="font-size-14" style="margin-bottom: -13px;">Shipping Status :</label>
                                                       <div class="input-group mb-2">
-                                                         <div class="input-group-prepend">
-                                                            <span class="input-group-text border-radius-top-left-5 border-radius-bottom-left-5" id="basic-addon4">Rp.</span>
-                                                         </div>
-                                                         <?php if (!empty($order['total_price'])) { ?>
-                                                            <input type="text" class="form-control <?= !empty($errors['total_price']) ? 'is-invalid' : '' ?> border-radius-top-right-5 border-radius-bottom-right-5  max-height-40" name="total_price" id="total_price" value="<?= number_format($order['total_price'], 2, ',', '.') ?>" disabled>
-                                                         <?php } else { ?>
-                                                            <input type="text" class="form-control <?= !empty($errors['total_price']) ? 'is-invalid' : '' ?> border-radius-top-right-5 border-radius-bottom-right-5  max-height-40" name="total_price" id="total_price" value="<?= number_format($order['total_price'], 2, ',', '.') ?>">
-                                                         <?php } ?>
-                                                         <?php if (!empty($errors['total_price'])): ?>
-                                                            <div class="invalid-feedback"><?= $errors['total_price'] ?></div>
-                                                         <?php endif; ?>
+                                                         <select name="shipping_status" id="shipping_status" class="form-control border-radius-5 max-height-40 <?= !empty($errors['shipping_status']) ? 'is-invalid' : '' ?>" >
+                                                            <option value="default" selected disabled></option>
+                                                            <?php foreach ($shipping_status as $index => $item) { ?>
+                                                                <option value="<?= $item['id'] ?>" <?= (isset($old['shipping_status']) && $item['id'] == $old['shipping_status']) ? 'selected' : '' ?>><?= get_shipping_status_name($item['id']) ?></option>
+                                                            <?php } ?>
+                                                        </select>
+                                                        <?php if (!empty($errors['shipping_status'])): ?>
+                                                            <div class="invalid-feedback"><?= $errors['shipping_status'] ?></div>
+                                                        <?php endif; ?>
                                                       </div>
                                                    </div>
+                                                   <div class="d-flex justify-content-end">
+                                                      <button type="submit" class="btn btn-outline-primary">Ganti Shipping Status</button>
+                                                   </div>
+                                                   <?= form_close() ?>
 
-                                                   <div class="col-12 mt-2 mb-2">
+                                                   <div class="col-12">
                                                       <div class="divider-text">
-                                                         <span>Operator</span>
+                                                         <span>History Shipping Status</span>
                                                       </div>
                                                    </div>
                                                       
-                                                   <div class="form-group">
-                                                      <?php foreach ($operator as $index => $item) { ?>
-                                                         <div class="form-check">
-                                                            <label for="operator<?= $item['id'] ?>">
-                                                               <input type="radio" class="form-check-input" name="operator_id" id="operator<?= $item['id'] ?>" value="<?= encrypt_id($item['id']) ?>" <?= ($order['operator'] == $item['id']) ? 'checked' : '' ?>>
-                                                               <?= $item['nama'] ?>
-                                                            </label>
-                                                         </div>
-                                                      <?php } ?>
+                                                   <div class="form-group mt-3 ml-3">
+                                                      <div class="profile-line m-0 d-flex align-items-center justify-content-between position-relative">
+                                                         <ul class="list-inline p-0 m-0 w-100">
+                                                            <?php foreach ($shipping_status_list as $item): ?>
+                                                               <li>
+                                                                  <div class="row align-items-top">
+                                                                     <div class="col-sm-10">
+                                                                        <div class="media profile-media pb-3 align-items-top">
+                                                                           <div class="profile-dots border-primary mt-1"></div>
+                                                                           <div class="ml-4">
+                                                                              <h6 style="margin-bottom: -8px;">
+                                                                                 <?= get_shipping_status_name($item['shipping_id']) ?>
+                                                                              </h6>
+                                                                              <small>
+                                                                                 <?= format_bulan($item['date']) ?>
+                                                                              </small>
+                                                                           </div>
+                                                                        </div>   
+                                                                     </div>
+                                                                     <div class="col-sm-2">
+                                                                        <div class="form-group">
+                                                                           <?= form_open('operator/hapus_shipping_status', ['id' => 'HapusShippingStatusForm' . $item['no']]) ?>
+                                                                              <input type="hidden" name="order_id" value="<?= encrypt_id($order['order_id']) ?>">
+                                                                              <input type="hidden" name="shipping_no" value="<?= $item['no'] ?>">
+                                                                              <a href="#" class="text-danger cursor-pointer" onclick="document.getElementById('HapusShippingStatusForm<?= $item['no'] ?>').submit(); return false;">
+                                                                                 <i class="las la-trash-alt font-size-20"></i>
+                                                                              </a>
+                                                                           <?= form_close() ?>
+
+                                                                        </div>
+                                                                     </div>
+                                                                  </div>
+                                                               </li>
+                                                            <?php endforeach; ?>
+                                                         </ul>
+                                                      </div>
                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                   <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
-                                                   <?php if (!empty($order['operator'])) { ?>
-                                                      <button type="submit" class="btn btn-outline-secondary">Ganti Operator</button>
-                                                   <?php } else { ?>
-                                                      <button type="submit" class="btn btn-outline-success">Terima Orderan</button>
-                                                   <?php } ?>
                                                 </div>
                                              </div>
                                           </div>
                                        </div>
-                                    <?= form_close() ?>
                                  </div>
                               </div>
                            </div>
@@ -422,10 +440,7 @@
                 </div>
             </div>
          </div>
-         
     </div>
-
-    
     <!-- Wrapper End-->
 
 <script>

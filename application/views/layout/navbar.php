@@ -213,7 +213,37 @@
                                     <i class="las la-home font-size-20 text-primary"></i>
                                     <a href="<?= base_url('home') ?>">Home</a>
                                 </li>
+                                <?php if (has_access(['1'])) { ?>
+                                    <li class="dropdown-item d-flex align-items-center">
+                                        <i class="las la-tachometer-alt font-size-20 text-primary"></i>
+                                        <a href="<?= base_url('superadmin/dashboard') ?>">Dashboard</a>
+                                    </li>
+                                <?php } elseif (has_access(['2'])) { ?>
+                                    <li class="dropdown-item d-flex align-items-center">
+                                        <i class="las la-tachometer-alt font-size-20 text-primary"></i>
+                                        <a href="<?= base_url('admin/dashboard') ?>">Dashboard</a>
+                                    </li>
+                                <?php } elseif (has_access(['3'])) { ?>
+                                    <li class="dropdown-item d-flex align-items-center">
+                                        <i class="las la-tachometer-alt font-size-20 text-primary"></i>
+                                        <a href="<?= base_url('superadmin/operator') ?>">Dashboard</a>
+                                    </li>
+                                <?php } elseif (has_access(['4'])) { ?>
+                                    <li class="dropdown-item d-flex align-items-center">
+                                        <i class="las la-tachometer-alt font-size-20 text-primary"></i>
+                                        <a href="<?= base_url('superadmin/customerservice') ?>">Dashboard</a>
+                                    </li>
+                                <?php } elseif (has_access(['5'])) { ?>
+                                    <li class="dropdown-item d-flex align-items-center">
+                                        <i class="las la-tachometer-alt font-size-20 text-primary"></i>
+                                        <a href="<?= base_url('superadmin/customer') ?>">Dashboard</a>
+                                    </li>
+                                <?php } ?>
                                 <li class="dropdown-item d-flex align-items-center">
+                                    <i class="las la-shopping-bag font-size-20 text-primary"></i>
+                                    <a href="<?= base_url('order') ?>">Order</a>
+                                </li>
+                                <li class="dropdown-item d-flex align-items-center border-top">
                                     <i class="las la-user-circle font-size-20 text-primary"></i>
                                     <a href="<?= base_url('user/profile') ?>">My Profile</a>
                                 </li>

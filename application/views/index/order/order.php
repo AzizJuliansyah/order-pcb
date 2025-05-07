@@ -220,7 +220,7 @@
                                                         <label for="material">Material</label>
                                                     </div>
                                                     <div class="col-12 col-md-9">
-                                                        <select name="material" class="form-control border-radius-5 max-height-120 <?= !empty($errors['material']) ? 'is-invalid' : '' ?>" >
+                                                        <select name="material" class="form-control border-radius-5 max-height-40 <?= !empty($errors['material']) ? 'is-invalid' : '' ?>" >
                                                             <option value="default" selected disabled>Pilih material</option>
                                                             <?php foreach ($cnc_material as $index => $item) { ?>
                                                                 <option value="<?= $item['id'] ?>" <?= (isset($old['material']) && $item['id'] == $old['material']) ? 'selected' : '' ?>><?= get_cnc_material_name($item['id']) ?></option>
@@ -358,7 +358,7 @@
                                                                                         <div class="col-4 col-md-6">
                                                                                             <div class="float-right">
                                                                                                 <?php if (!empty($product_info['gerberfile'])) { ?>
-                                                                                                    <span class="badge border border-primary text-primary">Yes</span>
+                                                                                                    <a href="<?= base_url('public/' . $product_info['gerberfile']) ?>" download class="badge border border-primary text-primary d-flex align-items-center">Yes <i class="las la-file-download font-size-20"></i></a>
                                                                                                 <?php } elseif ($product_info['gerberfile'] == null) { ?>
                                                                                                     <span class="badge border border-danger text-danger">No</span>
                                                                                                 <?php } else { ?>
@@ -374,7 +374,7 @@
                                                                                         <div class="col-4 col-md-6">
                                                                                             <div class="float-right">
                                                                                                 <?php if (!empty($product_info['bomfile'])) { ?>
-                                                                                                    <span class="badge border border-primary text-primary">Yes</span>
+                                                                                                    <a href="<?= base_url('public/' . $product_info['bomfile']) ?>" download class="badge border border-primary text-primary d-flex align-items-center">Yes <i class="las la-file-download font-size-20"></i></a>
                                                                                                 <?php } elseif ($product_info['bomfile'] == null) { ?>
                                                                                                     <span class="badge border border-danger text-danger">No</span>
                                                                                                 <?php } else { ?>
@@ -390,7 +390,7 @@
                                                                                         <div class="col-4 col-md-6">
                                                                                             <div class="float-right">
                                                                                                 <?php if (!empty($product_info['pickandplacefile'])) { ?>
-                                                                                                    <span class="badge border border-primary text-primary">Yes</span>
+                                                                                                    <a href="<?= base_url('public/' . $product_info['pickandplacefile']) ?>" download class="badge border border-primary text-primary d-flex align-items-center">Yes <i class="las la-file-download font-size-20"></i></a>
                                                                                                 <?php } elseif ($product_info['pickandplacefile'] == null) { ?>
                                                                                                     <span class="badge border border-danger text-danger">No</span>
                                                                                                 <?php } else { ?>
@@ -491,7 +491,7 @@
                                                                                         <div class="col-4 col-md-6">
                                                                                             <div class="float-right">
                                                                                                 <?php if (!empty($product_info['3dfile'])) { ?>
-                                                                                                    <span class="badge border border-primary text-primary">Yes</span>
+                                                                                                    <a href="<?= base_url('public/' . $product_info['3dfile']) ?>" download class="badge border border-primary text-primary d-flex align-items-center">Yes <i class="las la-file-download font-size-20"></i></a>
                                                                                                 <?php } elseif ($product_info['3dfile'] == null) { ?>
                                                                                                     <span class="badge border border-danger text-danger">No</span>
                                                                                                 <?php } else { ?>
@@ -507,7 +507,7 @@
                                                                                         <div class="col-4 col-md-6">
                                                                                             <div class="float-right">
                                                                                                 <?php if (!empty($product_info['2dfile'])) { ?>
-                                                                                                    <span class="badge border border-primary text-primary">Yes</span>
+                                                                                                    <a href="<?= base_url('public/' . $product_info['2dfile']) ?>" download class="badge border border-primary text-primary d-flex align-items-center">Yes <i class="las la-file-download font-size-20"></i></a>
                                                                                                 <?php } elseif ($product_info['2dfile'] == null) { ?>
                                                                                                     <span class="badge border border-danger text-danger">No</span>
                                                                                                 <?php } else { ?>
@@ -654,7 +654,7 @@
 
                                 <div class="form-group">
                                     <?= form_open('index/checkout', ['id' => 'checkoutForm']) ?>
-                                    <button type="button" class="btn btn-success rounded-pill w-100" data-toggle="modal" data-target="#checkout">Check Out <i class="las la-shopping-bag font-size-20"></i></button>
+                                    <button type="button" class="btn btn-success rounded-pill w-100" data-toggle="modal" data-target="#checkout" <?= $cart_item_count == 0 ? 'disabled' : '' ?>>Check Out <i class="las la-shopping-bag font-size-20"></i></button>
                                     <div id="checkout" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="checkoutTitle" aria-hidden="true">
                                         <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
                                             <div class="modal-content border-radius-10">
@@ -769,13 +769,31 @@
             });
         });
 
+        document.querySelectorAll('[data-fulltext]').forEach(el => {
+            const fullText = el.getAttribute('data-fulltext');
+            const limit = 100;
+            if (fullText.length > limit) {
+                el.textContent = fullText.substring(0, limit) + '...';
+            } else {
+                el.textContent = fullText;
+            }
+        });
+
+
         function showFullText(element) {
+            const fullText = element.getAttribute('data-fulltext');
+            const limit = 150;
+
             if (element.classList.contains('expanded')) {
                 element.classList.remove('expanded');
-                element.textContent = element.getAttribute('data-fulltext').substring(0, 100) + '...';
+                if (fullText.length > limit) {
+                    element.textContent = fullText.substring(0, limit) + '...';
+                } else {
+                    element.textContent = fullText;
+                }
             } else {
                 element.classList.add('expanded');
-                element.textContent = element.getAttribute('data-fulltext');
+                element.textContent = fullText;
             }
         }
 

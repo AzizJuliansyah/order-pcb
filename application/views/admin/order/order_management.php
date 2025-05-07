@@ -260,36 +260,34 @@
                                                 <td>
                                                     <div class="d-flex align-items-center">
                                                         <?php if ($item['payment_status'] == 'payment_pending'): ?>
-                                                            <button type="button" class="btn font-size-12 btn-warning m-2">Menunggu Pembayaran</button>
-                                                        <?php elseif ($item['payment_status'] == 'payment_process'): ?>
-                                                            <button type="button" class="btn font-size-12 btn-info m-2">Pembayaran Diproses</button>
-                                                        <?php elseif ($item['payment_status'] == 'payment_success'): ?>
-                                                            <button type="button" class="btn font-size-12 btn-success m-2">Pembayaran Berhasil</button>
-                                                        <?php elseif ($item['payment_status'] == 'payment_cancelled'): ?>
-                                                            <button type="button" class="btn font-size-12 btn-danger m-2">Pembayaran Dibatalkan</button>
-                                                        <?php else: ?>
-                                                            <button type="button" class="btn font-size-12 btn-dark m-2">Status Tidak Diketahui</button>
-                                                        <?php endif; ?>
+                                                        <span class="badge badge-warning font-size-12 m-2">Menunggu Pembayaran</span>
+                                                    <?php elseif ($item['payment_status'] == 'payment_process'): ?>
+                                                        <span class="badge badge-primary font-size-12 m-2">Pembayaran Diproses</span>
+                                                    <?php elseif ($item['payment_status'] == 'payment_success'): ?>
+                                                        <span class="badge badge-success font-size-12 m-2">Pembayaran Berhasil</span>
+                                                    <?php elseif ($item['payment_status'] == 'payment_cancelled'): ?>
+                                                        <span class="badge badge-dark font-size-12 m-2">Pembayaran Dibatalkan</span>
+                                                    <?php else: ?>
+                                                        <span class="badge badge-light font-size-12 m-2">Status Tidak Diketahui</span>
+                                                    <?php endif; ?>
 
-                                                        <?php if ($item['order_status'] == 'order_pending'): ?>
-                                                            <button type="button" class="btn font-size-12 btn-secondary m-2">Pesanan Menunggu</button>
-                                                        <?php elseif ($item['order_status'] == 'order_processing'): ?>
-                                                            <button type="button" class="btn font-size-12 btn-primary m-2">Sedang Diproses</button>
-                                                        <?php elseif ($item['order_status'] == 'order_packing'): ?>
-                                                            <button type="button" class="btn font-size-12 btn-secondary m-2">Sedang Packing</button>
-                                                        <?php elseif ($item['order_status'] == 'order_shipping'): ?>
-                                                            <button type="button" class="btn font-size-12 btn-warning m-2">Sedang Dikirim</button>
-                                                        <?php elseif ($item['order_status'] == 'order_completed'): ?>
-                                                            <button type="button" class="btn font-size-12 btn-success m-2">Pesanan Selesai</button>
-                                                        <?php elseif ($item['order_status'] == 'order_cancelled'): ?>
-                                                            <button type="button" class="btn font-size-12 btn-danger m-2">Pesanan Dibatalkan</button>
-                                                        <?php elseif ($item['order_status'] == 'order_refunded'): ?>
-                                                            <button type="button" class="btn font-size-12 btn-primary m-2">Pesanan di refund</button>
-                                                        <?php elseif ($item['order_status'] == 'order_failed'): ?>
-                                                            <button type="button" class="btn font-size-12 btn-danger m-2">Pesanan gagal</button>
-                                                        <?php else: ?>
-                                                            <button type="button" class="btn font-size-12 btn-dark m-2">Status Tidak Diketahui</button>
-                                                        <?php endif; ?>
+                                                    <?php if ($item['order_status'] == 'order_pending'): ?>
+                                                        <span class="badge border border-warning text-warning font-size-12 m-2">Pesanan Menunggu</span>
+                                                    <?php elseif ($item['order_status'] == 'order_confirmed'): ?>
+                                                        <span class="badge border border-secondary text-secondary font-size-12 m-2">Pesanan Diterima</span>
+                                                    <?php elseif ($item['order_status'] == 'order_processing'): ?>
+                                                        <span class="badge border border-primary text-primary font-size-12 m-2">Pesanan Diproses</span>
+                                                    <?php elseif ($item['order_status'] == 'order_completed'): ?>
+                                                        <span class="badge border border-success text-success font-size-12 m-2">Pesanan Selesai</span>
+                                                    <?php elseif ($item['order_status'] == 'order_cancelled'): ?>
+                                                        <span class="badge border border-danger text-danger font-size-12 m-2">Pesanan Dibatalkan</span>
+                                                    <?php elseif ($item['order_status'] == 'order_refunded'): ?>
+                                                        <span class="badge border border-info text-info font-size-12 m-2">Pesanan di refund</span>
+                                                    <?php elseif ($item['order_status'] == 'order_failed'): ?>
+                                                        <span class="badge border border-dark text-dark font-size-12 m-2">Pesanan gagal</span>
+                                                    <?php else: ?>
+                                                        <span class="badge border border-light text-light font-size-12 m-2">Status Tidak Diketahui</span>
+                                                    <?php endif; ?>
                                                     </div>
                                                 </td>
                                                 <td><?= format_bulan($item['date_created']) ?></td>
@@ -297,7 +295,7 @@
                                                     <div class="d-flex align-items-center">
                                                         <div class="form-group m-1">
 
-                                                            <a href="#" type="button" class="btn btn-sm bg-primary">
+                                                            <a href="<?= base_url('admin/order_detail/' . encrypt_id($item['order_id'])) . '?from=management' ?>" type="button" class="btn btn-sm bg-primary">
                                                                 <i class="las la-eye font-size-16 mt-1 mr-0"></i>
                                                             </a>
 

@@ -21,6 +21,8 @@ class Order_model extends CI_Model
         return $this->db->delete('cnc_material');
     }
 
+
+
     public function insert_cnc_finishing($data)
     {
         return $this->db->insert('cnc_finishing', $data);
@@ -44,14 +46,63 @@ class Order_model extends CI_Model
         return $this->db->update('orders', $data);
     }
 
+
+    public function insert_shipping_status($data)
+    {
+        return $this->db->insert('shipping_status', $data);
+    }
+
+    public function edit_shipping_status($material_id, $data)
+    {
+        $this->db->where('id', $material_id);
+        return $this->db->update('shipping_status', $data);
+    }
+
+    public function delete_shipping_status($material_id)
+    {
+        $this->db->where('id', $material_id);
+        return $this->db->delete('shipping_status');
+    }
+
+
+
     public function delete_order_with_items($order_id)
     {
+        // Ambil semua order_items yang terkait dengan order_id
+        $order_items = $this->db->get_where('order_items', ['order_id' => $order_id])->result_array();
+
+        foreach ($order_items as $item) {
+            $product_info = json_decode($item['product_info'], true);
+
+            if ($item['product_type'] == 'pcb') {
+                $file_fields = ['gerberfile', 'bomfile', 'pickandplacefile'];
+            } elseif ($item['product_type'] == 'cnc') {
+                $file_fields = ['3dfile', '2dfile'];
+            } else {
+                $file_fields = [];
+            }
+
+            foreach ($file_fields as $field) {
+                if (!empty($product_info[$field])) {
+                    $clean_path = str_replace('\\', '/', $product_info[$field]);
+                    $full_path = FCPATH . 'public/' . $clean_path;
+
+                    if (file_exists($full_path)) {
+                        unlink($full_path);
+                    }
+                }
+            }
+        }
+
+        // Hapus order_items
         $this->db->where('order_id', $order_id);
         $this->db->delete('order_items');
 
+        // Hapus order utama
         $this->db->where('order_id', $order_id);
         $this->db->delete('orders');
     }
+
 
     public function updateOrderStatuses(array $orderIds, $paymentStatus = null, $orderStatus = null)
     {

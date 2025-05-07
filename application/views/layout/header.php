@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="<?= base_url('public/template_assets/vendor/tui-calendar/tui-date-picker/dist/tui-date-picker.css') ?>">
     <link rel="stylesheet" href="<?= base_url('public/template_assets/vendor/tui-calendar/tui-time-picker/dist/tui-time-picker.css') ?>">
 
-    <link rel="stylesheet" href="<?= base_url('public/local_assets/css/local.css?v=3.0.0') ?>">
+    <link rel="stylesheet" href="<?= base_url('public/local_assets/css/local.css?v=1.0.0') ?>">
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 

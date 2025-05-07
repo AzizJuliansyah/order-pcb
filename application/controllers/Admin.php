@@ -43,6 +43,9 @@ class Admin extends CI_Controller {
 		$data['cnc_material'] = $this->db->get('cnc_material')->result_array();
 		$data['cnc_finishing'] = $this->db->get('cnc_finishing')->result_array();
 
+		$data['errors'] = $this->session->flashdata('errors') ?? [];
+        $data['old'] = $this->session->flashdata('old') ?? [];
+
 		$this->load->view('layout/header', $data);
 		$this->load->view('layout/navbar', $data);
         $this->load->view('layout/sidebar', $data);
@@ -57,7 +60,7 @@ class Admin extends CI_Controller {
 
 
         if ($this->input->method() === 'post') {
-            $this->form_validation->set_rules('nama', 'nama', 'required|trim', [
+            $this->form_validation->set_rules('nama', 'Nama Material', 'required|trim', [
                 'required' => '%s wajib diisi.'
             ]);
 
@@ -88,7 +91,7 @@ class Admin extends CI_Controller {
 
 
         if ($this->input->method() === 'post') {
-            $this->form_validation->set_rules('nama', 'nama', 'required|trim', [
+            $this->form_validation->set_rules('nama', 'Nama Material', 'required|trim', [
                 'required' => '%s wajib diisi.'
             ]);
 
@@ -127,8 +130,6 @@ class Admin extends CI_Controller {
         }
     }
 
-	
-
 	public function delete_cnc_material()
     {
         $redirect = $this->input->server('HTTP_REFERER') ?? base_url('default-url');
@@ -159,13 +160,15 @@ class Admin extends CI_Controller {
         }
     }
 
+
+
 	public function tambah_cnc_finishing()
     {
         $redirect = $this->input->server('HTTP_REFERER') ?? base_url('default-url');
 
 
         if ($this->input->method() === 'post') {
-            $this->form_validation->set_rules('nama', 'nama', 'required|trim', [
+            $this->form_validation->set_rules('nama', 'Nama Finishing', 'required|trim', [
                 'required' => '%s wajib diisi.'
             ]);
 
@@ -196,7 +199,7 @@ class Admin extends CI_Controller {
 
 
         if ($this->input->method() === 'post') {
-            $this->form_validation->set_rules('nama', 'nama', 'required|trim', [
+            $this->form_validation->set_rules('nama', 'Nama Finishing', 'required|trim', [
                 'required' => '%s wajib diisi.'
             ]);
 
@@ -235,8 +238,6 @@ class Admin extends CI_Controller {
         }
     }
 
-	
-
 	public function delete_cnc_finishing()
     {
         $redirect = $this->input->server('HTTP_REFERER') ?? base_url('default-url');
@@ -269,6 +270,131 @@ class Admin extends CI_Controller {
 
 	
 
+	public function shipping_status()
+	{
+		$user_id = $this->session->userdata('user_id');
+		$data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
+		$data['title'] = 'Settings Shipping Status';
+        
+		$data['shipping_status'] = $this->db->get('shipping_status')->result_array();
+
+		$data['errors'] = $this->session->flashdata('errors') ?? [];
+        $data['old'] = $this->session->flashdata('old') ?? [];
+
+		$this->load->view('layout/header', $data);
+		$this->load->view('layout/navbar', $data);
+        $this->load->view('layout/sidebar', $data);
+		$this->load->view('admin/order/shipping_status', $data);
+		$this->load->view('layout/alert');
+		$this->load->view('layout/footer');
+	}
+
+	public function tambah_shipping_status()
+    {
+        $redirect = $this->input->server('HTTP_REFERER') ?? base_url('default-url');
+
+
+        if ($this->input->method() === 'post') {
+            $this->form_validation->set_rules('nama', 'Nama Shipping Status', 'required|trim', [
+                'required' => '%s wajib diisi.'
+            ]);
+
+                if ($this->form_validation->run() === FALSE) {
+                    $this->session->set_flashdata('old', [
+                        'nama'        => set_value('nama'),
+                    ]);
+                    $this->session->set_flashdata('errors', [
+                        'nama'        => form_error('nama'),
+                    ]);
+                    redirect($redirect);
+                } else {
+                    $nama = $this->input->post('nama', TRUE);
+					$this->Order_model->insert_shipping_status(['nama' => $nama]);
+					$this->session->set_flashdata('success', 'Shipping Status berhasil ditambah.');
+                }
+
+            redirect($redirect);
+        } else {
+            $this->session->set_flashdata('error', 'Shipping Status gagal ditambah.');
+            redirect($redirect);
+        }
+    }
+
+	public function edit_shipping_status()
+    {
+        $redirect = $this->input->server('HTTP_REFERER') ?? base_url('default-url');
+
+
+        if ($this->input->method() === 'post') {
+            $this->form_validation->set_rules('nama', 'Nama Shipping Status', 'required|trim', [
+                'required' => '%s wajib diisi.'
+            ]);
+
+			$encrypted_shipping_status_id = $this->input->post('shipping_status_id');
+            $shipping_status_id = decrypt_id($encrypted_shipping_status_id);
+
+            if (empty($shipping_status_id)) {
+                $this->session->set_flashdata('error', 'Gagal mengakses halaman, Shipping Status ID tidak ada.');
+                redirect($redirect);
+            }
+
+            $shipping_status = $this->db->get_where('shipping_status', ['id' => $shipping_status_id])->row_array();
+            if (!$shipping_status) {
+                $this->session->set_flashdata('error', 'Data Shipping Status tidak ditemukan.');
+                redirect($redirect);
+            }
+
+            if ($this->form_validation->run() === FALSE) {
+                $this->session->set_flashdata('old', [
+                    'nama'        => set_value('nama'),
+                ]);
+                $this->session->set_flashdata('errors', [
+                    'nama'        => form_error('nama'),
+                ]);
+                redirect($redirect);
+            } else {
+                $nama = $this->input->post('nama', TRUE);
+				$this->Order_model->edit_shipping_status($shipping_status_id, ['nama' => $nama]);
+				$this->session->set_flashdata('success', 'Shipping Status berhasil diubah.');
+            }
+
+            redirect($redirect);
+        } else {
+            $this->session->set_flashdata('error', 'Shipping Status gagal diubah.');
+            redirect($redirect);
+        }
+    }
+
+	public function delete_shipping_status()
+    {
+        $redirect = $this->input->server('HTTP_REFERER') ?? base_url('default-url');
+
+
+        if ($this->input->method() === 'post') {
+
+			$encrypted_shipping_status_id = $this->input->post('shipping_status_id');
+            $shipping_status_id = decrypt_id($encrypted_shipping_status_id);
+
+            if (empty($shipping_status_id)) {
+                $this->session->set_flashdata('error', 'Gagal mengakses halaman, Shipping Status ID tidak ada.');
+                redirect($redirect);
+            }
+
+            $shipping_status = $this->db->get_where('shipping_status', ['id' => $shipping_status_id])->row_array();
+            if (!$shipping_status) {
+                $this->session->set_flashdata('error', 'Data Shipping Status tidak ditemukan.');
+                redirect($redirect);
+            }
+
+			$this->Order_model->delete_shipping_status($shipping_status_id);
+			$this->session->set_flashdata('success', 'Shipping Status berhasil dihapus.');
+            redirect($redirect);
+        } else {
+            $this->session->set_flashdata('error', 'Shipping Status gagal dihapus.');
+            redirect($redirect);
+        }
+    }
+
 
     public function order_management()
 	{
@@ -295,9 +421,9 @@ class Admin extends CI_Controller {
 	public function delete_order()
 	{
 		$redirect = $this->input->server('HTTP_REFERER') ?? base_url('admin/order_list');
-
 		$bulkIdsJson = $this->input->post('delete_order_ids_bulk');
 		$singleId    = $this->input->post('order_id');
+		$maxBulk     = 50; // batas maksimal bulk hapus
 
 		if ($bulkIdsJson) {
 			$encrypted_ids = json_decode($bulkIdsJson, true);
@@ -311,9 +437,13 @@ class Admin extends CI_Controller {
 					}
 				}
 
-				foreach ($order_ids as $id) {
-					$this->Order_model->delete_order_with_items($id);
+				if (count($order_ids) > $maxBulk) {
+					$this->session->set_flashdata('error', "Maksimal hanya bisa hapus {$maxBulk} order sekaligus.");
+					redirect($redirect);
 				}
+
+				$this->delete_orders_and_files($order_ids);
+
 				$this->session->set_flashdata('success', count($order_ids) . " order berhasil dihapus.");
 				redirect($redirect);
 			} else {
@@ -323,7 +453,7 @@ class Admin extends CI_Controller {
 		} elseif ($singleId) {
 			$decrypted_id = decrypt_id($singleId);
 			if (!empty($decrypted_id)) {
-				$this->Order_model->delete_order_with_items($decrypted_id);
+				$this->delete_orders_and_files([$decrypted_id]);
 				$this->session->set_flashdata('success', "Order berhasil dihapus.");
 				redirect($redirect);
 			} else {
@@ -334,8 +464,46 @@ class Admin extends CI_Controller {
 			$this->session->set_flashdata('error', "Tidak ada ID order yang dikirim.");
 			redirect($redirect);
 		}
-
 	}
+
+	private function delete_orders_and_files(array $order_ids)
+	{
+		// Ambil semua order_items yang terkait sekaligus
+		$order_items = $this->db
+			->where_in('order_id', $order_ids)
+			->get('order_items')
+			->result_array();
+
+		foreach ($order_items as $item) {
+			$product_info = json_decode($item['product_info'], true);
+
+			if ($item['product_type'] == 'pcb') {
+				$file_fields = ['gerberfile', 'bomfile', 'pickandplacefile'];
+			} elseif ($item['product_type'] == 'cnc') {
+				$file_fields = ['3dfile', '2dfile'];
+			} else {
+				$file_fields = [];
+			}
+
+			foreach ($file_fields as $field) {
+				if (!empty($product_info[$field])) {
+					$clean_path = str_replace('\\', '/', $product_info[$field]);
+					$full_path = FCPATH . 'public/' . $clean_path;
+
+					if (file_exists($full_path)) {
+						unlink($full_path);
+					}
+				}
+			}
+		}
+
+		// Hapus semua order_items sekaligus
+		$this->db->where_in('order_id', $order_ids)->delete('order_items');
+
+		// Hapus semua orders sekaligus
+		$this->db->where_in('order_id', $order_ids)->delete('orders');
+	}
+
 
 
 	public function ubah_status_order()
@@ -616,17 +784,53 @@ class Admin extends CI_Controller {
 			redirect("admin/order_list");
 		}
 
-		$data['order'] = $this->db->get_where('orders', ['order_id' => $order_id])->row_array();
-		if (!$data['order']) {
+		$order = $this->db->get_where('orders', ['order_id' => $order_id])->row_array();
+		if (!$order) {
 			$this->session->set_flashdata('error', 'Gagal mengakses halaman, Order ID tidak ada.');
 			redirect("admin/order_list");
 		}
+
+		$data['order'] = $order;
+
+		$this->db->where('order_id', $order['order_id']);
+		$query = $this->db->get('order_items');
+		$order_items = $query->result();
 		
+		
+		$pcb_items = [];
+		$cnc_items = [];
+
+		// Pisahkan berdasarkan product_type
+		foreach ($order_items as $item) {
+			if ($item->product_type === 'pcb') {
+				$pcb_items[] = $item;
+			} elseif ($item->product_type === 'cnc') {
+				$cnc_items[] = $item;
+			}
+		}
+
+		$data['order_items'] = $order_items;
+		$data['pcb_items'] = $pcb_items;
+		$data['cnc_items'] = $cnc_items;
+		$data['user_info'] = $this->db->get_where('user', ['id' => $order['user_id']])->row_array();
 		$data['operator'] = $this->db->get_where('user', ['role_id' => 3])->result_array();
-		
+
+		$shipping_status_list = [];
+
+		if (!empty($order['shipping_status'])) {
+			$shipping_status_list = json_decode($order['shipping_status'], true);
+			if (!is_array($shipping_status_list)) {
+				$shipping_status_list = [];
+			}
+		}
+		$data['shipping_status_list'] = $shipping_status_list;
+
 		$user_id = $this->session->userdata('user_id');
 		$data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
 		$data['title'] = 'Order List Page';
+
+		$data['errors'] = $this->session->flashdata('errors') ?? [];
+        $data['old'] = $this->session->flashdata('old') ?? [];
 
 		$this->load->view('layout/header', $data);
 		$this->load->view('layout/navbar', $data);
@@ -637,7 +841,7 @@ class Admin extends CI_Controller {
 			
 	}
 
-	public function tetapkan_operator()
+	public function terima_order()
 	{
 		$redirect = $this->input->server('HTTP_REFERER') ?? base_url('admin/order_list');
 
@@ -651,21 +855,20 @@ class Admin extends CI_Controller {
 		}
 
 		$order_id = decrypt_id($encrypted_order_id);
-
 		if (empty($order_id)) {
 			$this->session->set_flashdata('error', 'Gagal mengakses halaman, Order ID tidak ada.');
 			redirect($redirect);
 		}
 
-		$order = $this->db->get_where('orders', ['order_id' => $order_id, 'payment_status' => 'payment_success'])->row_array();
+		$order = $this->db->get_where('orders', ['order_id' => $order_id])->row_array();
 		if (!$order) {
-			$this->session->set_flashdata('error', 'Data Order tidak ditemukan, atau payment status belum sukses.');
+			$this->session->set_flashdata('error', 'Data Order tidak ditemukan');
 			redirect($redirect);
 		}
 
 		$operator_id = decrypt_id($encrypted_operator_id);
 		if (empty($operator_id)) {
-			$this->session->set_flashdata('error', 'Gagal mengakses halaman, Order ID tidak ada.');
+			$this->session->set_flashdata('error', 'Gagal menerima order, Operator tidak dipilih.');
 			redirect($redirect);
 		}
 		$operator = $this->db->get_where('user', ['id' => $operator_id, 'role_id' => 3])->row_array();
@@ -674,13 +877,48 @@ class Admin extends CI_Controller {
 			redirect($redirect);
 		}
 
+        $need_validate = false;
 
-		$admin_id = $this->session->userdata('user_id');
-		$this->Order_model->update_orders($order_id, [
-			'operator' => $operator_id,
-			'admin' => $admin_id,
-			'order_status' => 'order_processing',
-		]);
+		if ($order['total_price'] == null) {
+			$this->form_validation->set_rules('total_price', 'Total Price', 'required|trim|numeric', [
+				'required' => '%s wajib diisi.',
+				'numeric' => '%s harus berupa angka.'
+			]);
+			$need_validate = true;
+		}
+
+		if ($need_validate && $this->form_validation->run() === FALSE) {
+			$this->session->set_flashdata('old', [
+				'total_price' => set_value('total_price'),
+			]);
+			$this->session->set_flashdata('errors', [
+				'total_price' => form_error('total_price'),
+			]);
+			redirect($redirect);
+		} else {
+			$admin_id = $this->session->userdata('user_id');
+				$input_total_price = $this->input->post('total_price');
+				$clean_total_price = preg_replace('/[^\d]/', '', $input_total_price);
+				if ($order['total_price'] == null) {
+					$data = [
+						'total_price' => $clean_total_price,
+						'order_status' => 'order_confirmed',
+						'operator' => $operator_id,
+						'admin' => $admin_id,
+					];
+				} else {
+					$data = [
+						'order_status' => 'order_confirmed',
+						'operator' => $operator_id,
+						'admin' => $admin_id,
+					];
+				}
+
+				$admin_id = $this->session->userdata('user_id');
+				$this->Order_model->update_orders($order_id, $data);
+
+		}
+			
 
 		$this->session->set_flashdata('success', 'Operator berhasil ditetapkan.');
 		redirect($redirect);

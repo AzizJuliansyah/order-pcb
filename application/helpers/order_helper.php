@@ -29,4 +29,33 @@ if (!function_exists('get_cnc_finishing_name')) {
     }
 }
 
+if (!function_exists('get_admin_name')) {
+    function get_admin_name($id) {
+        $CI =& get_instance();
+        $CI->load->database();
+
+        $query = $CI->db->get_where('user', ['id' => $id])->row();
+        if ($query) {
+            return $query->nama;
+        }
+
+        return '-';
+    }
+}
+
+
+if (!function_exists('get_shipping_status_name')) {
+    function get_shipping_status_name($id) {
+        $CI =& get_instance();
+        $CI->load->database();
+
+        $query = $CI->db->get_where('shipping_status', ['id' => $id])->row();
+        if ($query) {
+            return $query->nama;
+        }
+
+        return '-';
+    }
+}
+
 ?>

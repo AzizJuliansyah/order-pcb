@@ -97,12 +97,10 @@ body.no-sidebar .iq-footer {
 
         
 .limited-text {
-    display: -webkit-box;
-    -webkit-line-clamp: 3; /* tampilkan hanya 3 baris */
-    -webkit-box-orient: vertical;
-    overflow: hidden;
     cursor: pointer;
-    max-width: 100%;
+    line-height: 1.3;
+    margin: 2px 0;
+    display: inline-block;
 }
 
 .limited-text.expanded {

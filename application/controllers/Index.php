@@ -1,11 +1,17 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+use Dompdf\Dompdf;
+
 class Index extends CI_Controller {
 
 	public function __construct()
     {
         parent::__construct();
+
+		require_once FCPATH . 'vendor/autoload.php';
+
+
 		$this->load->model('User_model');
 		$this->load->model('Order_model');
 		$this->load->library('form_validation');
@@ -583,5 +589,132 @@ class Index extends CI_Controller {
 		$this->load->view('layout/footer');
 	}
 
+
+
+
+	
+
+	public function order_detail_download_pdf($encrypted_id = null)
+	{
+		if (empty($encrypted_id)) {
+			$this->session->set_flashdata('error', 'Gagal mengunduh PDF, Order ID tidak ada.');
+			redirect("admin/order_list");
+		}
+
+		$order_id = decrypt_id($encrypted_id);
+		if (empty($order_id)) {
+			$this->session->set_flashdata('error', 'Gagal mengunduh PDF, Order ID tidak valid.');
+			redirect("admin/order_list");
+		}
+
+		$order = $this->db->get_where('orders', ['order_id' => $order_id])->row_array();
+		if (!$order) {
+			$this->session->set_flashdata('error', 'Gagal mengunduh PDF, data order tidak ditemukan.');
+			redirect("admin/order_list");
+		}
+		$order_items = $this->db->get_where('order_items', ['order_id' => $order['order_id']])->result();
+
+		$user_info = $this->db->get_where('user', ['id' => $order['user_id']])->row_array();
+		if (!$user_info) {
+			$this->session->set_flashdata('error', 'Gagal mengunduh PDF, data user tidak ditemukan.');
+			redirect("admin/order_list");
+		}
+
+		$pcb_items = [];
+		$cnc_items = [];
+
+		foreach ($order_items as $item) {
+			if ($item->product_type === 'pcb') {
+				$pcb_items[] = $item;
+			} elseif ($item->product_type === 'cnc') {
+				$cnc_items[] = $item;
+			}
+		}
+
+		
+
+		$data['order'] = $order;
+		$order_code = $order['order_code'];
+		$data['order_items'] = $order_items;
+		$data['pcb_items'] = $pcb_items;
+		$data['cnc_items'] = $cnc_items;
+		$data['user_info'] = $user_info;
+		if ($user_info['foto'] != null) {
+			$data['profile_img_path'] = base_url('public/' . $user_info['foto']);
+		} else {
+			$data['profile_img_path'] = base_url('public/' . 'local_assets/images/user_default.png');
+		}
+
+		$html = $this->load->view('index/order/order_detail_pdf', $data, true);
+
+		$dompdf = new Dompdf();
+		$options = $dompdf->getOptions();
+		$options->set('isRemoteEnabled', true);
+		$dompdf->setOptions($options);
+		$dompdf->loadHtml($html);
+		$dompdf->setPaper('A4', 'portrait');
+		$dompdf->render();
+		$dompdf->stream("order_detail_{$order_code}.pdf", array("Attachment" => 1));
+	}
+
+
+	public function order_detail($encrypted_id = null)
+	{
+		if (empty($encrypted_id)) {
+			$this->session->set_flashdata('error', 'Gagal mengakses halaman, Order ID tidak ada.');
+			redirect("admin/order_list");
+		}
+
+		$order_id = decrypt_id($encrypted_id);
+		if (empty($order_id)) {
+			$this->session->set_flashdata('error', 'Gagal mengakses halaman, Order ID tidak ada.');
+			redirect("admin/order_list");
+		}
+
+		$order = $this->db->get_where('orders', ['order_id' => $order_id])->row_array();
+		if (!$order) {
+			$this->session->set_flashdata('error', 'Gagal mengakses halaman, Order ID tidak ada.');
+			redirect("admin/order_list");
+		}
+
+		$user_info = $this->db->get_where('user', ['id' => $order['user_id']])->row_array();
+		if (!$user_info) {
+			$this->session->set_flashdata('error', 'Gagal mengunduh PDF, data user tidak ditemukan.');
+			redirect("admin/order_list");
+		}
+
+		$data['order'] = $order;
+
+		$this->db->where('order_id', $order['order_id']);
+		$query = $this->db->get('order_items');
+		$order_items = $query->result();
+		
+		
+		$pcb_items = [];
+		$cnc_items = [];
+
+		// Pisahkan berdasarkan product_type
+		foreach ($order_items as $item) {
+			if ($item->product_type === 'pcb') {
+				$pcb_items[] = $item;
+			} elseif ($item->product_type === 'cnc') {
+				$cnc_items[] = $item;
+			}
+		}
+
+		$data['order_items'] = $order_items;
+		$data['pcb_items'] = $pcb_items;
+		$data['cnc_items'] = $cnc_items;
+		$data['user_info'] = $user_info;
+		if ($user_info['foto'] != null) {
+			$data['profile_img_path'] = base_url('public/' . $user_info['foto']);
+		} else {
+			$data['profile_img_path'] = base_url('public/' . 'local_assets/images/user_default.png');
+		}
+		$data['title'] = 'Order List Page';
+
+		
+		$this->load->view('index/order/order_detail_pdf', $data);
+	}
 	
 }
