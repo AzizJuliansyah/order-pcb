@@ -126,7 +126,6 @@ class Superadmin extends CI_Controller {
 		$data['title'] = 'Auth Google Settings';
 
         $data['settings'] = $this->db->where_in('settings_id', [1, 2])->get('settings')->result_array();
-        
 
 		$this->load->view('layout/header', $data);
 		$this->load->view('layout/navbar', $data);
@@ -144,7 +143,6 @@ class Superadmin extends CI_Controller {
 		$data['title'] = 'UI UX Settings';
 
         $data['settings'] = $this->db->where_in('settings_id', [3, 4])->get('settings')->result_array();
-        
 
 		$this->load->view('layout/header', $data);
 		$this->load->view('layout/navbar', $data);
@@ -153,6 +151,26 @@ class Superadmin extends CI_Controller {
 		$this->load->view('layout/alert');
 		$this->load->view('layout/footer');
 	}
+
+    
+    public function midtrans_credential()
+	{
+		$user_id = $this->session->userdata('user_id');
+		$data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
+
+		$data['title'] = 'Midtrans Credential Settings';
+
+        $data['settings'] = $this->db->where_in('settings_id', [5, 6])->get('settings')->result_array();
+
+		$this->load->view('layout/header', $data);
+		$this->load->view('layout/navbar', $data);
+        $this->load->view('layout/sidebar', $data);
+		$this->load->view('superadmin/settings/midtrans_credential', $data);
+		$this->load->view('layout/alert');
+		$this->load->view('layout/footer');
+	}
+
+    
 
 
 

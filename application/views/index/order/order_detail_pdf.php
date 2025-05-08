@@ -34,6 +34,49 @@
         th {
             background-color: #eee;
         }
+        .or-container {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.or-detail {
+    width: 300px;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    background-color: #f8f9fa;
+    padding: 15px;
+    font-family: sans-serif;
+    font-size: 14px;
+}
+
+.or-detail h5 {
+    margin: 0 0 15px 0;
+}
+
+.or-detail-section {
+    margin-bottom: 10px;
+}
+
+.or-detail-section h6 {
+    margin: 0;
+    font-size: 13px;
+    font-weight: normal;
+}
+
+.or-detail-section p {
+    margin: 2px 0 0 0;
+}
+
+.or-detail-total {
+    border-top: 1px solid #e0e0e0;
+    padding: 10px 0 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
     </style>
 </head>
 <body>
@@ -266,6 +309,27 @@
                </tbody>
             </table>
          <?php endif; ?>
+      </div>
+
+      <div style="display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    box-sizing: border-box;">
+         <div class="or-detail">
+            <h3><strong>Payment Details</strong></h3>
+            <div class="or-detail-section">
+                  <h6>Sub Total</h6>
+                  <p><?= $order['total_price'] == 0 ? '-' : 'Rp. ' . number_format($order['total_price'], 2, ',', '.') ?></p>
+            </div>
+            <div class="or-detail-section">
+                  <h6>Discount</h6>
+                  <p>-</p>
+            </div>
+            <div class="or-detail-total">
+                  <h4><strong>Total</strong></h4>
+                  <h4><?= $order['total_price'] == 0 ? '-' : 'Rp. ' . number_format($order['total_price'], 2, ',', '.') ?></h4>
+            </div>
+         </div>
       </div>
    </div>
 </body>

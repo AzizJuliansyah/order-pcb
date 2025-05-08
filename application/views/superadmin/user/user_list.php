@@ -2,15 +2,7 @@
 <div class="wrapper">
     <div class="content-page">
         <div class="container-fluid">
-            <div class="row m-1">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb mb-0">
-                        <li class="breadcrumb-item active" aria-current="page">User Management</li>
-                        <li class="breadcrumb-item active" aria-current="page">User List</li>
-                    </ol>
-                </nav>
-            </div>
-            <div class="row mt-3">
+            <div class="row">
                 <?php 
                 // Ikon dan warna per role (bisa kamu sesuaikan sendiri)
                 $role_styles = [

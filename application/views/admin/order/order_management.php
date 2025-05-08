@@ -73,7 +73,7 @@
                                 </div> -->
                                 <div class="p-0">
                                     <strong class="row ml-1 p-0">Action Terpilih :</strong>
-                                    <div class="row d-flex flex-wrap align-items-center">
+                                    <div class="row d-flex flex-wrap align-items-center ml-1">
                                         <div class="border-right btn-new mr-3 pr-3">
                                             <?= form_open('admin/ubah_status_order') ?>
                                             <div class="dropdown dropdown-project">

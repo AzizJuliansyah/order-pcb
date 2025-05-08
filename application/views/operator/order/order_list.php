@@ -8,7 +8,7 @@
                             <div class="card-body">
                                 <?= form_open('operator/order_list', ['method' => 'post']) ?>
                                     <div class="row breadcrumb-content">
-                                        <div class="flex-grow-1 mb-2" style="min-width: 250px;">
+                                        <div class="flex-grow-1 mb-2 ml-2">
                                             <div class="iq-search-bar">
                                                 <div class="searchbox">
                                                     <input type="text" class="text search-input" name="q" placeholder="Cari nama/email/order code..." value="<?= html_escape($search_keyword) ?>">
@@ -16,7 +16,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="flex-grow-1 mb-2 ml-2" style="min-width: 250px;">
+                                        <div class="flex-grow-1 mb-2 ml-2">
                                             <div class="d-flex align-items-center">
                                                 <input type="date" class="form-control border-radius-5 max-height-40" name="dari" value="<?= html_escape($dari) ?>">
                                                 <strong class="ml-2 mr-2">-</strong>
@@ -24,27 +24,57 @@
                                             </div>
                                         </div>
                                     
-                                        <div class="flex-grow-1 mb-2 ml-2" style="min-width: 250px;">
-                                            <div class="d-flex align-items-center">
-                                                <div class="flex-grow-1">
-                                                    <div class="list-grid-toggle d-flex align-items-center">
-                                                        <div class="active">
-                                                            <button type="submit" class="grid-icon border-0 mr-2 ml-2"><i class="ri-search-line mr-0"></i></button>
-                                                        </div>
-                                                        <div data-toggle-extra="tab" data-target-extra="#grid" class="active">
-                                                            <div class="grid-icon mr-2">
-                                                                <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                                    <rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect>
-                                                                </svg>
+                                        <div class="flex-grow-1 mb-2 ml-2">
+                                            <div class="dropdown dropdown-project">
+                                                <div class="dropdown-toggle" id="dropdownMenuButton03" data-toggle="dropdown">
+                                                    <div class="btn bg-body">
+                                                        <span class="h6">Status :</span>
+                                                        <?php if (!empty($selected_payment_status)): ?>
+                                                            <?= ucfirst(str_replace('_', ' ', $selected_payment_status)) ?>
+                                                        <?php elseif (!empty($selected_order_status)): ?>
+                                                            <?= ucfirst(str_replace('_', ' ', $selected_order_status)) ?>
+                                                        <?php else: ?>
+                                                            Semua Status
+                                                        <?php endif; ?>
+                                                        <i class="ri-arrow-down-s-line ml-2 mr-0"></i>
+                                                    </div>
+                                                </div>
+
+                                                <div class="dropdown-menu dropdown-menu-right p-3" aria-labelledby="dropdownMenuButton03">
+                                                        <div class="mb-2"><strong>Order Status</strong></div>
+                                                        <?php 
+                                                            $order_statuses = ['order_pending', 'order_confirmed', 'order_processing', 'order_completed', 'order_cancelled', 'order_refunded', 'order_failed'];
+                                                            foreach ($order_statuses as $status): ?>
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio" name="order_status" id="order_<?= $status ?>" value="<?= $status ?>"
+                                                                    <?= (!empty($selected_order_status) && $selected_order_status == $status) ? 'checked' : '' ?>>
+                                                                <label class="form-check-label" for="order_<?= $status ?>">
+                                                                    <?= ucfirst(str_replace('_', ' ', $status)) ?>
+                                                                </label>
                                                             </div>
-                                                        </div>
-                                                        <div data-toggle-extra="tab" data-target-extra="#list">
-                                                            <div class="grid-icon">
-                                                                <svg  width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                                    <line x1="21" y1="10" x2="3" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="21" y1="18" x2="3" y2="18"></line>
-                                                                </svg>
-                                                            </div>
-                                                        </div>
+                                                        <?php endforeach; ?>
+
+                                                        <div class="dropdown-divider"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow-1 mb-2 ml-2">
+                                            <div class="list-grid-toggle d-flex align-items-center">
+                                                <div class="active">
+                                                    <button type="submit" class="grid-icon border-0 mr-2 ml-2"><i class="ri-search-line mr-0"></i></button>
+                                                </div>
+                                                <div data-toggle-extra="tab" data-target-extra="#grid" class="active">
+                                                    <div class="grid-icon mr-2">
+                                                        <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                            <rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect>
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                                <div data-toggle-extra="tab" data-target-extra="#list">
+                                                    <div class="grid-icon">
+                                                        <svg  width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                            <line x1="21" y1="10" x2="3" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="21" y1="18" x2="3" y2="18"></line>
+                                                        </svg>
                                                     </div>
                                                 </div>
                                             </div>

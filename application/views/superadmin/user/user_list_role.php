@@ -2,16 +2,7 @@
 <div class="wrapper">
     <div class="content-page">
         <div class="container-fluid">
-            <div class="row m-1">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb mb-0">
-                        <li class="breadcrumb-item active" aria-current="page">User Management</li>
-                        <li class="breadcrumb-item"><a href="<?= base_url('superadmin/user_list') ?>">User List</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">User List by Role</li>
-                    </ol>
-                </nav>
-            </div>
-            <div class="row mt-3">
+            <div class="row">
                 <div class="col-sm-12">
                     <div class="card top-left shadow-showcase">
                         <div class="card-header d-flex justify-content-between">

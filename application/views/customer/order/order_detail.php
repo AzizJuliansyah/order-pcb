@@ -2,124 +2,24 @@
     <div class="wrapper">
         <div class="content-page">
             <div class="container-fluid">
-               <div class="row">
-                    <div class="col-lg-12">
-                        <div class="card bottom-right shadow-showcase">
-                           <div class="card-body">
-                              <div class="d-flex justify-content-between">
-                                 <div class="form-group">
-                                    <?php
-                                       $from = $this->input->get('from');
-                                       $back_url = base_url('operator/order_list');
+               <div class="form-group">
+                  <?php
+                     $from = $this->input->get('from');
+                     $back_url = base_url('customer/order_list');
 
-                                       if ($from == 'list') {
-                                          $back_url = base_url('operator/order_list');
-                                       } elseif ($from == 'list_today') {
-                                          $back_url = base_url('operator/order_list_today');
-                                       }
-                                    ?>
-                                    <a href="<?= $back_url ?>" class="d-flex align-items-center">
-                                       <i class="las la-angle-left font-size-20"></i>
-                                       <h5>Kembali</h5>
-                                    </a>
-                                 </div>
-                                 <div class="form-group">
-                                    <?php if ($order['payment_status'] == 'payment_success') : ?>
-                                       <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#TerimaOrder">
-                                          History Shipping Status
-                                       </button>
-                                    <?php else : ?>
-                                       <button type="button" class="btn btn-outline-secondary" disabled>
-                                          History Shipping Status
-                                       </button>
-                                    <?php endif ; ?>
-                                       <div id="TerimaOrder" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="TerimaOrderTitle" aria-hidden="true">
-                                          <div class="modal-dialog modal-dialog-scrollable" role="document">
-                                          <div class="modal-content border-radius-10">
-                                                <div class="modal-header">
-                                                   <h4 class="card-title mb-0">Invoice# <?= $order['order_code'] ?></h4>
-                                                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                      <span aria-hidden="true">×</span>
-                                                   </button>
-                                                </div>
-                                                <div class="modal-body">
-                                                   
-                                                   <div class="form-group">
-                                                      <h6 class="card-title mb-0">Admin : <?= get_admin_name($order['admin']) ?></h6>
-                                                   </div>
-                                                   
-                                                   <?= form_open('operator/ubah_shipping_status', ['id' => 'TerimaOrderForm']) ?>
-                                                   <input type="hidden" name="order_id" value="<?= encrypt_id($order['order_id']) ?>">
-                                                   <div class="form-group">
-                                                      <label for="shipping_status" class="font-size-14" style="margin-bottom: -13px;">Shipping Status :</label>
-                                                      <div class="input-group mb-2">
-                                                         <select name="shipping_status" id="shipping_status" class="form-control border-radius-5 max-height-40 <?= !empty($errors['shipping_status']) ? 'is-invalid' : '' ?>" >
-                                                            <option value="default" selected disabled></option>
-                                                            <?php foreach ($shipping_status as $index => $item) { ?>
-                                                                <option value="<?= $item['id'] ?>" <?= (isset($old['shipping_status']) && $item['id'] == $old['shipping_status']) ? 'selected' : '' ?>><?= get_shipping_status_name($item['id']) ?></option>
-                                                            <?php } ?>
-                                                        </select>
-                                                        <?php if (!empty($errors['shipping_status'])): ?>
-                                                            <div class="invalid-feedback"><?= $errors['shipping_status'] ?></div>
-                                                        <?php endif; ?>
-                                                      </div>
-                                                   </div>
-                                                   <div class="d-flex justify-content-end">
-                                                      <button type="submit" class="btn btn-outline-primary">Ganti Shipping Status</button>
-                                                   </div>
-                                                   <?= form_close() ?>
-
-                                                   <div class="col-12">
-                                                      <div class="divider-text">
-                                                         <span>History Shipping Status</span>
-                                                      </div>
-                                                   </div>
-                                                      
-                                                   <div class="form-group mt-3 ml-3">
-                                                      <div class="profile-line m-0 d-flex align-items-center justify-content-between position-relative">
-                                                         <ul class="list-inline p-0 m-0 w-100">
-                                                            <?php if (!empty($shipping_status_list)): ?>
-                                                               <?php foreach ($shipping_status_list as $item): ?>
-                                                                  <li>
-                                                                     <div class="row align-items-top">
-                                                                        <div class="col-md-12">
-                                                                           <div class="media profile-media pb-3 align-items-top">
-                                                                              <div class="profile-dots border-primary mt-1"></div>
-                                                                              <div class="ml-4">
-                                                                                 <h6 style="margin-bottom: -8px;">
-                                                                                    <?= get_shipping_status_name($item['shipping_id']) ?>
-                                                                                 </h6>
-                                                                                 <small class="text-muted">
-                                                                                    <?= format_bulan($item['date']) ?>
-                                                                                 </small>
-                                                                              </div>
-                                                                           </div>   
-                                                                        </div>
-                                                                     </div>
-                                                                  </li>
-                                                               <?php endforeach; ?>
-                                                            <?php else: ?>
-                                                               <div class="col-12">
-                                                                  <div class="text-center">
-                                                                        <i class="las la-box-open text-muted" style="font-size: 5rem;"></i>
-                                                                        <h6 class="text-muted">Belum ada history pengiriman</h6>
-                                                                        <small class="text-muted">Semua history yang masuk akan ditampilkan di sini.</small>
-                                                                  </div>
-                                                               </div>
-                                                            <?php endif; ?>
-                                                         </ul>
-                                                      </div>
-                                                   </div>
-                                                </div>
-                                             </div>
-                                          </div>
-                                       </div>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                    </div>
-                </div>
+                     if ($from == 'management') {
+                        $back_url = base_url('customer/order_management');
+                     } elseif ($from == 'list') {
+                        $back_url = base_url('customer/order_list');
+                     } elseif ($from == 'list_today') {
+                        $back_url = base_url('customer/order_list_today');
+                     }
+                  ?>
+                  <a href="<?= $back_url ?>" class="d-flex align-items-center">
+                     <i class="las la-angle-left font-size-20"></i>
+                     <h5>Kembali</h5>
+                  </a>
+               </div>
                 <div class="row">
                      <div class="col-lg-12">
                         <div class="card card-block card-stretch card-height print rounded">
@@ -152,25 +52,35 @@
                                              <div class="form-group mt-3 ml-3">
                                                 <div class="profile-line m-0 d-flex align-items-center justify-content-between position-relative">
                                                    <ul class="list-inline p-0 m-0 w-100">
-                                                      <?php foreach ($shipping_status_list as $item): ?>
-                                                         <li>
-                                                            <div class="row align-items-top">
-                                                               <div class="col-md-12">
-                                                                  <div class="media profile-media pb-3 align-items-top">
-                                                                     <div class="profile-dots border-primary mt-1"></div>
-                                                                     <div class="ml-4">
-                                                                        <h6 style="margin-bottom: -8px;">
-                                                                           <?= get_shipping_status_name($item['shipping_id']) ?>
-                                                                        </h6>
-                                                                        <small class="text-muted">
-                                                                           <?= format_bulan($item['date']) ?>
-                                                                        </small>
-                                                                     </div>
-                                                                  </div>   
+                                                      <?php if (!empty($shipping_status_list)): ?>
+                                                         <?php foreach ($shipping_status_list as $item): ?>
+                                                            <li>
+                                                               <div class="row align-items-top">
+                                                                  <div class="col-md-12">
+                                                                     <div class="media profile-media pb-3 align-items-top">
+                                                                        <div class="profile-dots border-primary mt-1"></div>
+                                                                        <div class="ml-4">
+                                                                           <h6 style="margin-bottom: -8px;">
+                                                                              <?= get_shipping_status_name($item['shipping_id']) ?>
+                                                                           </h6>
+                                                                           <small class="text-muted">
+                                                                              <?= format_bulan($item['date']) ?>
+                                                                           </small>
+                                                                        </div>
+                                                                     </div>   
+                                                                  </div>
                                                                </div>
+                                                            </li>
+                                                         <?php endforeach; ?>
+                                                      <?php else: ?>
+                                                         <div class="col-12">
+                                                            <div class="text-center">
+                                                                  <i class="las la-box-open text-muted" style="font-size: 5rem;"></i>
+                                                                  <h6 class="text-muted">Belum ada history pengiriman</h6>
+                                                                  <small class="text-muted">Semua history yang masuk akan ditampilkan di sini.</small>
                                                             </div>
-                                                         </li>
-                                                      <?php endforeach; ?>
+                                                         </div>
+                                                      <?php endif; ?>
                                                    </ul>
                                                 </div>
                                              </div>
@@ -431,19 +341,77 @@
                                     <?php endif; ?>
 
                                  </div>
-                         
+                                 <div class="row mb-3">
+                                    <div class="offset-lg-8 col-lg-4">
+                                       <div class="or-detail rounded">
+                                             <div class="p-3">
+                                                <h5 class="mb-3">Payment Details</h5>
+                                                <div class="mb-2">
+                                                   <h6>Sub Total</h6>
+                                                   <p><?= $order['total_price'] == 0 ? '-' : 'Rp. ' . number_format($order['total_price'], 2, ',', '.') ?></p>
+                                                </div>
+                                                <div>
+                                                   <h6>Discount</h6>
+                                                   <p>-</p>
+                                                </div>
+                                             </div>
+                                             <div class="ttl-amt py-2 px-3 d-flex justify-content-between align-items-center">
+                                                <h6>Total</h6>
+                                                <h5 class="text-primary font-weight-700"><?= $order['total_price'] == 0 ? '-' : 'Rp. ' . number_format($order['total_price'], 2, ',', '.') ?></h5>
+                                             </div>
+                                             <?php if (!empty($order['snap_token'])): ?>
+                                                <div class="d-flex justify-content-end mr-2 mb-2">
+                                                   <button type="button"
+                                                            class="btn btn-primary-dark"
+                                                            id="pay-button"
+                                                            data-snap-token="<?= $order['snap_token']; ?>">
+                                                         <i class="las la-file-invoice-dollar font-size-20"></i> Bayar
+                                                   </button>
+                                                </div>
+                                             <?php endif; ?>
+
+                                    </div>
+                                 </div>
                            </div>
                         </div>
                      </div>  
                 </div>
             </div>
          </div>
+         
     </div>
+
+    
     <!-- Wrapper End-->
 
 <script>
     const base_url = "<?= base_url() ?>";
 </script>
+
+<script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="<?= get_midtrans_credential(5) ?>"></script>
+<script type="text/javascript">
+   document.getElementById('pay-button').addEventListener('click', function (e) {
+      var snapToken = e.target.getAttribute('data-snap-token');
+      snap.pay(snapToken, {
+         onSuccess: function(result){
+               console.log('Success:', result);
+               window.location.href = '<?= base_url('order/payment_success'); ?>';
+         },
+         onPending: function(result){
+               console.log('Pending:', result);
+               window.location.href = '<?= base_url('order/payment_pending'); ?>';
+         },
+         onError: function(result){
+               console.log('Error:', result);
+               alert('Pembayaran gagal, silakan coba lagi.');
+         },
+         onClose: function(){
+               console.log('Popup closed without finishing the payment');
+         }
+      });
+   });
+</script>
+
 
 <script>
    document.querySelectorAll('[data-fulltext]').forEach(el => {

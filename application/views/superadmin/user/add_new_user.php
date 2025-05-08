@@ -3,16 +3,8 @@
     <div class="wrapper">
         <div class="content-page">
             <div class="container-fluid">
-                <div class="row m-1">
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb mb-0">
-                            <li class="breadcrumb-item active" aria-current="page">User Management</li>
-                            <li class="breadcrumb-item active" aria-current="page">User Add</li>
-                        </ol>
-                    </nav>
-                </div>
                 <?= form_open_multipart('superadmin/add_new_user') ?>
-                <div class="row mt-3">
+                <div class="row">
                     <div class="col-xl-3 col-lg-4">
                         <div class="card bottom-right shadow-showcase">
                             <div class="card-header d-flex justify-content-between">

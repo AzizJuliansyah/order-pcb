@@ -560,6 +560,7 @@ class Index extends CI_Controller {
 
 				$this->db->trans_complete();
 
+				$this->session->set_flashdata('last_order_code', $order_code);
 				$this->session->set_flashdata('success', 'Berhasil melakukan order.');
 				redirect('index/checkout_success');
 			}
@@ -572,14 +573,20 @@ class Index extends CI_Controller {
 
 	public function checkout_success()
 	{
-		if ($this->session->userdata('user_id')) {
-			$user_id = $this->session->userdata('user_id');
+		$last_order_code = $this->session->flashdata('last_order_code');
 
-			$user = $this->db->get_where('user', ['id' => $user_id])->row_array();
-			$data['user'] = $user;
-			$data['role_id'] = $user['role_id'];
+		if (!$last_order_code) {
+			$this->session->set_flashdata('error', 'Akses halaman ini tidak diizinkan.');
+			redirect(base_url('order')); // arahkan balik
 		}
 
+		$order = $this->db->get_where('orders', ['order_code' => $last_order_code])->row_array();
+		if (!$order) {
+			$this->session->set_flashdata('error', 'Data order tidak ditemukan.');
+			redirect(base_url('order'));
+		}
+
+		$data['order'] = $order;
 		$data['title'] = 'Checkout Success';
 		$data['has_sidebar'] = false;
 
@@ -588,6 +595,7 @@ class Index extends CI_Controller {
 		$this->load->view('layout/alert');
 		$this->load->view('layout/footer');
 	}
+
 
 
 

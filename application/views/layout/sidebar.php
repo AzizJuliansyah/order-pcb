@@ -37,6 +37,11 @@
                                     <i class="las la-minus"></i><span>Auth Google</span>
                                 </a>
                             </li>
+                            <li class="<?= set_active(['midtrans_credential'], 'active', 2) ?>">
+                                <a href="<?= base_url('superadmin/midtrans_credential') ?>">
+                                    <i class="las la-minus"></i><span>Midtrans Credential</span>
+                                </a>
+                            </li>
                         </ul>
                     </li>
                     
@@ -132,7 +137,7 @@
                             <i class="las la-angle-down iq-arrow-right arrow-hover"></i>
                         </a>
                         <ul id="orderdata" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
-                            <li class="<?= set_active(['order_list'], 'active', 2) ?> <?= set_active_with_from('order_detail', 'list') ?>"">
+                            <li class="<?= set_active(['order_list'], 'active', 2) ?> <?= set_active_with_from('order_detail', 'list') ?>">
                                 <a href="<?= base_url('operator/order_list') ?>">
                                     <i class="las la-minus"></i><span>Order List</span>
                                 </a>
@@ -158,6 +163,12 @@
                         <a href="<?= base_url('customer/dashboard') ?>">
                             <i class="las la-tachometer-alt font-size-32"></i>
                             <span class="ml-4">Dashboards</span>
+                        </a>
+                    </li>
+                    <li class="<?= set_active(['order_list'], 'active', 2) ?> <?= set_active_with_from('order_detail', 'list') ?>">
+                        <a href="<?= base_url('customer/order_list') ?>">
+                            <i class="las la-history font-size-32"></i>
+                            <span class="ml-4">History Transaksi</span>
                         </a>
                     </li>
                 <?php } ?>

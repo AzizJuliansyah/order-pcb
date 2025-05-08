@@ -13,6 +13,8 @@ class Admin extends CI_Controller {
 
 		date_default_timezone_set('Asia/Jakarta');
 
+		require_once APPPATH . '../vendor/autoload.php';
+
         $this->load->model('User_model');
         $this->load->model('Order_model');
         $this->load->library('form_validation');
@@ -900,15 +902,39 @@ class Admin extends CI_Controller {
 				$input_total_price = $this->input->post('total_price');
 				$clean_total_price = preg_replace('/[^\d]/', '', $input_total_price);
 				if ($order['total_price'] == null) {
+
+					$midtrans_server_key = $this->db->get_where('settings', ['settings_id' => '6'])->row_array();
+					$shipping_info = json_decode($order['shipping_info'], true);
+
+					\Midtrans\Config::$serverKey = $midtrans_server_key['item'];
+					\Midtrans\Config::$isProduction = false;
+					\Midtrans\Config::$isSanitized = true;
+					\Midtrans\Config::$is3ds = true;
+
+					$params = [
+						'transaction_details' => [
+							'order_id' => $order['code'],
+							'date' => $order['date_created'],
+							'gross_amount' => $clean_total_price,
+						],
+						'customer_details' => [
+							'first_name'    => $shipping_info['nama'],
+							'phone'         => $shipping_info['nomor'],
+
+						],
+					];
+
+					$snapToken = \Midtrans\Snap::getSnapToken($params);
+
 					$data = [
 						'total_price' => $clean_total_price,
 						'order_status' => 'order_confirmed',
 						'operator' => $operator_id,
 						'admin' => $admin_id,
+						'snap_token' => $snapToken,
 					];
 				} else {
 					$data = [
-						'order_status' => 'order_confirmed',
 						'operator' => $operator_id,
 						'admin' => $admin_id,
 					];

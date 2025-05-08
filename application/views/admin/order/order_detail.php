@@ -136,25 +136,35 @@
                                              <div class="form-group mt-3 ml-3">
                                                 <div class="profile-line m-0 d-flex align-items-center justify-content-between position-relative">
                                                    <ul class="list-inline p-0 m-0 w-100">
-                                                      <?php foreach ($shipping_status_list as $item): ?>
-                                                         <li>
-                                                            <div class="row align-items-top">
-                                                               <div class="col-md-12">
-                                                                  <div class="media profile-media pb-3 align-items-top">
-                                                                     <div class="profile-dots border-primary mt-1"></div>
-                                                                     <div class="ml-4">
-                                                                        <h6 style="margin-bottom: -8px;">
-                                                                           <?= get_shipping_status_name($item['shipping_id']) ?>
-                                                                        </h6>
-                                                                        <small class="text-muted">
-                                                                           <?= format_bulan($item['date']) ?>
-                                                                        </small>
-                                                                     </div>
-                                                                  </div>   
+                                                      <?php if (!empty($shipping_status_list)): ?>
+                                                         <?php foreach ($shipping_status_list as $item): ?>
+                                                            <li>
+                                                               <div class="row align-items-top">
+                                                                  <div class="col-md-12">
+                                                                     <div class="media profile-media pb-3 align-items-top">
+                                                                        <div class="profile-dots border-primary mt-1"></div>
+                                                                        <div class="ml-4">
+                                                                           <h6 style="margin-bottom: -8px;">
+                                                                              <?= get_shipping_status_name($item['shipping_id']) ?>
+                                                                           </h6>
+                                                                           <small class="text-muted">
+                                                                              <?= format_bulan($item['date']) ?>
+                                                                           </small>
+                                                                        </div>
+                                                                     </div>   
+                                                                  </div>
                                                                </div>
+                                                            </li>
+                                                         <?php endforeach; ?>
+                                                      <?php else: ?>
+                                                         <div class="col-12">
+                                                            <div class="text-center">
+                                                                  <i class="las la-box-open text-muted" style="font-size: 5rem;"></i>
+                                                                  <h6 class="text-muted">Belum ada history pengiriman</h6>
+                                                                  <small class="text-muted">Semua history yang masuk akan ditampilkan di sini.</small>
                                                             </div>
-                                                         </li>
-                                                      <?php endforeach; ?>
+                                                         </div>
+                                                      <?php endif; ?>
                                                    </ul>
                                                 </div>
                                              </div>
@@ -415,7 +425,27 @@
                                     <?php endif; ?>
 
                                  </div>
-                         
+                                 <div class="row mb-3">
+                                    <div class="offset-lg-8 col-lg-4">
+                                       <div class="or-detail rounded">
+                                             <div class="p-3">
+                                                <h5 class="mb-3">Payment Details</h5>
+                                                <div class="mb-2">
+                                                   <h6>Sub Total</h6>
+                                                   <p><?= $order['total_price'] == 0 ? '-' : 'Rp. ' . number_format($order['total_price'], 2, ',', '.') ?></p>
+                                                </div>
+                                                <div>
+                                                   <h6>Discount</h6>
+                                                   <p>-</p>
+                                                </div>
+                                             </div>
+                                             <div class="ttl-amt py-2 px-3 d-flex justify-content-between align-items-center">
+                                                <h6>Total</h6>
+                                                <h5 class="text-primary font-weight-700"><?= $order['total_price'] == 0 ? '-' : 'Rp. ' . number_format($order['total_price'], 2, ',', '.') ?></h5>
+                                             </div>
+                                       </div>
+                                    </div>
+                                 </div>
                            </div>
                         </div>
                      </div>  

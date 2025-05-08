@@ -7,7 +7,7 @@
                         <div class="card bottom-right shadow-showcase">
                             <div class="card-body">
                                 <?= form_open('admin/order_list', ['method' => 'post']) ?>
-                                    <div class="d-flex justify-content-between row breadcrumb-content">
+                                    <div class="row breadcrumb-content">
                                         <div class="flex-grow-1 mb-2 ml-1">
                                             <div class="iq-search-bar">
                                                 <div class="searchbox">
@@ -53,7 +53,7 @@
 
                                                                 <div class="mb-2"><strong>Order Status</strong></div>
                                                                 <?php 
-                                                                $order_statuses = ['order_pending', 'order_processing', 'order_packing', 'order_shipping', 'order_completed', 'order_cancelled', 'order_refunded', 'order_failed'];
+                                                                $order_statuses = ['order_pending', 'order_confirmed', 'order_processing', 'order_completed', 'order_cancelled', 'order_refunded', 'order_failed'];
                                                                 foreach ($order_statuses as $status): ?>
                                                                     <div class="form-check">
                                                                         <input class="form-check-input" type="radio" name="order_status" id="order_<?= $status ?>" value="<?= $status ?>"

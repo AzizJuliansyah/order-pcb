@@ -58,4 +58,18 @@ if (!function_exists('get_shipping_status_name')) {
     }
 }
 
+if (!function_exists('get_midtrans_credential')) {
+    function get_midtrans_credential($settings_id) {
+        $CI =& get_instance();
+        $CI->load->database();
+
+        $query = $CI->db->get_where('settings', ['settings_id' => $settings_id])->row();
+        if ($query) {
+            return $query->item;
+        }
+
+        return '-';
+    }
+}
+
 ?>

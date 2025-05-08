@@ -37,7 +37,7 @@ class Operator extends CI_Controller {
 		$data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
 		$data['title'] = 'Order List Page';
 
-		
+		$order_status = $this->input->post('order_status');
 		$keyword = $this->input->post('q');
 
 		$dari = $this->input->post('dari');
@@ -53,6 +53,9 @@ class Operator extends CI_Controller {
 		$this->db->join('user', 'user.id = orders.user_id', 'left');
 		$this->db->where('orders.operator', $user_id);
 		
+		if (!empty($order_status)) {
+			$this->db->where('orders.order_status', $order_status);
+		}
 		if (!empty($keyword)) {
 			$this->db->group_start();
 			$this->db->like('user.nama', $keyword);
@@ -70,6 +73,9 @@ class Operator extends CI_Controller {
 		$this->db->join('user', 'user.id = orders.user_id', 'left');
 		$this->db->where('orders.operator', $user_id);
 		
+		if (!empty($order_status)) {
+			$this->db->where('orders.order_status', $order_status);
+		}
 		if (!empty($keyword)) {
 			$this->db->group_start();
 			$this->db->like('user.nama', $keyword);
@@ -116,7 +122,7 @@ class Operator extends CI_Controller {
 		$data['pagination_links'] = $this->pagination->create_links();
 
 		// Untuk menyimpan input ke view
-		
+		$data['selected_order_status'] = $order_status;
 		$data['search_keyword'] = $keyword;
 		$data['dari'] = $dari;
 		$data['sampai'] = $sampai;

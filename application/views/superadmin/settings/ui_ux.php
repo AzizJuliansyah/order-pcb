@@ -11,17 +11,14 @@
 <div class="wrapper">
     <div class="content-page">
         <div class="container-fluid">
-            <div class="row m-1">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb mb-0">
-                        <li class="breadcrumb-item active" aria-current="page">Settings</li>
-                        <li class="breadcrumb-item active" aria-current="page">Auth Google Settings</li>
-                    </ol>
-                </nav>
-            </div>
-            <div class="row mt-3">
+            <div class="row">
                 <div class="col-sm-12">
                     <div class="card top-left shadow-showcase">
+                        <div class="card-header d-flex justify-content-between">
+                            <div class="header-title">
+                                <h4 class="card-title"><?= $title ?></h4>
+                            </div>
+                        </div>
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table id="datatable" class="table data-table table-striped mt-4" role="grid"
