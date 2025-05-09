@@ -136,33 +136,37 @@
                                                          <td><small><?= format_bulan($order['date_created']) ?></small></td>
                                                          <td>
                                                             <?php if ($order['payment_status'] == 'payment_pending'): ?>
-                                                               <span class="badge badge-warning font-size-12 m-2">Menunggu Pembayaran</span>
+                                                               <span class="badge badge-warning font-size-12">Menunggu Pembayaran</span>
                                                             <?php elseif ($order['payment_status'] == 'payment_process'): ?>
-                                                               <span class="badge badge-primary font-size-12 m-2">Pembayaran Diproses</span>
+                                                               <span class="badge badge-primary font-size-12">Pembayaran Diproses</span>
                                                             <?php elseif ($order['payment_status'] == 'payment_success'): ?>
-                                                               <span class="badge badge-success font-size-12 m-2">Pembayaran Berhasil</span>
+                                                               <span class="badge badge-success font-size-12">Pembayaran Berhasil</span>
+                                                               <?php if (!empty($order['payment_info'])) { ?>
+                                                                  <?php $payment_info = json_decode($order['payment_info'], true); ?>
+                                                                  <p class="font-size-12 mb-0"><?= format_bulan($payment_info['payment_time']) ?></p>
+                                                               <?php } ?>
                                                             <?php elseif ($order['payment_status'] == 'payment_cancelled'): ?>
-                                                               <span class="badge badge-dark font-size-12 m-2">Pembayaran Dibatalkan</span>
+                                                               <span class="badge badge-dark font-size-12">Pembayaran Dibatalkan</span>
                                                             <?php else: ?>
-                                                               <span class="badge badge-light font-size-12 m-2">Status Tidak Diketahui</span>
+                                                               <span class="badge badge-light font-size-12">Status Tidak Diketahui</span>
                                                             <?php endif; ?>
 
                                                             <?php if ($order['order_status'] == 'order_pending'): ?>
-                                                               <span class="badge border border-warning text-warning font-size-12 m-2">Pesanan Menunggu</span>
+                                                               <span class="badge border border-warning text-warning font-size-12">Pesanan Menunggu</span>
                                                             <?php elseif ($order['order_status'] == 'order_confirmed'): ?>
-                                                               <span class="badge border border-secondary text-secondary font-size-12 m-2">Pesanan Diterima</span>
+                                                               <span class="badge border border-secondary text-secondary font-size-12">Pesanan Diterima</span>
                                                             <?php elseif ($order['order_status'] == 'order_processing'): ?>
-                                                               <span class="badge border border-primary text-primary font-size-12 m-2">Pesanan Diproses</span>
+                                                               <span class="badge border border-primary text-primary font-size-12">Pesanan Diproses</span>
                                                             <?php elseif ($order['order_status'] == 'order_completed'): ?>
-                                                               <span class="badge border border-success text-success font-size-12 m-2">Pesanan Selesai</span>
+                                                               <span class="badge border border-success text-success font-size-12">Pesanan Selesai</span>
                                                             <?php elseif ($order['order_status'] == 'order_cancelled'): ?>
-                                                               <span class="badge border border-danger text-danger font-size-12 m-2">Pesanan Dibatalkan</span>
+                                                               <span class="badge border border-danger text-danger font-size-12">Pesanan Dibatalkan</span>
                                                             <?php elseif ($order['order_status'] == 'order_refunded'): ?>
-                                                               <span class="badge border border-info text-info font-size-12 m-2">Pesanan di refund</span>
+                                                               <span class="badge border border-info text-info font-size-12">Pesanan di refund</span>
                                                             <?php elseif ($order['order_status'] == 'order_failed'): ?>
-                                                               <span class="badge border border-dark text-dark font-size-12 m-2">Pesanan gagal</span>
+                                                               <span class="badge border border-dark text-dark font-size-12">Pesanan gagal</span>
                                                             <?php else: ?>
-                                                               <span class="badge border border-light text-light font-size-12 m-2">Status Tidak Diketahui</span>
+                                                               <span class="badge border border-light text-light font-size-12">Status Tidak Diketahui</span>
                                                             <?php endif; ?>
                                                          </td>
                                                          <td>
@@ -360,14 +364,16 @@
                                                 <h5 class="text-primary font-weight-700"><?= $order['total_price'] == 0 ? '-' : 'Rp. ' . number_format($order['total_price'], 2, ',', '.') ?></h5>
                                              </div>
                                              <?php if (!empty($order['snap_token'])): ?>
-                                                <div class="d-flex justify-content-end mr-2 mb-2">
-                                                   <button type="button"
-                                                            class="btn btn-primary-dark"
-                                                            id="pay-button"
-                                                            data-snap-token="<?= $order['snap_token']; ?>">
-                                                         <i class="las la-file-invoice-dollar font-size-20"></i> Bayar
-                                                   </button>
-                                                </div>
+                                                <?php if ($order['user_id'] == $this->session->userdata('user_id')): ?>
+                                                   <div class="d-flex justify-content-end mr-2 mb-2">
+                                                      <button type="button"
+                                                               class="btn btn-primary-dark"
+                                                               id="pay-button"
+                                                               data-snap-token="<?= $order['snap_token']; ?>">
+                                                            <i class="las la-file-invoice-dollar font-size-20"></i> Bayar
+                                                      </button>
+                                                   </div>
+                                                <?php endif; ?>
                                              <?php endif; ?>
 
                                     </div>
@@ -391,19 +397,19 @@
 <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="<?= get_midtrans_credential(5) ?>"></script>
 <script type="text/javascript">
    document.getElementById('pay-button').addEventListener('click', function (e) {
-      var snapToken = e.target.getAttribute('data-snap-token');
+      var snapToken = e.currentTarget.getAttribute('data-snap-token');
       snap.pay(snapToken, {
          onSuccess: function(result){
                console.log('Success:', result);
-               window.location.href = '<?= base_url('order/payment_success'); ?>';
+               window.location.href = '<?= base_url('index/index_payment?status=success&order_id=') ?>' + result.order_id;
          },
          onPending: function(result){
                console.log('Pending:', result);
-               window.location.href = '<?= base_url('order/payment_pending'); ?>';
+               window.location.href = '<?= base_url('index/index_payment?status=pending&order_id=') ?>' + result.order_id;
          },
          onError: function(result){
                console.log('Error:', result);
-               alert('Pembayaran gagal, silakan coba lagi.');
+               window.location.href = '<?= base_url('index/index_payment?status=error&order_id=') ?>' + result.order_id;
          },
          onClose: function(){
                console.log('Popup closed without finishing the payment');
@@ -411,6 +417,7 @@
       });
    });
 </script>
+
 
 
 <script>

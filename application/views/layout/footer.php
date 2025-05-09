@@ -3,7 +3,7 @@
         $method = $this->router->fetch_method();
     ?>
 
-    <?php if (!in_array($method, ['login', 'register', 'forgot_password', 'reset_password'])): ?>
+    <?php if (!in_array($method, ['login', 'register', 'forgot_password', 'reset_password', 'checkout_success', 'payment_success', 'payment_pending', 'payment_failed'])): ?>
         <!-- Footer -->
         <footer class="iq-footer">
             <div class="container-fluid">

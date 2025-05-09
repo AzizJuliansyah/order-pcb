@@ -575,7 +575,7 @@ class Admin extends CI_Controller {
 		$page = (int) $this->input->get('page');
 		$page = $page < 1 ? 1 : $page;
 
-		$limit = 10;
+		$limit = 9;
 		$offset = ($page - 1) * $limit;
 
 		$this->db->from('orders');
@@ -684,7 +684,7 @@ class Admin extends CI_Controller {
 		$page = (int) $this->input->get('page');
 		$page = $page < 1 ? 1 : $page;
 
-		$limit = 10;
+		$limit = 9;
 		$offset = ($page - 1) * $limit;
 
 		$this->db->from('orders');
@@ -843,14 +843,12 @@ class Admin extends CI_Controller {
 			
 	}
 
-	public function terima_order()
+	public function handle_order_action()
 	{
 		$redirect = $this->input->server('HTTP_REFERER') ?? base_url('admin/order_list');
-
+		$action = $this->input->post('action');
 
 		$encrypted_order_id = $this->input->post('order_id');
-		$encrypted_operator_id = $this->input->post('operator_id');
-
 		if (empty($encrypted_order_id)) {
 			$this->session->set_flashdata('error', 'Gagal mengakses halaman, Order ID tidak ada.');
 			redirect($redirect);
@@ -868,41 +866,44 @@ class Admin extends CI_Controller {
 			redirect($redirect);
 		}
 
-		$operator_id = decrypt_id($encrypted_operator_id);
-		if (empty($operator_id)) {
-			$this->session->set_flashdata('error', 'Gagal menerima order, Operator tidak dipilih.');
-			redirect($redirect);
-		}
-		$operator = $this->db->get_where('user', ['id' => $operator_id, 'role_id' => 3])->row_array();
-		if (!$operator) {
-			$this->session->set_flashdata('error', 'Operator tidak valid atau bukan role operator.');
-			redirect($redirect);
-		}
+		if ($action === 'terima_order') {
+			// ---- TERIMA ORDER LOGIC ----
+			$encrypted_operator_id = $this->input->post('operator_id');
+			$operator_id = decrypt_id($encrypted_operator_id);
+			if (empty($operator_id)) {
+				$this->session->set_flashdata('error', 'Gagal menerima order, Operator tidak dipilih.');
+				redirect($redirect);
+			}
 
-        $need_validate = false;
+			$operator = $this->db->get_where('user', ['id' => $operator_id, 'role_id' => 3])->row_array();
+			if (!$operator) {
+				$this->session->set_flashdata('error', 'Operator tidak valid atau bukan role operator.');
+				redirect($redirect);
+			}
 
-		if ($order['total_price'] == null) {
-			$this->form_validation->set_rules('total_price', 'Total Price', 'required|trim|numeric', [
-				'required' => '%s wajib diisi.',
-				'numeric' => '%s harus berupa angka.'
-			]);
-			$need_validate = true;
-		}
+			$need_validate = false;
+			if ($order['total_price'] == null) {
+				$this->form_validation->set_rules('total_price', 'Total Price', 'required|trim|numeric', [
+					'required' => '%s wajib diisi.',
+					'numeric' => '%s harus berupa angka.'
+				]);
+				$need_validate = true;
+			}
 
-		if ($need_validate && $this->form_validation->run() === FALSE) {
-			$this->session->set_flashdata('old', [
-				'total_price' => set_value('total_price'),
-			]);
-			$this->session->set_flashdata('errors', [
-				'total_price' => form_error('total_price'),
-			]);
-			redirect($redirect);
-		} else {
-			$admin_id = $this->session->userdata('user_id');
+			if ($need_validate && $this->form_validation->run() === FALSE) {
+				$this->session->set_flashdata('old', [
+					'total_price' => set_value('total_price'),
+				]);
+				$this->session->set_flashdata('errors', [
+					'total_price' => form_error('total_price'),
+				]);
+				redirect($redirect);
+			} else {
+				$admin_id = $this->session->userdata('user_id');
 				$input_total_price = $this->input->post('total_price');
 				$clean_total_price = preg_replace('/[^\d]/', '', $input_total_price);
-				if ($order['total_price'] == null) {
 
+				if ($order['total_price'] == null) {
 					$midtrans_server_key = $this->db->get_where('settings', ['settings_id' => '6'])->row_array();
 					$shipping_info = json_decode($order['shipping_info'], true);
 
@@ -913,14 +914,13 @@ class Admin extends CI_Controller {
 
 					$params = [
 						'transaction_details' => [
-							'order_id' => $order['code'],
+							'order_id' => $order['order_code'],
 							'date' => $order['date_created'],
 							'gross_amount' => $clean_total_price,
 						],
 						'customer_details' => [
 							'first_name'    => $shipping_info['nama'],
 							'phone'         => $shipping_info['nomor'],
-
 						],
 					];
 
@@ -940,15 +940,57 @@ class Admin extends CI_Controller {
 					];
 				}
 
-				$admin_id = $this->session->userdata('user_id');
 				$this->Order_model->update_orders($order_id, $data);
 
-		}
-			
+				$this->session->set_flashdata('success', 'Order berhasil diterima.');
+				redirect($redirect);
+			}
 
-		$this->session->set_flashdata('success', 'Operator berhasil ditetapkan.');
-		redirect($redirect);
+		} elseif ($action === 'update_snap_token') {
+			// ---- UPDATE SNAP TOKEN LOGIC ----
+			$midtrans_server_key = $this->db->get_where('settings', ['settings_id' => '6'])->row_array();
+			$shipping_info = json_decode($order['shipping_info'], true);
+
+			\Midtrans\Config::$serverKey = $midtrans_server_key['item'];
+			\Midtrans\Config::$isProduction = false;
+			\Midtrans\Config::$isSanitized = true;
+			\Midtrans\Config::$is3ds = true;
+
+			$params = [
+				'transaction_details' => [
+					'order_id' => $order['order_code'],
+					'date' => $order['date_created'],
+					'gross_amount' => $order['total_price'],
+				],
+				'customer_details' => [
+					'first_name'    => $shipping_info['nama'],
+					'phone'         => $shipping_info['nomor'],
+				],
+			];
+
+			try {
+				$snapToken = \Midtrans\Snap::getSnapToken($params);
+
+				$data = [
+					'snap_token' => $snapToken,
+				];
+
+				$this->db->where('order_id', $order_id);
+				$this->db->update('orders', $data);
+
+				$this->session->set_flashdata('success', 'Snap Token berhasil diupdate.');
+			} catch (\Exception $e) {
+				$error_message = $e->getMessage();
+				$this->session->set_flashdata('error', 'Gagal update Snap Token: ' . $error_message);
+			}
+
+			redirect($redirect);
+		} else {
+			$this->session->set_flashdata('error', 'Aksi tidak dikenali.');
+			redirect($redirect);
+		}
 	}
+
 
 
 

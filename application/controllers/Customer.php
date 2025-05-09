@@ -49,7 +49,7 @@ class Customer extends CI_Controller {
         $page = (int) $this->input->get('page');
         $page = $page < 1 ? 1 : $page;
 
-        $limit = 10;
+        $limit = 9;
         $offset = ($page - 1) * $limit;
 
         // Hitung total rows
@@ -148,6 +148,18 @@ class Customer extends CI_Controller {
 		$order = $this->db->get_where('orders', ['order_id' => $order_id])->row_array();
 		if (!$order) {
 			$this->session->set_flashdata('error', 'Gagal mengakses halaman, Order ID tidak ada.');
+			redirect("customer/order_list");
+		}
+
+        $user_info = $this->db->get_where('user', ['id' => $order['user_id']])->row_array();
+		$user_id = $this->session->userdata('user_id');
+
+		if (!$user_info) {
+			$this->session->set_flashdata('error', 'Gagal mengunduh PDF, data user tidak ditemukan.');
+			redirect("customer/order_list");
+		}
+		if ($order['user_id'] != $user_id) {
+			$this->session->set_flashdata('error', 'Anda tidak memiliki izin untuk mengakses order ini.');
 			redirect("customer/order_list");
 		}
 

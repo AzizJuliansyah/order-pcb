@@ -10,7 +10,7 @@
                     </ol>
                 </nav>
             </div>
-            <div class="row mt-3">
+            <div class="row">
                 <div class="col-lg-12">
                     <div class="card bottom-right shadow-showcase">
                         <div class="card-body">
@@ -228,7 +228,6 @@
                                             <th>Order Code</th>
                                             <th>Profile</th>
                                             <th>Name</th>
-                                            <th>Email</th>
                                             <th>Status</th>
                                             <th>Order Created Date</th>
                                             <th style="min-width: 100px">Action</th>
@@ -256,7 +255,6 @@
                                                     <?php } ?>
                                                 </td>
                                                 <td><?= $item['nama'] ?></td>
-                                                <td><?= $item['email'] ?></td>
                                                 <td>
                                                     <div class="d-flex align-items-center">
                                                         <?php if ($item['payment_status'] == 'payment_pending'): ?>

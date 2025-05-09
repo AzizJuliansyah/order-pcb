@@ -2,16 +2,7 @@
 <div class="wrapper">
     <div class="content-page">
         <div class="container-fluid">
-            <div class="row m-1">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb mb-0">
-                        <li class="breadcrumb-item"><a href="<?= base_url('home') ?>">Home</a></li>
-                        <li class="breadcrumb-item"><a href="<?= base_url('user/profile') ?>">Profile</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Edit Profile</li>
-                    </ol>
-                </nav>
-            </div>
-            <div class="row mt-3">
+            <div class="row">
                 <div class="col-lg-12">
                     <div class="card top-left shadow-showcase">
                         <div class="card-body">
@@ -138,13 +129,14 @@
                                             <?php endif; ?>
                                         </div>
                                     </div>
-                                    <button type="submit" class="btn btn-outline-primary mr-2">
-                                        <div class="d-flex align-items-center">
-                                            <i class="las la-user-edit font-size-20"></i>
-                                            <span>Edit Profile</span>
-                                        </div>
-                                    </button>
-                                    <button type="reset" class="btn iq-bg-danger">Reset Perubahan</button>
+                                    <div class="d-flex justify-content-end">
+                                        <button type="submit" class="btn btn-outline-primary mr-2">
+                                            <div class="d-flex align-items-center">
+                                                <i class="las la-user-edit font-size-20"></i>
+                                                <span>Edit Profile</span>
+                                            </div>
+                                        </button>
+                                    </div>
                                     <?= form_close() ?>
                                 </div>
                                 <div class="tab-pane fade <?= ($active_tab == 'change-pwd') ? 'active show' : '' ?>" id="change-pwd" role="tabpanel" aria-labelledby="profile-tab-two">
@@ -199,13 +191,14 @@
                                             <?php endif; ?>
                                         </div>
                                     </div>
-                                    <button type="submit" class="btn btn-outline-primary mr-2">
-                                        <div class="d-flex align-items-center">
-                                            <i class="las la-unlock font-size-20"></i>
-                                            <span>Ganti Password</span>
-                                        </div>
-                                    </button>
-                                    <button type="reset" class="btn iq-bg-danger">Reset Perubahan</button>
+                                    <div class="d-flex justify-content-end">
+                                        <button type="submit" class="btn btn-outline-primary mr-2">
+                                            <div class="d-flex align-items-center">
+                                                <i class="las la-unlock font-size-20"></i>
+                                                <span>Ganti Password</span>
+                                            </div>
+                                        </button>
+                                    </div>
                                     <?= form_close() ?>
                                 </div>
                             </div>

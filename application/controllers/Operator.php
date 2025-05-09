@@ -46,7 +46,7 @@ class Operator extends CI_Controller {
 		$page = (int) $this->input->get('page');
 		$page = $page < 1 ? 1 : $page;
 
-		$limit = 10;
+		$limit = 9;
 		$offset = ($page - 1) * $limit;
 
 		$this->db->from('orders');
@@ -150,7 +150,7 @@ class Operator extends CI_Controller {
 		$page = (int) $this->input->get('page');
 		$page = $page < 1 ? 1 : $page;
 
-		$limit = 10;
+		$limit = 9;
 		$offset = ($page - 1) * $limit;
 
 		$this->db->from('orders');

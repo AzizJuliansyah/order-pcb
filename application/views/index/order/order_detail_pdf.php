@@ -20,9 +20,6 @@
             transform: translate(-50%, -50%);
             z-index: -1;
          }
-        h1, h2, h3 {
-            margin-bottom: 5px;
-        }
         .text-uppercase {
             text-transform: uppercase;
         }
@@ -34,49 +31,6 @@
         th {
             background-color: #eee;
         }
-        .or-container {
-    display: flex;
-    justify-content: flex-end;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.or-detail {
-    width: 300px;
-    border: 1px solid #e0e0e0;
-    border-radius: 10px;
-    background-color: #f8f9fa;
-    padding: 15px;
-    font-family: sans-serif;
-    font-size: 14px;
-}
-
-.or-detail h5 {
-    margin: 0 0 15px 0;
-}
-
-.or-detail-section {
-    margin-bottom: 10px;
-}
-
-.or-detail-section h6 {
-    margin: 0;
-    font-size: 13px;
-    font-weight: normal;
-}
-
-.or-detail-section p {
-    margin: 2px 0 0 0;
-}
-
-.or-detail-total {
-    border-top: 1px solid #e0e0e0;
-    padding: 10px 0 0 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
     </style>
 </head>
 <body>
@@ -118,7 +72,11 @@
                      <?php elseif ($order['payment_status'] == 'payment_process'): ?>
                         <p>Pembayaran Diproses</p>
                      <?php elseif ($order['payment_status'] == 'payment_success'): ?>
-                        <p>Pembayaran Berhasil</p>
+                        <p style="margin-bottom: -3px;">Pembayaran Berhasil</p>
+                        <?php if (!empty($order['payment_info'])) { ?>
+                           <?php $payment_info = json_decode($order['payment_info'], true); ?>
+                           <small><?= format_bulan($payment_info['payment_time']) ?></small>
+                        <?php } ?>
                      <?php elseif ($order['payment_status'] == 'payment_cancelled'): ?>
                         <p>Pembayaran Dibatalkan</p>
                      <?php else: ?>
@@ -311,25 +269,34 @@
          <?php endif; ?>
       </div>
 
-      <div style="display: flex;
-    justify-content: flex-end;
-    width: 100%;
-    box-sizing: border-box;">
-         <div class="or-detail">
-            <h3><strong>Payment Details</strong></h3>
-            <div class="or-detail-section">
-                  <h6>Sub Total</h6>
-                  <p><?= $order['total_price'] == 0 ? '-' : 'Rp. ' . number_format($order['total_price'], 2, ',', '.') ?></p>
-            </div>
-            <div class="or-detail-section">
-                  <h6>Discount</h6>
-                  <p>-</p>
-            </div>
-            <div class="or-detail-total">
-                  <h4><strong>Total</strong></h4>
-                  <h4><?= $order['total_price'] == 0 ? '-' : 'Rp. ' . number_format($order['total_price'], 2, ',', '.') ?></h4>
-            </div>
-         </div>
+      <div style="display: flex; justify-content: flex-end; width: 100%;">
+         <table style="border-collapse: collapse; width: auto; min-width: 220px; margin-left: auto;">
+            <thead>
+               <tr>
+                  <th style="border: 1px solid #999; padding: 8px; text-align: left;"><strong>Payment Details</strong></th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr>
+                  <td style="padding: 8px; text-align: left;">
+                     <h4 style="margin-bottom: -2px;">Sub Total</h4>
+                     <span><?= $order['total_price'] == 0 ? '-' : 'Rp. ' . number_format($order['total_price'], 2, ',', '.') ?></span>
+                  </td>
+               </tr>
+               <tr>
+                  <td style="padding: 8px; text-align: left;">
+                     <h4 style="margin-bottom: -2px;">Discount</h4>
+                     <span>-</span>
+                  </td>
+               </tr>
+               <tr>
+                  <td style="padding: 8px; text-align: left;">
+                     <h3 style="margin-bottom: -2px;"><strong>Total</strong></h3>
+                     <span><?= $order['total_price'] == 0 ? '-' : 'Rp. ' . number_format($order['total_price'], 2, ',', '.') ?></span>
+                  </td>
+               </tr>
+            </tbody>
+         </table>
       </div>
    </div>
 </body>

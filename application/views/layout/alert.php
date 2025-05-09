@@ -53,14 +53,14 @@
                 popup: 'colored-toast',
             },
             showConfirmButton: false,
-            timer: 3000,
+            timer: 5000,
             timerProgressBar: true,
         })
 
         ;(async () => {
             Toast.fire({
                 icon: 'error',
-                title: "<?= $this->session->flashdata('error') ?>",
+                title: <?= json_encode($this->session->flashdata('error')) ?>,
             })
         })()
     </script>
@@ -81,7 +81,7 @@
         ;(async () => {
             Toast.fire({
                 icon: 'success',
-                title: "<?= $this->session->flashdata('success') ?>",
+                title: <?= json_encode($this->session->flashdata('success')) ?>,
             })
         })()
     </script>

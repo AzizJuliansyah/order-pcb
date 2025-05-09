@@ -2,7 +2,7 @@
 <div class="wrapper">
     <div class="content-page">
         <div class="container-fluid">
-            <div class="row mt-3">
+            <div class="row">
                 <div class="col-6 col-md-6 col-sm-12">
                     <div class="card top-left shadow-showcase">
                         <div class="card-header">

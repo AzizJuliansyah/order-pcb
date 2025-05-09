@@ -40,11 +40,6 @@ class Order_model extends CI_Model
         return $this->db->delete('cnc_finishing');
     }
 
-    public function update_orders($order_id, $data)
-    {
-        $this->db->where('order_id', $order_id);
-        return $this->db->update('orders', $data);
-    }
 
 
     public function insert_shipping_status($data)
@@ -131,4 +126,11 @@ class Order_model extends CI_Model
     {
         return $this->db->insert('cart', $data);
     }
+
+    public function update_orders($order_id, $data)
+    {
+        $this->db->where('order_id', $order_id);
+        return $this->db->update('orders', $data);
+    }
+
 }

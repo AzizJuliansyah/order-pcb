@@ -26,7 +26,7 @@
                                     </a>
                                  </div>
                                  <div class="form-group">
-                                    <?= form_open('admin/terima_order', ['id' => 'TerimaOrderForm']) ?>
+                                    <?= form_open('admin/handle_order_action', ['id' => 'TerimaOrderForm']) ?>
                                        <?php if (!empty($order['total_price'])) { ?>
                                           <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#TerimaOrder">
                                              Orderan Diterima
@@ -68,6 +68,15 @@
                                                          <?php endif; ?>
                                                       </div>
                                                    </div>
+                                                   <?php if (!empty($order['snap_token'])) { ?>
+                                                      <div class="form-group">
+                                                         <label for="snap_token" class="font-size-14" style="margin-bottom: -13px;">SnapToken :</label>
+                                                         <input type="text" class="form-control border-radius-5 max-height-40" id="snap_token" value="<?= $order['snap_token'] ?>" disabled>
+                                                      </div>
+                                                         <div class="d-flex justify-content-end">
+                                                            <button type="submit" name="action" value="update_snap_token" class="btn btn-outline-secondary">Update SnapToken</button>
+                                                         </div>
+                                                   <?php } ?>
 
                                                    <div class="col-12 mt-2 mb-2">
                                                       <div class="divider-text">
@@ -89,9 +98,9 @@
                                                 <div class="modal-footer">
                                                    <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
                                                    <?php if (!empty($order['operator'])) { ?>
-                                                      <button type="submit" class="btn btn-outline-secondary">Ganti Operator</button>
+                                                      <button type="submit" name="action" value="terima_order" class="btn btn-outline-secondary">Ganti Operator</button>
                                                    <?php } else { ?>
-                                                      <button type="submit" class="btn btn-outline-success">Terima Orderan</button>
+                                                      <button type="submit" name="action" value="terima_order" class="btn btn-outline-success">Terima Orderan</button>
                                                    <?php } ?>
                                                 </div>
                                              </div>
@@ -220,33 +229,37 @@
                                                          <td><small><?= format_bulan($order['date_created']) ?></small></td>
                                                          <td>
                                                             <?php if ($order['payment_status'] == 'payment_pending'): ?>
-                                                               <span class="badge badge-warning font-size-12 m-2">Menunggu Pembayaran</span>
+                                                               <span class="badge badge-warning font-size-12">Menunggu Pembayaran</span>
                                                             <?php elseif ($order['payment_status'] == 'payment_process'): ?>
-                                                               <span class="badge badge-primary font-size-12 m-2">Pembayaran Diproses</span>
+                                                               <span class="badge badge-primary font-size-12">Pembayaran Diproses</span>
                                                             <?php elseif ($order['payment_status'] == 'payment_success'): ?>
-                                                               <span class="badge badge-success font-size-12 m-2">Pembayaran Berhasil</span>
+                                                               <span class="badge badge-success font-size-12">Pembayaran Berhasil</span>
+                                                               <?php if (!empty($order['payment_info'])) { ?>
+                                                                  <?php $payment_info = json_decode($order['payment_info'], true); ?>
+                                                                  <p class="font-size-12 mb-0"><?= format_bulan($payment_info['payment_time']) ?></p>
+                                                               <?php } ?>
                                                             <?php elseif ($order['payment_status'] == 'payment_cancelled'): ?>
-                                                               <span class="badge badge-dark font-size-12 m-2">Pembayaran Dibatalkan</span>
+                                                               <span class="badge badge-dark font-size-12">Pembayaran Dibatalkan</span>
                                                             <?php else: ?>
-                                                               <span class="badge badge-light font-size-12 m-2">Status Tidak Diketahui</span>
+                                                               <span class="badge badge-light font-size-12">Status Tidak Diketahui</span>
                                                             <?php endif; ?>
 
                                                             <?php if ($order['order_status'] == 'order_pending'): ?>
-                                                               <span class="badge border border-warning text-warning font-size-12 m-2">Pesanan Menunggu</span>
+                                                               <span class="badge border border-warning text-warning font-size-12">Pesanan Menunggu</span>
                                                             <?php elseif ($order['order_status'] == 'order_confirmed'): ?>
-                                                               <span class="badge border border-secondary text-secondary font-size-12 m-2">Pesanan Diterima</span>
+                                                               <span class="badge border border-secondary text-secondary font-size-12">Pesanan Diterima</span>
                                                             <?php elseif ($order['order_status'] == 'order_processing'): ?>
-                                                               <span class="badge border border-primary text-primary font-size-12 m-2">Pesanan Diproses</span>
+                                                               <span class="badge border border-primary text-primary font-size-12">Pesanan Diproses</span>
                                                             <?php elseif ($order['order_status'] == 'order_completed'): ?>
-                                                               <span class="badge border border-success text-success font-size-12 m-2">Pesanan Selesai</span>
+                                                               <span class="badge border border-success text-success font-size-12">Pesanan Selesai</span>
                                                             <?php elseif ($order['order_status'] == 'order_cancelled'): ?>
-                                                               <span class="badge border border-danger text-danger font-size-12 m-2">Pesanan Dibatalkan</span>
+                                                               <span class="badge border border-danger text-danger font-size-12">Pesanan Dibatalkan</span>
                                                             <?php elseif ($order['order_status'] == 'order_refunded'): ?>
-                                                               <span class="badge border border-info text-info font-size-12 m-2">Pesanan di refund</span>
+                                                               <span class="badge border border-info text-info font-size-12">Pesanan di refund</span>
                                                             <?php elseif ($order['order_status'] == 'order_failed'): ?>
-                                                               <span class="badge border border-dark text-dark font-size-12 m-2">Pesanan gagal</span>
+                                                               <span class="badge border border-dark text-dark font-size-12">Pesanan gagal</span>
                                                             <?php else: ?>
-                                                               <span class="badge border border-light text-light font-size-12 m-2">Status Tidak Diketahui</span>
+                                                               <span class="badge border border-light text-light font-size-12">Status Tidak Diketahui</span>
                                                             <?php endif; ?>
                                                          </td>
                                                          <td>
