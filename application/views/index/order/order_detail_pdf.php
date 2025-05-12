@@ -73,15 +73,15 @@
                         <p>Pembayaran Diproses</p>
                      <?php elseif ($order['payment_status'] == 'payment_success'): ?>
                         <p style="margin-bottom: -3px;">Pembayaran Berhasil</p>
-                        <?php if (!empty($order['payment_info'])) { ?>
-                           <?php $payment_info = json_decode($order['payment_info'], true); ?>
-                           <small><?= format_bulan($payment_info['payment_time']) ?></small>
-                        <?php } ?>
                      <?php elseif ($order['payment_status'] == 'payment_cancelled'): ?>
                         <p>Pembayaran Dibatalkan</p>
                      <?php else: ?>
                         <p>Status Tidak Diketahui</p>
                      <?php endif; ?>
+                     <?php if (!empty($order['payment_info'])) { ?>
+                        <?php $payment_info = json_decode($order['payment_info'], true); ?>
+                        <small><?= format_bulan($payment_info['payment_time']) ?></small>
+                     <?php } ?>
 
                      <?php if ($order['order_status'] == 'order_pending'): ?>
                         <p>Pesanan Menunggu</p>

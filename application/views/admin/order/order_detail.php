@@ -40,7 +40,7 @@
                                           <div class="modal-dialog modal-dialog-scrollable" role="document">
                                           <div class="modal-content border-radius-10">
                                                 <div class="modal-header">
-                                                   <h4 class="card-title mb-0">Invoice# <?= $order['order_code'] ?></h4>
+                                                   <h4 class="card-title mb-0">Invoice # <?= $order['order_code'] ?></h4>
                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                       <span aria-hidden="true">×</span>
                                                    </button>
@@ -118,74 +118,175 @@
                         <div class="card card-block card-stretch card-height print rounded">
                            <div class="card-header d-flex justify-content-between bg-primary header-invoice">
                               <div class="iq-header-title">
-                                 <h4 class="card-title mb-0">Invoice# <?= $order['order_code'] ?></h4>
+                                 <h4 class="card-title">Invoice # <?= $order['order_code'] ?></h4>
                               </div>
-                              <div class="d-flex align-items-center justify-content-center">
-                                 <button type="button" class="btn btn-outline-warning mr-2" data-toggle="modal" data-target="#Shippingstatus"></i>Shipping Status</button>
-                                 <div id="Shippingstatus" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="ShippingstatusTitle" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-scrollable" role="document">
-                                       <div class="modal-content border-radius-10">
-                                          <div class="modal-header">
-                                             <h4 class="card-title text-dark mb-0">Invoice# <?= $order['order_code'] ?></h4>
-                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">×</span>
-                                             </button>
-                                          </div>
-                                          <div class="modal-body">
-                                             <div class="form-group">
-                                                <h6 class="card-title text-dark mb-0">Operator : <?= get_admin_name($order['operator']) ?></h6>
-                                             </div>
-
-                                             <div class="col-12">
-                                                <div class="divider-text">
-                                                   <span>History Shipping Status</span>
+                              <div class="float-right">
+                                 <div class="row justify-content-center align-items-center text-center">
+                                    <div class="col-6 col-md-auto">
+                                       <button type="button" class="btn btn-outline-white mr-2" data-toggle="modal" data-target="#Paymentinfo"></i>Payment Info</button>
+                                       <div id="Paymentinfo" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="PaymentinfoTitle" aria-hidden="true">
+                                          <div class="modal-dialog modal-dialog-scrollable" role="document">
+                                             <div class="modal-content border-radius-10">
+                                                <div class="modal-header">
+                                                   <h4 class="card-title text-dark mb-0">Invoice # <?= $order['order_code'] ?></h4>
+                                                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                      <span aria-hidden="true">×</span>
+                                                   </button>
                                                 </div>
-                                             </div>
-                                                      
-                                             <div class="form-group mt-3 ml-3">
-                                                <div class="profile-line m-0 d-flex align-items-center justify-content-between position-relative">
-                                                   <ul class="list-inline p-0 m-0 w-100">
-                                                      <?php if (!empty($shipping_status_list)): ?>
-                                                         <?php foreach ($shipping_status_list as $item): ?>
-                                                            <li>
-                                                               <div class="row align-items-top">
-                                                                  <div class="col-md-12">
-                                                                     <div class="media profile-media pb-3 align-items-top">
-                                                                        <div class="profile-dots border-primary mt-1"></div>
-                                                                        <div class="ml-4">
-                                                                           <h6 style="margin-bottom: -8px;">
-                                                                              <?= get_shipping_status_name($item['shipping_id']) ?>
-                                                                           </h6>
-                                                                           <small class="text-muted">
-                                                                              <?= format_bulan($item['date']) ?>
-                                                                           </small>
-                                                                        </div>
-                                                                     </div>   
-                                                                  </div>
-                                                               </div>
-                                                            </li>
-                                                         <?php endforeach; ?>
+                                                <div class="modal-body">
+
+                                                   <div class="col-12">
+                                                      <div class="divider-text">
+                                                         <span>Payment Information</span>
+                                                      </div>
+                                                   </div>
+                                                            
+                                                   <div class="form-group mt-3">
+                                                      <?php
+                                                         $paymentInfo = json_decode($order['payment_info'], true);
+                                                         $raw = isset($paymentInfo['raw_response']) ? $paymentInfo['raw_response'] : [];
+                                                      ?>
+
+                                                      <?php if (!empty($paymentInfo)): ?>
+                                                         <table class="table table-bordered">
+                                                            <tr>
+                                                               <th>Status</th>
+                                                               <td><?= htmlspecialchars($paymentInfo['status'] ?? '-') ?></td>
+                                                            </tr>
+                                                            <tr>
+                                                               <th>Payment Type</th>
+                                                               <td><?= htmlspecialchars($paymentInfo['payment_type'] ?? '-') ?></td>
+                                                            </tr>
+                                                            <tr>
+                                                               <th>Fraud Status</th>
+                                                               <td><?= htmlspecialchars($paymentInfo['fraud_status'] ?? '-') ?></td>
+                                                            </tr>
+                                                            <tr>
+                                                               <th>Payment Time</th>
+                                                               <td><?= htmlspecialchars($paymentInfo['payment_time'] ?? '-') ?></td>
+                                                            </tr>
+                                                            <tr>
+                                                               <th>Transaction ID</th>
+                                                               <td><?= htmlspecialchars($raw['transaction_id'] ?? '-') ?></td>
+                                                            </tr>
+                                                            <tr>
+                                                               <th>Gross Amount</th>
+                                                               <td>
+                                                                  <?php if (isset($raw['gross_amount'])): ?>
+                                                                     Rp <?= number_format($raw['gross_amount'], 0, ',', '.') ?>
+                                                                  <?php else: ?>
+                                                                     -
+                                                                  <?php endif; ?>
+                                                               </td>
+                                                            </tr>
+                                                            <tr>
+                                                               <th>Currency</th>
+                                                               <td><?= htmlspecialchars($raw['currency'] ?? '-') ?></td>
+                                                            </tr>
+                                                            <tr>
+                                                               <th>Issuer</th>
+                                                               <td><?= htmlspecialchars($raw['issuer'] ?? '-') ?></td>
+                                                            </tr>
+                                                            <tr>
+                                                               <th>Settlement Time</th>
+                                                               <td><?= htmlspecialchars($raw['settlement_time'] ?? '-') ?></td>
+                                                            </tr>
+                                                            <tr>
+                                                               <th>Expiry Time</th>
+                                                               <td><?= htmlspecialchars($raw['expiry_time'] ?? '-') ?></td>
+                                                            </tr>
+                                                            <tr>
+                                                               <th>Status Message</th>
+                                                               <td><?= htmlspecialchars($raw['status_message'] ?? '-') ?></td>
+                                                            </tr>
+                                                         </table>
                                                       <?php else: ?>
                                                          <div class="col-12">
                                                             <div class="text-center">
-                                                                  <i class="las la-box-open text-muted" style="font-size: 5rem;"></i>
-                                                                  <h6 class="text-muted">Belum ada history pengiriman</h6>
-                                                                  <small class="text-muted">Semua history yang masuk akan ditampilkan di sini.</small>
+                                                               <i class="las la-times-circle text-muted" style="font-size: 5rem;"></i>
+                                                               <h6 class="text-muted">Belum ada informasi pembayaran</h6>
+                                                               <small class="text-muted">Semua informasi yang masuk akan ditampilkan di sini.</small>
                                                             </div>
                                                          </div>
                                                       <?php endif; ?>
-                                                   </ul>
+                                                   </div>
+
+                                                </div>
+                                                <div class="modal-footer">
+                                                   <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
                                                 </div>
                                              </div>
                                           </div>
-                                          <div class="modal-footer">
-                                             <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
+                                       </div>
+                                    </div>
+                                    <div class="col-6 col-md-auto">
+                                       <button type="button" class="btn btn-outline-warning mr-2" data-toggle="modal" data-target="#ShippingInfo"></i>Shipping Info</button>
+                                       <div id="ShippingInfo" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="ShippingInfoTitle" aria-hidden="true">
+                                          <div class="modal-dialog modal-dialog-scrollable" role="document">
+                                             <div class="modal-content border-radius-10">
+                                                <div class="modal-header">
+                                                   <h4 class="card-title text-dark mb-0">Invoice # <?= $order['order_code'] ?></h4>
+                                                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                      <span aria-hidden="true">×</span>
+                                                   </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                   <div class="form-group text-left">
+                                                      <h6 class="card-title text-dark mb-0">Operator : <?= get_admin_name($order['operator']) ?></h6>
+                                                   </div>
+
+                                                   <div class="col-12">
+                                                      <div class="divider-text">
+                                                         <span>History Shipping Status</span>
+                                                      </div>
+                                                   </div>
+                                                            
+                                                   <div class="form-group mt-3 ml-3">
+                                                      <div class="profile-line m-0 d-flex align-items-center justify-content-between position-relative">
+                                                         <ul class="list-inline p-0 m-0 w-100">
+                                                            <?php if (!empty($shipping_status_list)): ?>
+                                                               <?php foreach ($shipping_status_list as $item): ?>
+                                                                  <li>
+                                                                     <div class="row align-items-top">
+                                                                        <div class="col-md-12">
+                                                                           <div class="media profile-media pb-3 align-items-top">
+                                                                              <div class="profile-dots border-primary mt-1"></div>
+                                                                              <div class="ml-4">
+                                                                                 <h6 style="margin-bottom: -8px;">
+                                                                                    <?= get_shipping_status_name($item['shipping_id']) ?>
+                                                                                 </h6>
+                                                                                 <small class="text-muted">
+                                                                                    <?= format_bulan($item['date']) ?>
+                                                                                 </small>
+                                                                              </div>
+                                                                           </div>   
+                                                                        </div>
+                                                                     </div>
+                                                                  </li>
+                                                               <?php endforeach; ?>
+                                                            <?php else: ?>
+                                                               <div class="col-12">
+                                                                  <div class="text-center">
+                                                                        <i class="las la-box-open text-muted" style="font-size: 5rem;"></i>
+                                                                        <h6 class="text-muted">Belum ada history pengiriman</h6>
+                                                                        <small class="text-muted">Semua history yang masuk akan ditampilkan di sini.</small>
+                                                                  </div>
+                                                               </div>
+                                                            <?php endif; ?>
+                                                         </ul>
+                                                      </div>
+                                                   </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                   <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
+                                                </div>
+                                             </div>
                                           </div>
                                        </div>
                                     </div>
-                                 </div>
-                                 <div class="invoice-btn">
-                                    <a href="<?= base_url('index/order_detail_download_pdf/' . encrypt_id($order['order_id'])) ?>" class="btn btn-primary-dark"><i class="las la-file-download font-size-20"></i>PDF</a>
+                                    <div class="col-12 col-md-auto mt-md-0 mt-2 text-center">
+                                       <a href="<?= base_url('index/order_detail_download_pdf/' . encrypt_id($order['order_id'])) ?>" class="btn btn-primary-dark"><i class="las la-file-download font-size-20"></i>PDF</a>
+                                    </div>
                                  </div>
                               </div>
                            </div>
@@ -234,15 +335,15 @@
                                                                <span class="badge badge-primary font-size-12">Pembayaran Diproses</span>
                                                             <?php elseif ($order['payment_status'] == 'payment_success'): ?>
                                                                <span class="badge badge-success font-size-12">Pembayaran Berhasil</span>
-                                                               <?php if (!empty($order['payment_info'])) { ?>
-                                                                  <?php $payment_info = json_decode($order['payment_info'], true); ?>
-                                                                  <p class="font-size-12 mb-0"><?= format_bulan($payment_info['payment_time']) ?></p>
-                                                               <?php } ?>
                                                             <?php elseif ($order['payment_status'] == 'payment_cancelled'): ?>
                                                                <span class="badge badge-dark font-size-12">Pembayaran Dibatalkan</span>
                                                             <?php else: ?>
                                                                <span class="badge badge-light font-size-12">Status Tidak Diketahui</span>
                                                             <?php endif; ?>
+                                                            <?php if (!empty($order['payment_info'])) { ?>
+                                                               <?php $payment_info = json_decode($order['payment_info'], true); ?>
+                                                               <p class="font-size-12 mb-0"><?= format_bulan($payment_info['payment_time']) ?></p>
+                                                            <?php } ?>
 
                                                             <?php if ($order['order_status'] == 'order_pending'): ?>
                                                                <span class="badge border border-warning text-warning font-size-12">Pesanan Menunggu</span>

@@ -28,8 +28,8 @@
                                  <h4 class="card-title mb-0">Invoice# <?= $order['order_code'] ?></h4>
                               </div>
                               <div class="d-flex align-items-center justify-content-center">
-                                 <button type="button" class="btn btn-outline-warning mr-2" data-toggle="modal" data-target="#Shippingstatus"></i>Shipping Status</button>
-                                 <div id="Shippingstatus" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="ShippingstatusTitle" aria-hidden="true">
+                                 <button type="button" class="btn btn-outline-warning mr-2" data-toggle="modal" data-target="#ShippingInfo"></i>Shipping Info</button>
+                                 <div id="ShippingInfo" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="ShippingInfoTitle" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-scrollable" role="document">
                                        <div class="modal-content border-radius-10">
                                           <div class="modal-header">
@@ -141,15 +141,15 @@
                                                                <span class="badge badge-primary font-size-12">Pembayaran Diproses</span>
                                                             <?php elseif ($order['payment_status'] == 'payment_success'): ?>
                                                                <span class="badge badge-success font-size-12">Pembayaran Berhasil</span>
-                                                               <?php if (!empty($order['payment_info'])) { ?>
-                                                                  <?php $payment_info = json_decode($order['payment_info'], true); ?>
-                                                                  <p class="font-size-12 mb-0"><?= format_bulan($payment_info['payment_time']) ?></p>
-                                                               <?php } ?>
                                                             <?php elseif ($order['payment_status'] == 'payment_cancelled'): ?>
                                                                <span class="badge badge-dark font-size-12">Pembayaran Dibatalkan</span>
                                                             <?php else: ?>
                                                                <span class="badge badge-light font-size-12">Status Tidak Diketahui</span>
                                                             <?php endif; ?>
+                                                            <?php if (!empty($order['payment_info'])) { ?>
+                                                               <?php $payment_info = json_decode($order['payment_info'], true); ?>
+                                                               <p class="font-size-12 mb-0"><?= format_bulan($payment_info['payment_time']) ?></p>
+                                                            <?php } ?>
 
                                                             <?php if ($order['order_status'] == 'order_pending'): ?>
                                                                <span class="badge border border-warning text-warning font-size-12">Pesanan Menunggu</span>
@@ -369,7 +369,8 @@
                                                       <button type="button"
                                                                class="btn btn-primary-dark"
                                                                id="pay-button"
-                                                               data-snap-token="<?= $order['snap_token']; ?>">
+                                                               data-snap-token="<?= $order['snap_token']; ?>"
+                                                               data-order-id="<?= $order['order_code']; ?>">
                                                             <i class="las la-file-invoice-dollar font-size-20"></i> Bayar
                                                       </button>
                                                    </div>
@@ -398,6 +399,8 @@
 <script type="text/javascript">
    document.getElementById('pay-button').addEventListener('click', function (e) {
       var snapToken = e.currentTarget.getAttribute('data-snap-token');
+      var orderId = e.currentTarget.getAttribute('data-order-id');
+      
       snap.pay(snapToken, {
          onSuccess: function(result){
                console.log('Success:', result);
@@ -409,7 +412,7 @@
          },
          onError: function(result){
                console.log('Error:', result);
-               window.location.href = '<?= base_url('index/index_payment?status=error&order_id=') ?>' + result.order_id;
+               window.location.href = '<?= base_url('index/index_payment?status=error&order_id=') ?>' + (result.order_id || orderId);
          },
          onClose: function(){
                console.log('Popup closed without finishing the payment');
@@ -417,6 +420,7 @@
       });
    });
 </script>
+
 
 
 

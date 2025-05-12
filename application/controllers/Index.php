@@ -780,14 +780,12 @@ class Index extends CI_Controller {
 		try {
 			$transaction_status = \Midtrans\Transaction::status($order_code);
 
-			log_message('debug', 'Midtrans status: ' . print_r($transaction_status, true));
-
 			$payment_data = [
 				'status' => $transaction_status->transaction_status,
 				'payment_type' => $transaction_status->payment_type ?? '',
 				'fraud_status' => $transaction_status->fraud_status ?? '',
-				'payment_time' => date('Y-m-d H:i:s'),
-				'raw_response' => $transaction_status
+				'payment_time' => $transaction_status->transaction_time ?? '',
+				'raw_response' => $transaction_status,
 			];
 
 			$this->Order_model->update_orders($order['order_id'], [
@@ -827,47 +825,169 @@ class Index extends CI_Controller {
 					]);
 					$this->session->set_flashdata('error', 'Pembayaran gagal atau dibatalkan.');
 					$this->session->set_flashdata('last_order_code', $order_code);
-					redirect('index/payment_error');
+					redirect('index/payment_failed');
 					break;
 
 				default:
 					$this->session->set_flashdata('error', 'Status pembayaran tidak dikenal.');
 					$this->session->set_flashdata('last_order_code', $order_code);
-					redirect('order/payment_error');
+					redirect('order/payment_failed');
 			}
 
 		} catch (Exception $e) {
 			log_message('error', 'Midtrans error: ' . $e->getMessage());
 			$this->session->set_flashdata('error', 'Terjadi kesalahan saat memeriksa pembayaran.');
-			redirect('order/payment_error');
+			redirect('order/payment_failed');
 		}
 	}
+
+	public function midtrans_webhook()
+	{
+		$json = file_get_contents('php://input');
+		$data = json_decode($json);
+
+		if (!$data || empty($data->order_id)) {
+			show_error('Invalid request', 400);
+		}
+
+		$order = $this->db->get_where('orders', ['order_code' => $data->order_id])->row_array();
+		if (!$order) {
+			show_error('Order not found', 404);
+		}
+
+		$payment_data = [
+			'status' => $data->transaction_status,
+			'payment_type' => $data->payment_type ?? '',
+			'fraud_status' => $data->fraud_status ?? '',
+			'payment_time' => date('Y-m-d H:i:s'),
+			'raw_response' => $data
+		];
+
+		$this->Order_model->update_orders($order['order_id'], [
+			'payment_info' => json_encode($payment_data)
+		]);
+
+		// Update status sesuai kondisi
+		switch ($data->transaction_status) {
+			case 'capture':
+			case 'settlement':
+				$this->Order_model->update_orders($order['order_id'], [
+					'payment_status' => 'payment_success',
+					'order_status' => 'order_processing'
+				]);
+				break;
+
+			case 'pending':
+				$this->Order_model->update_orders($order['order_id'], [
+					'payment_status' => 'payment_pending'
+				]);
+				break;
+
+			case 'deny':
+			case 'cancel':
+			case 'expire':
+				$this->Order_model->update_orders($order['order_id'], [
+					'payment_status' => 'payment_cancelled',
+					'order_status' => 'order_failed'
+				]);
+				break;
+		}
+
+		echo 'OK';
+	}
+
 
 	public function payment_success()
 	{
 		is_logged_in();
 		
 		$last_order_code = $this->session->flashdata('last_order_code');
-		$last_order_code = 'fTDtvg';
+		// $last_order_code = 'ABCDEF';
 		$user_id = $this->session->userdata('user_id');
 
 		if (!$last_order_code) {
 			$this->session->set_flashdata('error', 'Akses halaman ini tidak diizinkan.');
-			redirect(base_url('order')); // arahkan balik
+			redirect(base_url('customer/order_list'));
 		}
 
 		$order = $this->db->get_where('orders', ['order_code' => $last_order_code])->row_array();
 		if (!$order) {
 			$this->session->set_flashdata('error', 'Data order tidak ditemukan.');
-			redirect(base_url('order'));
+			redirect(base_url('customer/order_list'));
 		}
-		// if ($order['user_id'] != $user_id) {
-		// 	$this->session->set_flashdata('error', 'Anda tidak memiliki izin untuk mengakses order ini.');
-		// 	redirect(base_url('order'));
-		// }
+		if ($order['user_id'] != $user_id) {
+			$this->session->set_flashdata('error', 'Anda tidak memiliki izin untuk mengakses order ini.');
+			redirect(base_url('customer/order_list'));
+		}
 
 		$data['order'] = $order;
-		$data['title'] = 'Payment Success';
+		$data['title'] = 'Payment success';
+		$data['has_sidebar'] = false;
+
+		$this->load->view('layout/header', $data);
+		$this->load->view('index/order/payment_success', $data);
+		$this->load->view('layout/alert');
+		$this->load->view('layout/footer');
+	}
+
+	public function payment_pending()
+	{
+		is_logged_in();
+		
+		$last_order_code = $this->session->flashdata('last_order_code');
+		// $last_order_code = 'ABCDEF';
+		$user_id = $this->session->userdata('user_id');
+
+		if (!$last_order_code) {
+			$this->session->set_flashdata('error', 'Akses halaman ini tidak diizinkan.');
+			redirect(base_url('customer/order_list')); // arahkan balik
+		}
+
+		$order = $this->db->get_where('orders', ['order_code' => $last_order_code])->row_array();
+		if (!$order) {
+			$this->session->set_flashdata('error', 'Data order tidak ditemukan.');
+			redirect(base_url('customer/order_list'));
+		}
+		if ($order['user_id'] != $user_id) {
+			$this->session->set_flashdata('error', 'Anda tidak memiliki izin untuk mengakses order ini.');
+			redirect(base_url('customer/order_list'));
+		}
+
+		$data['order'] = $order;
+		$data['title'] = 'Payment pending';
+		$data['has_sidebar'] = false;
+
+		$this->load->view('layout/header', $data);
+		$this->load->view('index/order/payment_pending', $data);
+		$this->load->view('layout/alert');
+		$this->load->view('layout/footer');
+	}
+
+	public function payment_failed()
+	{
+		is_logged_in();
+		
+		$last_order_code = $this->session->flashdata('last_order_code');
+		// $last_order_code = 'ABCDEF';
+		$user_id = $this->session->userdata('user_id');
+
+		if (!$last_order_code) {
+			$this->session->set_flashdata('error', 'Akses halaman ini tidak diizinkan.');
+			redirect(base_url('customer/order_list')); // arahkan balik
+		}
+
+		$order = $this->db->get_where('orders', ['order_code' => $last_order_code])->row_array();
+		if (!$order) {
+			$this->session->set_flashdata('error', 'Data order tidak ditemukan.');
+			redirect(base_url('customer/order_list'));
+		}
+		if ($order['user_id'] != $user_id) {
+			$this->session->set_flashdata('error', 'Anda tidak memiliki izin untuk mengakses order ini.');
+			redirect(base_url('customer/order_list'));
+		}
+
+		$data['order'] = $order;
+		$data['title'] = 'Payment failed';
 		$data['has_sidebar'] = false;
 
 		$this->load->view('layout/header', $data);

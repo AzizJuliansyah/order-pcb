@@ -226,17 +226,17 @@
                                 <?php } elseif (has_access(['3'])) { ?>
                                     <li class="dropdown-item d-flex align-items-center">
                                         <i class="las la-tachometer-alt font-size-20 text-primary"></i>
-                                        <a href="<?= base_url('superadmin/operator') ?>">Dashboard</a>
+                                        <a href="<?= base_url('operator/dashboard') ?>">Dashboard</a>
                                     </li>
                                 <?php } elseif (has_access(['4'])) { ?>
                                     <li class="dropdown-item d-flex align-items-center">
                                         <i class="las la-tachometer-alt font-size-20 text-primary"></i>
-                                        <a href="<?= base_url('superadmin/customerservice') ?>">Dashboard</a>
+                                        <a href="<?= base_url('customerservice/dashboard') ?>">Dashboard</a>
                                     </li>
                                 <?php } elseif (has_access(['5'])) { ?>
                                     <li class="dropdown-item d-flex align-items-center">
                                         <i class="las la-tachometer-alt font-size-20 text-primary"></i>
-                                        <a href="<?= base_url('superadmin/customer') ?>">Dashboard</a>
+                                        <a href="<?= base_url('customer/dashboard') ?>">Dashboard</a>
                                     </li>
                                 <?php } ?>
                                 <li class="dropdown-item d-flex align-items-center">
