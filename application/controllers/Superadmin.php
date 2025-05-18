@@ -17,17 +17,82 @@ class Superadmin extends CI_Controller {
     public function dashboard()
 	{
 		$user_id = $this->session->userdata('user_id');
-		$data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
+        $data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
 
-		$data['title'] = 'Superadmin Dashboard';
-        
+        $data['title'] = 'Superadmin Dashboard';
 
-		$this->load->view('layout/header', $data);
-		$this->load->view('layout/navbar', $data);
+        $data['errors'] = $this->session->flashdata('errors') ?? [];
+        $data['old'] = $this->session->flashdata('old') ?? [];
+
+        $roles = $this->db->get('role')->result_array();
+
+        $query = $this->db->query("
+            SELECT 
+                role.role_id, 
+                COUNT(user.id) AS total_user,
+                SUM(CASE WHEN user.is_active = 1 THEN 1 ELSE 0 END) AS total_aktif,
+                SUM(CASE WHEN user.is_active = 0 THEN 1 ELSE 0 END) AS total_nonaktif,
+                MAX(user.date_created) AS last_created,
+                TIMESTAMPDIFF(HOUR, MAX(user.date_created), NOW()) AS hours_since_last_created
+            FROM role
+            LEFT JOIN user ON user.role_id = role.role_id
+            GROUP BY role.role_id
+        ");
+
+        $role_info = [];
+        foreach ($query->result_array() as $r) {
+            $role_info[$r['role_id']] = $r;
+        }
+
+        foreach ($roles as &$role) {
+            $rid = $role['role_id'];
+            $role['total_user'] = $role_info[$rid]['total_user'] ?? 0;
+            $role['total_aktif'] = $role_info[$rid]['total_aktif'] ?? 0;
+            $role['total_nonaktif'] = $role_info[$rid]['total_nonaktif'] ?? 0;
+            $role['last_created'] = $role_info[$rid]['last_created'] ?? null;
+            $role['hours_since_last_created'] = $role_info[$rid]['hours_since_last_created'] ?? null;
+        }
+
+        $data['role_list'] = $roles;
+
+        $recent_users_per_role = [];
+
+        foreach ($roles as $r) {
+            $role_id = $r['role_id'];
+            $recent_users = $this->db
+                ->select('foto')
+                ->from('user')
+                ->where('role_id', $role_id)
+                ->where('foto IS NOT NULL', null, false) // biar tidak di-escape
+                ->where('foto !=', '')
+                ->order_by('date_created', 'DESC')
+                ->limit(4)
+                ->get()
+                ->result_array();
+
+            $recent_users_per_role[$role_id] = $recent_users;
+        }
+
+        $data['recent_users_per_role'] = $recent_users_per_role;
+
+        $global_query = $this->db->query("
+            SELECT 
+                COUNT(id) AS total_user,
+                SUM(CASE WHEN is_active = 1 THEN 1 ELSE 0 END) AS total_aktif,
+                SUM(CASE WHEN is_active = 0 THEN 1 ELSE 0 END) AS total_nonaktif,
+                MAX(date_created) AS last_created,
+                TIMESTAMPDIFF(HOUR, MAX(date_created), NOW()) AS hours_since_last_created
+            FROM user
+        ");
+
+        $data['global_user_stats'] = $global_query->row_array();
+
+        $this->load->view('layout/header', $data);
+        $this->load->view('layout/navbar', $data);
         $this->load->view('layout/sidebar', $data);
-		$this->load->view('superadmin/dashboard', $data);
-		$this->load->view('layout/alert');
-		$this->load->view('layout/footer');
+        $this->load->view('superadmin/dashboard', $data);
+        $this->load->view('layout/alert');
+        $this->load->view('layout/footer');
 	}
 
 

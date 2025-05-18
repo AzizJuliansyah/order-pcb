@@ -5,12 +5,12 @@
                <div class="form-group">
                   <?php
                      $from = $this->input->get('from');
-                     $back_url = base_url('customer/order_list');
+                     $back_url = base_url('customer/history');
 
-                     if ($from == 'management') {
-                        $back_url = base_url('customer/order_management');
+                     if ($from == 'dashboard') {
+                        $back_url = base_url('customer/dashboard');
                      } elseif ($from == 'list') {
-                        $back_url = base_url('customer/order_list');
+                        $back_url = base_url('customer/history');
                      } elseif ($from == 'list_today') {
                         $back_url = base_url('customer/order_list_today');
                      }
@@ -39,7 +39,7 @@
                                              </button>
                                           </div>
                                           <div class="modal-body">
-                                             <div class="form-group">
+                                             <div class="form-group text-left">
                                                 <h6 class="card-title text-dark mb-0">Operator : <?= get_admin_name($order['operator']) ?></h6>
                                              </div>
 
@@ -154,7 +154,7 @@
                                                             <?php if ($order['order_status'] == 'order_pending'): ?>
                                                                <span class="badge border border-warning text-warning font-size-12">Pesanan Menunggu</span>
                                                             <?php elseif ($order['order_status'] == 'order_confirmed'): ?>
-                                                               <span class="badge border border-secondary text-secondary font-size-12">Pesanan Diterima</span>
+                                                               <span class="badge border border-info text-info font-size-12">Pesanan Diterima</span>
                                                             <?php elseif ($order['order_status'] == 'order_processing'): ?>
                                                                <span class="badge border border-primary text-primary font-size-12">Pesanan Diproses</span>
                                                             <?php elseif ($order['order_status'] == 'order_completed'): ?>
@@ -162,7 +162,7 @@
                                                             <?php elseif ($order['order_status'] == 'order_cancelled'): ?>
                                                                <span class="badge border border-danger text-danger font-size-12">Pesanan Dibatalkan</span>
                                                             <?php elseif ($order['order_status'] == 'order_refunded'): ?>
-                                                               <span class="badge border border-info text-info font-size-12">Pesanan di refund</span>
+                                                               <span class="badge border border-secondary text-secondary font-size-12">Pesanan di refund</span>
                                                             <?php elseif ($order['order_status'] == 'order_failed'): ?>
                                                                <span class="badge border border-dark text-dark font-size-12">Pesanan gagal</span>
                                                             <?php else: ?>

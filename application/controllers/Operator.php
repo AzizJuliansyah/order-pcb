@@ -21,15 +21,83 @@ class Operator extends CI_Controller {
 		$data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
 
 		$data['title'] = 'Operator Dashboard';
-        
 
+		$data['errors'] = $this->session->flashdata('errors') ?? [];
+		$data['old'] = $this->session->flashdata('old') ?? [];
+		
+
+		// --- 2. Order Status Stats ---
+		$order_statuses = [
+			'order_pending',
+			'order_confirmed',
+			'order_processing',
+			'order_completed',
+			'order_cancelled',
+			'order_refunded',
+			'order_failed'
+		];
+
+		$order_stats = [];
+		foreach ($order_statuses as $status) {
+			$row = $this->db->query("
+				SELECT 
+					COUNT(order_id) AS total_orders,
+					MAX(date_created) AS last_created,
+					TIMESTAMPDIFF(HOUR, MAX(date_created), NOW()) AS hours_since_last_created
+				FROM orders
+				WHERE order_status = ?
+				AND operator = ?
+			", [$status, $user_id])->row_array();
+
+			$order_stats[$status] = $row;
+		}
+
+		$data['order_stats'] = $order_stats;
+
+		// --- 3. Global Order Stats ---
+		$global_orders = $this->db->query("
+			SELECT 
+				COUNT(order_id) AS total_orders,
+				MAX(date_created) AS last_created,
+				TIMESTAMPDIFF(HOUR, MAX(date_created), NOW()) AS hours_since_last_created
+			FROM orders
+			WHERE operator = ?
+		", [$user_id])->row_array();
+
+		$data['global_order_stats'] = $global_orders;
+
+		// --- Recent Order Users ---
+		$recent_order_users = $this->db
+			->select('user.foto, user.nama, user.email, orders.date_created AS order_date')
+			->from('orders')
+			->join('user', 'user.id = orders.user_id', 'left')
+			->where('orders.operator', $user_id)
+			->order_by('orders.date_created', 'DESC')
+			->limit(5)
+			->get()
+			->result_array();
+
+		$data['recent_order_users'] = $recent_order_users;
+
+		// --- 4. Last Order ---
+		$this->db->from('orders');
+		$this->db->join('user', 'user.id = orders.user_id', 'left');
+		$this->db->where('orders.operator', $user_id);
+		$this->db->order_by('orders.date_created', 'DESC');
+		$this->db->limit(1);
+		$last_order = $this->db->get()->row_array();
+
+		$data['last_order'] = $last_order;
+
+		// --- Load Views ---
 		$this->load->view('layout/header', $data);
 		$this->load->view('layout/navbar', $data);
-        $this->load->view('layout/sidebar', $data);
+		$this->load->view('layout/sidebar', $data);
 		$this->load->view('operator/dashboard', $data);
 		$this->load->view('layout/alert');
 		$this->load->view('layout/footer');
 	}
+
 
 	public function order_list()
 	{

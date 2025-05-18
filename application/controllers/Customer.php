@@ -18,23 +18,122 @@ class Customer extends CI_Controller {
     public function dashboard()
 	{
 		$user_id = $this->session->userdata('user_id');
-
 		$data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
-		$data['role'] = $this->User_model->get_user_with_role($user_id);
 
 		$data['title'] = 'Customer Dashboard';
-        
 
+		$data['errors'] = $this->session->flashdata('errors') ?? [];
+		$data['old'] = $this->session->flashdata('old') ?? [];
+		
+        // --- 1. Payment Status Stats ---
+		$payment_statuses = [
+			'payment_pending',
+			'payment_process',
+			'payment_success',
+			'payment_cancelled'
+		];
+
+		$payment_stats = [];
+		foreach ($payment_statuses as $status) {
+			$row = $this->db->query("
+				SELECT 
+					COUNT(order_id) AS total_orders,
+					MAX(date_created) AS last_created,
+					TIMESTAMPDIFF(HOUR, MAX(date_created), NOW()) AS hours_since_last_created
+				FROM orders
+				WHERE payment_status = ?
+				AND user_id = ?
+			", [$status, $user_id])->row_array();
+
+			$payment_stats[$status] = $row;
+		}
+
+		$data['payment_stats'] = $payment_stats;
+
+		// --- 2. Order Status Stats ---
+		$order_statuses = [
+			'order_pending',
+			'order_confirmed',
+			'order_processing',
+			'order_completed',
+			'order_cancelled',
+			'order_refunded',
+			'order_failed'
+		];
+
+		$order_stats = [];
+		foreach ($order_statuses as $status) {
+			$row = $this->db->query("
+				SELECT 
+					COUNT(order_id) AS total_orders,
+					MAX(date_created) AS last_created,
+					TIMESTAMPDIFF(HOUR, MAX(date_created), NOW()) AS hours_since_last_created
+				FROM orders
+				WHERE order_status = ?
+				AND user_id = ?
+			", [$status, $user_id])->row_array();
+
+			$order_stats[$status] = $row;
+		}
+
+		$data['order_stats'] = $order_stats;
+
+		// --- 3. Global Order Stats ---
+		$global_orders = $this->db->query("
+			SELECT 
+				COUNT(order_id) AS total_orders,
+				MAX(date_created) AS last_created,
+				TIMESTAMPDIFF(HOUR, MAX(date_created), NOW()) AS hours_since_last_created
+			FROM orders
+			WHERE user_id = ?
+		", [$user_id])->row_array();
+
+		$data['global_order_stats'] = $global_orders;
+
+		// --- Recent Order Users ---
+		$recent_order_users = $this->db
+			->select('user.foto, user.nama, user.email, orders.date_created AS order_date')
+			->from('orders')
+			->join('user', 'user.id = orders.user_id', 'left')
+			->where('orders.user_id', $user_id)
+			->order_by('orders.date_created', 'DESC')
+			->limit(5)
+			->get()
+			->result_array();
+
+		$data['recent_order_users'] = $recent_order_users;
+
+		// --- 4. Last Order ---
+		$this->db->from('orders');
+		$this->db->join('user', 'user.id = orders.user_id', 'left');
+		$this->db->where('orders.user_id', $user_id);
+		$this->db->order_by('orders.date_created', 'DESC');
+		$this->db->limit(1);
+		$last_order = $this->db->get()->row_array();
+
+		$data['last_order'] = $last_order;
+
+		$shipping_status_list = [];
+
+		if (!empty($last_order['shipping_status'])) {
+			$shipping_status_list = json_decode($last_order['shipping_status'], true);
+			if (!is_array($shipping_status_list)) {
+				$shipping_status_list = [];
+			}
+		}
+		$data['shipping_status_list'] = $shipping_status_list;
+
+		// --- Load Views ---
 		$this->load->view('layout/header', $data);
 		$this->load->view('layout/navbar', $data);
-        $this->load->view('layout/sidebar', $data);
+		$this->load->view('layout/sidebar', $data);
 		$this->load->view('customer/dashboard', $data);
 		$this->load->view('layout/alert');
 		$this->load->view('layout/footer');
 	}
 
 
-	public function order_list()
+	public function history()
     {
         $user_id = $this->session->userdata('user_id');
         $data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
@@ -52,10 +151,9 @@ class Customer extends CI_Controller {
         $limit = 9;
         $offset = ($page - 1) * $limit;
 
-        // Hitung total rows
         $this->db->from('orders');
         $this->db->join('user', 'user.id = orders.user_id', 'left');
-        $this->db->where('orders.user_id', $user_id);  // ← filter by current user
+        $this->db->where('orders.user_id', $user_id);
         if (!empty($payment_status)) {
             $this->db->where('orders.payment_status', $payment_status);
         }
@@ -68,11 +166,10 @@ class Customer extends CI_Controller {
 
         $total_rows = $this->db->count_all_results();
 
-        // Ambil data dengan limit
         $this->db->select('orders.*, user.nama, user.email, user.foto');
         $this->db->from('orders');
         $this->db->join('user', 'user.id = orders.user_id', 'left');
-        $this->db->where('orders.user_id', $user_id);  // ← filter by current user
+        $this->db->where('orders.user_id', $user_id);
         if (!empty($payment_status)) {
             $this->db->where('orders.payment_status', $payment_status);
         }
@@ -86,8 +183,7 @@ class Customer extends CI_Controller {
         $this->db->limit($limit, $offset);
         $data['orders'] = $this->db->get()->result_array();
 
-        // Pagination setup
-        $config['base_url'] = base_url('customer/order_list');
+        $config['base_url'] = base_url('customer/history');
         $config['total_rows'] = $total_rows;
         $config['per_page'] = $limit;
         $config['page_query_string'] = TRUE;
@@ -117,7 +213,6 @@ class Customer extends CI_Controller {
         $this->pagination->initialize($config);
         $data['pagination_links'] = $this->pagination->create_links();
 
-        // Untuk menyimpan input ke view
         $data['selected_payment_status'] = $payment_status;
         $data['selected_order_status'] = $order_status;
         $data['dari'] = $dari;
@@ -126,7 +221,7 @@ class Customer extends CI_Controller {
         $this->load->view('layout/header', $data);
         $this->load->view('layout/navbar', $data);
         $this->load->view('layout/sidebar', $data);
-        $this->load->view('customer/order/order_list', $data);
+        $this->load->view('customer/order/history', $data);
         $this->load->view('layout/alert');
         $this->load->view('layout/footer');
     }
@@ -136,19 +231,19 @@ class Customer extends CI_Controller {
 	{
 		if (empty($encrypted_id)) {
 			$this->session->set_flashdata('error', 'Gagal mengakses halaman, Order ID tidak ada.');
-			redirect("customer/order_list");
+			redirect("customer/history");
 		}
 
 		$order_id = decrypt_id($encrypted_id);
 		if (empty($order_id)) {
 			$this->session->set_flashdata('error', 'Gagal mengakses halaman, Order ID tidak ada.');
-			redirect("customer/order_list");
+			redirect("customer/history");
 		}
 
 		$order = $this->db->get_where('orders', ['order_id' => $order_id])->row_array();
 		if (!$order) {
 			$this->session->set_flashdata('error', 'Gagal mengakses halaman, Order ID tidak ada.');
-			redirect("customer/order_list");
+			redirect("customer/history");
 		}
 
         $user_info = $this->db->get_where('user', ['id' => $order['user_id']])->row_array();
@@ -156,11 +251,11 @@ class Customer extends CI_Controller {
 
 		if (!$user_info) {
 			$this->session->set_flashdata('error', 'Gagal mengunduh PDF, data user tidak ditemukan.');
-			redirect("customer/order_list");
+			redirect("customer/history");
 		}
 		if ($order['user_id'] != $user_id) {
 			$this->session->set_flashdata('error', 'Anda tidak memiliki izin untuk mengakses order ini.');
-			redirect("customer/order_list");
+			redirect("customer/history");
 		}
 
 		$data['order'] = $order;

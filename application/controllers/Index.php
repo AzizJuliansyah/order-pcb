@@ -17,22 +17,22 @@ class Index extends CI_Controller {
 		$this->load->library('form_validation');
     }
     
-	public function home()
-	{
-		if ($this->session->userdata('user_id')) {
-			$user_id = $this->session->userdata('user_id');
+	// public function home()
+	// {
+	// 	if ($this->session->userdata('user_id')) {
+	// 		$user_id = $this->session->userdata('user_id');
 
-			$user = $this->db->get_where('user', ['id' => $user_id])->row_array();
-			$data['user'] = $user;
-			$data['role_id'] = $user['role_id'];
-		}
+	// 		$user = $this->db->get_where('user', ['id' => $user_id])->row_array();
+	// 		$data['user'] = $user;
+	// 		$data['role_id'] = $user['role_id'];
+	// 	}
 
-		$data['title'] = 'Home';
-		$data['has_sidebar'] = false;
+	// 	$data['title'] = 'Home';
+	// 	$data['has_sidebar'] = false;
 
-		$this->load->view('index/home', $data);
-		$this->load->view('layout/alert');
-	}
+	// 	$this->load->view('index/home', $data);
+	// 	$this->load->view('layout/alert');
+	// }
 
 	public function landingpage()
 	{
@@ -901,23 +901,23 @@ class Index extends CI_Controller {
 	{
 		is_logged_in();
 		
-		$last_order_code = $this->session->flashdata('last_order_code');
-		// $last_order_code = 'ABCDEF';
+		// $last_order_code = $this->session->flashdata('last_order_code');
+		$last_order_code = 'ABCDEF';
 		$user_id = $this->session->userdata('user_id');
 
 		if (!$last_order_code) {
 			$this->session->set_flashdata('error', 'Akses halaman ini tidak diizinkan.');
-			redirect(base_url('customer/order_list'));
+			redirect(base_url('customer/history'));
 		}
 
 		$order = $this->db->get_where('orders', ['order_code' => $last_order_code])->row_array();
 		if (!$order) {
 			$this->session->set_flashdata('error', 'Data order tidak ditemukan.');
-			redirect(base_url('customer/order_list'));
+			redirect(base_url('customer/history'));
 		}
 		if ($order['user_id'] != $user_id) {
 			$this->session->set_flashdata('error', 'Anda tidak memiliki izin untuk mengakses order ini.');
-			redirect(base_url('customer/order_list'));
+			redirect(base_url('customer/history'));
 		}
 
 		$data['order'] = $order;
@@ -934,23 +934,23 @@ class Index extends CI_Controller {
 	{
 		is_logged_in();
 		
-		$last_order_code = $this->session->flashdata('last_order_code');
-		// $last_order_code = 'ABCDEF';
+		// $last_order_code = $this->session->flashdata('last_order_code');
+		$last_order_code = 'ABCDEF';
 		$user_id = $this->session->userdata('user_id');
 
 		if (!$last_order_code) {
 			$this->session->set_flashdata('error', 'Akses halaman ini tidak diizinkan.');
-			redirect(base_url('customer/order_list')); // arahkan balik
+			redirect(base_url('customer/history')); // arahkan balik
 		}
 
 		$order = $this->db->get_where('orders', ['order_code' => $last_order_code])->row_array();
 		if (!$order) {
 			$this->session->set_flashdata('error', 'Data order tidak ditemukan.');
-			redirect(base_url('customer/order_list'));
+			redirect(base_url('customer/history'));
 		}
 		if ($order['user_id'] != $user_id) {
 			$this->session->set_flashdata('error', 'Anda tidak memiliki izin untuk mengakses order ini.');
-			redirect(base_url('customer/order_list'));
+			redirect(base_url('customer/history'));
 		}
 
 		$data['order'] = $order;
@@ -967,23 +967,23 @@ class Index extends CI_Controller {
 	{
 		is_logged_in();
 		
-		$last_order_code = $this->session->flashdata('last_order_code');
-		// $last_order_code = 'ABCDEF';
+		// $last_order_code = $this->session->flashdata('last_order_code');
+		$last_order_code = 'ABCDEF';
 		$user_id = $this->session->userdata('user_id');
 
 		if (!$last_order_code) {
 			$this->session->set_flashdata('error', 'Akses halaman ini tidak diizinkan.');
-			redirect(base_url('customer/order_list')); // arahkan balik
+			redirect(base_url('customer/history')); // arahkan balik
 		}
 
 		$order = $this->db->get_where('orders', ['order_code' => $last_order_code])->row_array();
 		if (!$order) {
 			$this->session->set_flashdata('error', 'Data order tidak ditemukan.');
-			redirect(base_url('customer/order_list'));
+			redirect(base_url('customer/history'));
 		}
 		if ($order['user_id'] != $user_id) {
 			$this->session->set_flashdata('error', 'Anda tidak memiliki izin untuk mengakses order ini.');
-			redirect(base_url('customer/order_list'));
+			redirect(base_url('customer/history'));
 		}
 
 		$data['order'] = $order;

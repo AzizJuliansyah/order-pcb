@@ -229,318 +229,374 @@ $has_sidebar = isset($has_sidebar) ? $has_sidebar : true;
 
     <!-- Wrapper Start -->
     <div class="wrapper">
-        <div class="content-page">
+        <div class="content-page p-0">
             <div class="container-fluid">
-                <div class="row m-sm-0 px-3">
+                <div class="row">
 
-                <div class="col-12 p-0">
-                    <section>
-                        <div class="bd-example">
-                            <div id="carouselExampleCaptions" class="carousel slide custom-carousel" data-ride="carousel">
-                                <ol class="carousel-indicators">
-                                    <li data-target="#carouselExampleCaptions" data-slide-to="0" class="active"></li>
-                                    <li data-target="#carouselExampleCaptions" data-slide-to="1"></li>
-                                    <li data-target="#carouselExampleCaptions" data-slide-to="2"></li>
-                                </ol>
-                                <div class="carousel-inner">
-                                    <div class="carousel-item active">
-                                        <img src="<?= base_url('public/local_assets/images/notfound_image.png') ?>" class="d-block w-100" alt="#">
-                                        <div class="carousel-caption d-none d-md-block">
-                                            <h4 class="text-white">First slide label</h4>
-                                            <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+                    <div class="col-12 p-0">
+
+                    <section class="section mb-4" style="background-image: url('public/local_assets/images/background.jpg'); background-size: cover; background-position: center;">
+                            <div class="container" style="height:  78vh;">
+                                <div class="row">
+                                    <div class="col-md-6 mt-5">
+                                        <h1 class="text-dark">Jasa Pembuatan PCB dan CNC Profeisonal</h1>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <img src="<?= base_url('public/local_assets/images/illustrator.png') ?>" class="img-fluid" alt="Illustration" width="100%">
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="section px-3" style="margin-top: -250px;">
+                            <div class="bd-example">
+                                <div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel">
+                                    <ol class="carousel-indicators">
+                                        <li data-target="#carouselExampleCaptions" data-slide-to="0" class="active"></li>
+                                        <li data-target="#carouselExampleCaptions" data-slide-to="1"></li>
+                                        <li data-target="#carouselExampleCaptions" data-slide-to="2"></li>
+                                    </ol>
+                                    <div class="carousel-inner">
+                                        <div class="carousel-item active">
+                                            <img src="<?= base_url('public/local_assets/images/notfound_image.png') ?>" class="d-block w-100" alt="#">
+                                            <div class="carousel-caption d-none d-md-block">
+                                                <h4 class="text-white">First slide label</h4>
+                                                <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+                                            </div>
+                                        </div>
+                                        <div class="carousel-item">
+                                            <img src="<?= base_url('public/local_assets/images/notfound_image.png') ?>" class="d-block w-100" alt="#">
+                                            <div class="carousel-caption d-none d-md-block">
+                                                <h4 class="text-white">Second slide label</h4>
+                                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                                            </div>
+                                        </div>
+                                        <div class="carousel-item">
+                                            <img src="<?= base_url('public/local_assets/images/notfound_image.png') ?>" class="d-block w-100" alt="#">
+                                            <div class="carousel-caption d-none d-md-block">
+                                                <h4 class="text-white">Third slide label</h4>
+                                                <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="carousel-item">
-                                        <img src="<?= base_url('public/local_assets/images/notfound_image.png') ?>" class="d-block w-100" alt="#">
-                                        <div class="carousel-caption d-none d-md-block">
-                                            <h4 class="text-white">Second slide label</h4>
+                                    <a class="carousel-control-prev" href="#carouselExampleCaptions" role="button" data-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="sr-only">Previous</span>
+                                    </a>
+                                    <a class="carousel-control-next" href="#carouselExampleCaptions" role="button" data-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="sr-only">Next</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </section>
+
+
+                        <!-- Card Section -->
+                        <section class="section bg-primary-light mt-4 mb-4">
+                            <div class="container">
+                                <h2 class="section-heading text-center font-weight-bold mb-5">Layanan PCB & CNC Profesional</h2>
+
+                                <!-- Row 1: Layanan PCB dan CNC -->
+                                <div class="row">
+                                    <div class="col-md-6 mb-4">
+                                        <div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel">
+                                            <ol class="carousel-indicators">
+                                                <li data-target="#carouselExampleCaptions" data-slide-to="0" class="active"></li>
+                                                <li data-target="#carouselExampleCaptions" data-slide-to="1"></li>
+                                                <li data-target="#carouselExampleCaptions" data-slide-to="2"></li>
+                                            </ol>
+                                            <div class="carousel-inner">
+                                                <div class="carousel-item active">
+                                                    <img src="<?= base_url('public/local_assets/images/notfound_image.png') ?>" class="d-block w-100" alt="#">
+                                                    <div class="carousel-caption d-none d-md-block">
+                                                        <h4 class="text-white">First slide label</h4>
+                                                        <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+                                                    </div>
+                                                </div>
+                                                <div class="carousel-item">
+                                                    <img src="<?= base_url('public/local_assets/images/notfound_image.png') ?>" class="d-block w-100" alt="#">
+                                                    <div class="carousel-caption d-none d-md-block">
+                                                        <h4 class="text-white">Second slide label</h4>
+                                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                                                    </div>
+                                                </div>
+                                                <div class="carousel-item">
+                                                    <img src="<?= base_url('public/local_assets/images/notfound_image.png') ?>" class="d-block w-100" alt="#">
+                                                    <div class="carousel-caption d-none d-md-block">
+                                                        <h4 class="text-white">Third slide label</h4>
+                                                        <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <a class="carousel-control-prev" href="#carouselExampleCaptions" role="button" data-slide="prev">
+                                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                <span class="sr-only">Previous</span>
+                                            </a>
+                                            <a class="carousel-control-next" href="#carouselExampleCaptions" role="button" data-slide="next">
+                                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                <span class="sr-only">Next</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-4">
+                                    </div>
+                                    <div class="col-md-6 mb-4">
+                                        <div class="card p-4 h-100 bottom-right shadow-showcase rounded">
+                                            <h4 class="font-weight-bold">Jasa Pembuatan PCB</h4>
+                                            <p>Kami menyediakan layanan pembuatan PCB berkualitas tinggi untuk kebutuhan elektronik Anda, mulai dari prototype hingga produksi massal.</p>
+                                            <ul class="list-unstyled">
+                                                <li>✔️ Desain hingga produksi</li>
+                                                <li>✔️ Berbagai ukuran & lapisan</li>
+                                                <li>✔️ Finishing profesional</li>
+                                            </ul>
+                                            <button class="btn btn-sm btn-primary mt-2">Order Sekarang</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-4">
+                                        <div class="card p-4 h-100 bottom-right shadow-showcase rounded">
+                                            <h4 class="font-weight-bold">Jasa CNC Milling & Engraving</h4>
+                                            <p>Kami juga melayani pemotongan dan engraving menggunakan mesin CNC presisi untuk berbagai kebutuhan teknis dan artistik.</p>
+                                            <ul class="list-unstyled">
+                                                <li>✔️ Akurasi tinggi</li>
+                                                <li>✔️ Bahan metal, akrilik, kayu</li>
+                                                <li>✔️ Hasil rapi & cepat</li>
+                                            </ul>
+                                            <button class="btn btn-sm btn-primary mt-2">Order Sekarang</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Row 2: Detail layanan dan keunggulan -->
+                                <div class="row mt-4">
+                                    <div class="col-md-4 mb-4">
+                                        <div class="card p-4 h-100 bottom-right shadow-showcase rounded">
+                                            <h5 class="font-weight-bold">Spesifikasi PCB</h5>
+                                            <p>Kustomisasi lengkap dari jenis material, ketebalan, hingga finishing.</p>
+                                            <ul class="list-unstyled">
+                                                <li>🧩 FR4, CEM1, Aluminium</li>
+                                                <li>📏 2-8 Layer</li>
+                                                <li>✨ Surface Finish: HASL, ENIG</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-4">
+                                        <div class="card p-4 h-100 bottom-right shadow-showcase rounded">
+                                            <h5 class="font-weight-bold">Kenapa Memilih Kami?</h5>
+                                            <p>Lebih dari sekadar jasa, kami adalah partner produksi terbaik Anda.</p>
+                                            <ul class="list-unstyled">
+                                                <li>✅ Tim ahli & berpengalaman</li>
+                                                <li>🚚 Pengiriman cepat & aman</li>
+                                                <li>📞 Layanan support 24/7</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="row col-12 section px-3">
+                            <div class="col-lg-4 col-sm-12">
+                                <h4 class="font-weight-bold mb-3">Pilih Paket Sesuai Kebutuhan Anda</h4>
+                                <p class="mb-2">Kami menyediakan beberapa pilihan paket layanan dengan fitur dan harga yang berbeda-beda, sesuai kebutuhan Anda.</p>
+                                <ul class="pl-3">
+                                    <li><strong>Basic</strong> – Cocok untuk penggunaan personal ringan.</li>
+                                    <li><strong>Standard</strong> – Direkomendasikan untuk pengguna reguler.</li>
+                                    <li><strong>Platinum</strong> – Fitur lengkap dan performa lebih tinggi.</li>
+                                    <li><strong>Premium</strong> – Untuk kebutuhan profesional & skala besar.</li>
+                                </ul>
+                                <p class="mt-3">Klik tombol <strong>Purchase</strong> di bawah paket pilihan Anda untuk melakukan pemesanan.</p>
+                            </div>
+
+                            <div class="col-lg-8 col-sm-12">
+                                <div class="card" id="pricing">
+                                    <div class="card-body">
+                                        <div class="table-responsive pricing pt-2">
+                                            <table id="my-table" class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center prc-wrap"></th>
+                                                    <th class="text-center prc-wrap">
+                                                        <div class="prc-box">
+                                                        <div class="h3 pt-4">$19<small> / Per month</small>
+                                                        </div> <span class="type">Basic</span>
+                                                        </div>
+                                                    </th>
+                                                    <th class="text-center prc-wrap">
+                                                        <div class="prc-box active">
+                                                        <div class="h3 pt-4">$39<small> / Per month</small>
+                                                        </div> <span class="type">Standard</span>
+                                                        </div>
+                                                    </th>
+                                                    <th class="text-center prc-wrap">
+                                                        <div class="prc-box">
+                                                        <div class="h3 pt-4">$119<small> / Per month</small>
+                                                        </div> <span class="type">Platinum</span>
+                                                        </div>
+                                                    </th>
+                                                    <th class="text-center prc-wrap">
+                                                        <div class="prc-box">
+                                                        <div class="h3 pt-4">$219<small> / Per month</small>
+                                                        </div> <span class="type">Premium</span>
+                                                        </div>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <th class="text-center" scope="row">New Movies</th>
+                                                    <td class="text-center child-cell"><i class="ri-check-line ri-2x"></i>
+                                                    </td>
+                                                    <td class="text-center child-cell active"><i class="ri-check-line ri-2x"></i>
+                                                    </td>
+                                                    <td class="text-center child-cell"><i class="ri-check-line ri-2x"></i>
+                                                    </td>
+                                                    <td class="text-center child-cell"><i class="ri-check-line ri-2x"></i>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th class="text-center" scope="row">Streamit Special</th>
+                                                    <td class="text-center child-cell"><i class="ri-close-line i_close"></i>
+                                                    </td>
+                                                    <td class="text-center child-cell active"><i class="ri-check-line ri-2x"></i>
+                                                    </td>
+                                                    <td class="text-center child-cell"><i class="ri-check-line ri-2x"></i>
+                                                    </td>
+                                                    <td class="text-center child-cell"><i class="ri-check-line ri-2x"></i>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th class="text-center" scope="row">Sofbox series</th>
+                                                    <td class="text-center child-cell"><i class="ri-close-line i_close"></i>
+                                                    </td>
+                                                    <td class="text-center child-cell active"><i class="ri-check-line ri-2x"></i>
+                                                    </td>
+                                                    <td class="text-center child-cell"><i class="ri-check-line ri-2x"></i>
+                                                    </td>
+                                                    <td class="text-center child-cell"><i class="ri-check-line ri-2x"></i>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th class="text-center" scope="row">Xamin TV shows</th>
+                                                    <td class="text-center child-cell"><i class="ri-check-line ri-2x"></i>
+                                                    </td>
+                                                    <td class="text-center child-cell active"><i class="ri-check-line ri-2x"></i>
+                                                    </td>
+                                                    <td class="text-center child-cell"><i class="ri-check-line ri-2x"></i>
+                                                    </td>
+                                                    <td class="text-center child-cell"><i class="ri-check-line ri-2x"></i>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th class="text-center" scope="row">Prokit HD shows</th>
+                                                    <td class="text-center child-cell">SD (480p)</td>
+                                                    <td class="text-center child-cell active">HD (720p)</td>
+                                                    <td class="text-center child-cell">FHD (1080p)</td>
+                                                    <td class="text-center child-cell">FHD (1080p)</td>
+                                                </tr>
+                                                <tr>
+                                                    <th class="text-center" scope="row">Unlimited Graphina plug-in</th>
+                                                    <td class="text-center child-cell"><i class="ri-close-line i_close"></i>
+                                                    </td>
+                                                    <td class="text-center child-cell active"><i class="ri-close-line i_close"></i>
+                                                    </td>
+                                                    <td class="text-center child-cell"><i class="ri-check-line ri-2x"></i>
+                                                    </td>
+                                                    <td class="text-center child-cell"><i class="ri-check-line ri-2x"></i>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-center"><i class="ri-close-line i_close"></i>
+                                                    </td>
+                                                    <td class="text-center"> <a href="#" class="btn btn-primary mt-3">Purchase</a>
+                                                    </td>
+                                                    <td class="text-center"> <a href="#" class="btn btn-primary mt-3">Purchase</a>
+                                                    </td>
+                                                    <td class="text-center"> <a href="#" class="btn btn-primary mt-3">Purchase</a>
+                                                    </td>
+                                                    <td class="text-center"> <a href="#" class="btn btn-primary mt-3">Purchase</a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Grid Titles -->
+                        <section class="bg-light">
+                            <div class="container">
+                                <h2 class="section-heading text-center p-5">Kenapa Memilih Kami?</h2>
+                                <div class="row text-center">
+                                    <div class="col-md-3 mb-4">
+                                        <i class="las la-microchip fa-3x text-primary font-size-40 mb-3"></i>
+                                        <h5>Teknologi Modern</h5>
+                                        <p>Kami menggunakan mesin terbaru untuk hasil PCB dan CNC yang presisi dan konsisten.</p>
+                                    </div>
+                                    <div class="col-md-3 mb-4">
+                                        <i class="las la-stopwatch fa-3x text-success font-size-40 mb-3"></i>
+                                        <h5>Proses Cepat</h5>
+                                        <p>Pesanan Anda kami proses dengan cepat tanpa mengorbankan kualitas produksi.</p>
+                                    </div>
+                                    <div class="col-md-3 mb-4">
+                                        <i class="las la-tools fa-3x text-warning font-size-40 mb-3"></i>
+                                        <h5>Custom Sesuai Kebutuhan</h5>
+                                        <p>Anda bebas menentukan ukuran, bahan, dan spesifikasi sesuai keperluan proyek Anda.</p>
+                                    </div>
+                                    <div class="col-md-3 mb-4">
+                                        <i class="las la-hand-holding-usd fa-3x text-info font-size-40 mb-3"></i>
+                                        <h5>Harga Transparan</h5>
+                                        <p>Estimasi harga langsung terlihat tanpa biaya tersembunyi, cocok untuk budgeting proyek Anda.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+
+                        <!-- Image Feature -->
+                        <section class="section">
+                            <div class="container">
+                                <h2 class="section-heading">Title Heading</h2>
+                                <div class="row">
+                                    <div class="col-md-4 mb-4">
+                                        <div class="card" style="height: 250px;"></div>
+                                    </div>
+                                    <div class="col-md-4 mb-4">
+                                        <div class="card" style="height: 250px;"></div>
+                                    </div>
+                                    <div class="col-md-4 mb-4">
+                                        <div class="card p-4">
+                                            <p>Text inside a card</p>
+                                            <button class="btn btn-sm btn-dark">View</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Testimonials -->
+                        <section class="section bg-light">
+                            <div class="container">
+                                <h2 class="section-heading">Section Heading</h2>
+                                <div class="row">
+                                    <div class="col-md-6 mb-4">
+                                        <div class="card p-4">
                                             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                                            <div>⭐⭐⭐⭐⭐</div>
                                         </div>
                                     </div>
-                                    <div class="carousel-item">
-                                        <img src="<?= base_url('public/local_assets/images/notfound_image.png') ?>" class="d-block w-100" alt="#">
-                                        <div class="carousel-caption d-none d-md-block">
-                                            <h4 class="text-white">Third slide label</h4>
-                                            <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
+                                    <div class="col-md-6 mb-4">
+                                        <div class="card p-4">
+                                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                                            <div>⭐⭐⭐⭐⭐</div>
                                         </div>
                                     </div>
                                 </div>
-                                <a class="carousel-control-prev" href="#carouselExampleCaptions" role="button" data-slide="prev">
-                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                    <span class="sr-only">Previous</span>
-                                </a>
-                                <a class="carousel-control-next" href="#carouselExampleCaptions" role="button" data-slide="next">
-                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                    <span class="sr-only">Next</span>
-                                </a>
                             </div>
-                        </div>
-                    </section>
-
-
-                    <!-- Card Section -->
-                    <section class="section">
-                        <div class="container">
-                            <h2 class="section-heading text-center font-weight-bold mb-5">Layanan PCB & CNC Profesional</h2>
-
-                            <!-- Row 1: Layanan PCB dan CNC -->
-                            <div class="row">
-                                <div class="col-md-6 mb-4">
-                                    <div class="card p-4 h-100 bottom-right shadow-showcase rounded">
-                                        <h4 class="font-weight-bold">Jasa Pembuatan PCB</h4>
-                                        <p>Kami menyediakan layanan pembuatan PCB berkualitas tinggi untuk kebutuhan elektronik Anda, mulai dari prototype hingga produksi massal.</p>
-                                        <ul class="list-unstyled">
-                                            <li>✔️ Desain hingga produksi</li>
-                                            <li>✔️ Berbagai ukuran & lapisan</li>
-                                            <li>✔️ Finishing profesional</li>
-                                        </ul>
-                                        <button class="btn btn-sm btn-primary mt-2">Order Sekarang</button>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 mb-4">
-                                    <div class="card p-4 h-100 bottom-right shadow-showcase rounded">
-                                        <h4 class="font-weight-bold">Jasa CNC Milling & Engraving</h4>
-                                        <p>Kami juga melayani pemotongan dan engraving menggunakan mesin CNC presisi untuk berbagai kebutuhan teknis dan artistik.</p>
-                                        <ul class="list-unstyled">
-                                            <li>✔️ Akurasi tinggi</li>
-                                            <li>✔️ Bahan metal, akrilik, kayu</li>
-                                            <li>✔️ Hasil rapi & cepat</li>
-                                        </ul>
-                                        <button class="btn btn-sm btn-primary mt-2">Order Sekarang</button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Row 2: Detail layanan dan keunggulan -->
-                            <div class="row mt-4">
-                                <div class="col-md-4 mb-4">
-                                    <div class="card p-4 h-100 bottom-right shadow-showcase rounded">
-                                        <h5 class="font-weight-bold">Spesifikasi PCB</h5>
-                                        <p>Kustomisasi lengkap dari jenis material, ketebalan, hingga finishing.</p>
-                                        <ul class="list-unstyled">
-                                            <li>🧩 FR4, CEM1, Aluminium</li>
-                                            <li>📏 2-8 Layer</li>
-                                            <li>✨ Surface Finish: HASL, ENIG</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 mb-4">
-                                    <div class="card p-4 h-100 bottom-right shadow-showcase rounded">
-                                        <h5 class="font-weight-bold">Kenapa Memilih Kami?</h5>
-                                        <p>Lebih dari sekadar jasa, kami adalah partner produksi terbaik Anda.</p>
-                                        <ul class="list-unstyled">
-                                            <li>✅ Tim ahli & berpengalaman</li>
-                                            <li>🚚 Pengiriman cepat & aman</li>
-                                            <li>📞 Layanan support 24/7</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-                    <section class="row col-12 p-0">
-                        <div class="col-lg-4 col-sm-12">
-                            <h4 class="font-weight-bold mb-3">Pilih Paket Sesuai Kebutuhan Anda</h4>
-                            <p class="mb-2">Kami menyediakan beberapa pilihan paket layanan dengan fitur dan harga yang berbeda-beda, sesuai kebutuhan Anda.</p>
-                            <ul class="pl-3">
-                                <li><strong>Basic</strong> – Cocok untuk penggunaan personal ringan.</li>
-                                <li><strong>Standard</strong> – Direkomendasikan untuk pengguna reguler.</li>
-                                <li><strong>Platinum</strong> – Fitur lengkap dan performa lebih tinggi.</li>
-                                <li><strong>Premium</strong> – Untuk kebutuhan profesional & skala besar.</li>
-                            </ul>
-                            <p class="mt-3">Klik tombol <strong>Purchase</strong> di bawah paket pilihan Anda untuk melakukan pemesanan.</p>
-                        </div>
-
-                        <div class="col-lg-8 col-sm-12">
-                            <div class="card" id="pricing">
-                                <div class="card-body">
-                                    <div class="table-responsive pricing pt-2">
-                                        <table id="my-table" class="table">
-                                        <thead>
-                                            <tr>
-                                                <th class="text-center prc-wrap"></th>
-                                                <th class="text-center prc-wrap">
-                                                    <div class="prc-box">
-                                                    <div class="h3 pt-4">$19<small> / Per month</small>
-                                                    </div> <span class="type">Basic</span>
-                                                    </div>
-                                                </th>
-                                                <th class="text-center prc-wrap">
-                                                    <div class="prc-box active">
-                                                    <div class="h3 pt-4">$39<small> / Per month</small>
-                                                    </div> <span class="type">Standard</span>
-                                                    </div>
-                                                </th>
-                                                <th class="text-center prc-wrap">
-                                                    <div class="prc-box">
-                                                    <div class="h3 pt-4">$119<small> / Per month</small>
-                                                    </div> <span class="type">Platinum</span>
-                                                    </div>
-                                                </th>
-                                                <th class="text-center prc-wrap">
-                                                    <div class="prc-box">
-                                                    <div class="h3 pt-4">$219<small> / Per month</small>
-                                                    </div> <span class="type">Premium</span>
-                                                    </div>
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <th class="text-center" scope="row">New Movies</th>
-                                                <td class="text-center child-cell"><i class="ri-check-line ri-2x"></i>
-                                                </td>
-                                                <td class="text-center child-cell active"><i class="ri-check-line ri-2x"></i>
-                                                </td>
-                                                <td class="text-center child-cell"><i class="ri-check-line ri-2x"></i>
-                                                </td>
-                                                <td class="text-center child-cell"><i class="ri-check-line ri-2x"></i>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th class="text-center" scope="row">Streamit Special</th>
-                                                <td class="text-center child-cell"><i class="ri-close-line i_close"></i>
-                                                </td>
-                                                <td class="text-center child-cell active"><i class="ri-check-line ri-2x"></i>
-                                                </td>
-                                                <td class="text-center child-cell"><i class="ri-check-line ri-2x"></i>
-                                                </td>
-                                                <td class="text-center child-cell"><i class="ri-check-line ri-2x"></i>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th class="text-center" scope="row">Sofbox series</th>
-                                                <td class="text-center child-cell"><i class="ri-close-line i_close"></i>
-                                                </td>
-                                                <td class="text-center child-cell active"><i class="ri-check-line ri-2x"></i>
-                                                </td>
-                                                <td class="text-center child-cell"><i class="ri-check-line ri-2x"></i>
-                                                </td>
-                                                <td class="text-center child-cell"><i class="ri-check-line ri-2x"></i>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th class="text-center" scope="row">Xamin TV shows</th>
-                                                <td class="text-center child-cell"><i class="ri-check-line ri-2x"></i>
-                                                </td>
-                                                <td class="text-center child-cell active"><i class="ri-check-line ri-2x"></i>
-                                                </td>
-                                                <td class="text-center child-cell"><i class="ri-check-line ri-2x"></i>
-                                                </td>
-                                                <td class="text-center child-cell"><i class="ri-check-line ri-2x"></i>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th class="text-center" scope="row">Prokit HD shows</th>
-                                                <td class="text-center child-cell">SD (480p)</td>
-                                                <td class="text-center child-cell active">HD (720p)</td>
-                                                <td class="text-center child-cell">FHD (1080p)</td>
-                                                <td class="text-center child-cell">FHD (1080p)</td>
-                                            </tr>
-                                            <tr>
-                                                <th class="text-center" scope="row">Unlimited Graphina plug-in</th>
-                                                <td class="text-center child-cell"><i class="ri-close-line i_close"></i>
-                                                </td>
-                                                <td class="text-center child-cell active"><i class="ri-close-line i_close"></i>
-                                                </td>
-                                                <td class="text-center child-cell"><i class="ri-check-line ri-2x"></i>
-                                                </td>
-                                                <td class="text-center child-cell"><i class="ri-check-line ri-2x"></i>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-center"><i class="ri-close-line i_close"></i>
-                                                </td>
-                                                <td class="text-center"> <a href="#" class="btn btn-primary mt-3">Purchase</a>
-                                                </td>
-                                                <td class="text-center"> <a href="#" class="btn btn-primary mt-3">Purchase</a>
-                                                </td>
-                                                <td class="text-center"> <a href="#" class="btn btn-primary mt-3">Purchase</a>
-                                                </td>
-                                                <td class="text-center"> <a href="#" class="btn btn-primary mt-3">Purchase</a>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- Grid Titles -->
-                    <section class="bg-light">
-                        <div class="container">
-                            <h2 class="section-heading text-center p-5">Kenapa Memilih Kami?</h2>
-                            <div class="row text-center">
-                                <div class="col-md-3 mb-4">
-                                    <i class="las la-microchip fa-3x text-primary font-size-40 mb-3"></i>
-                                    <h5>Teknologi Modern</h5>
-                                    <p>Kami menggunakan mesin terbaru untuk hasil PCB dan CNC yang presisi dan konsisten.</p>
-                                </div>
-                                <div class="col-md-3 mb-4">
-                                    <i class="las la-stopwatch fa-3x text-success font-size-40 mb-3"></i>
-                                    <h5>Proses Cepat</h5>
-                                    <p>Pesanan Anda kami proses dengan cepat tanpa mengorbankan kualitas produksi.</p>
-                                </div>
-                                <div class="col-md-3 mb-4">
-                                    <i class="las la-tools fa-3x text-warning font-size-40 mb-3"></i>
-                                    <h5>Custom Sesuai Kebutuhan</h5>
-                                    <p>Anda bebas menentukan ukuran, bahan, dan spesifikasi sesuai keperluan proyek Anda.</p>
-                                </div>
-                                <div class="col-md-3 mb-4">
-                                    <i class="las la-hand-holding-usd fa-3x text-info font-size-40 mb-3"></i>
-                                    <h5>Harga Transparan</h5>
-                                    <p>Estimasi harga langsung terlihat tanpa biaya tersembunyi, cocok untuk budgeting proyek Anda.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-
-                    <!-- Image Feature -->
-                    <section class="section">
-                        <div class="container">
-                            <h2 class="section-heading">Title Heading</h2>
-                            <div class="row">
-                                <div class="col-md-4 mb-4">
-                                    <div class="card" style="height: 250px;"></div>
-                                </div>
-                                <div class="col-md-4 mb-4">
-                                    <div class="card" style="height: 250px;"></div>
-                                </div>
-                                <div class="col-md-4 mb-4">
-                                    <div class="card p-4">
-                                        <p>Text inside a card</p>
-                                        <button class="btn btn-sm btn-dark">View</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- Testimonials -->
-                    <section class="section bg-light">
-                        <div class="container">
-                            <h2 class="section-heading">Section Heading</h2>
-                            <div class="row">
-                                <div class="col-md-6 mb-4">
-                                    <div class="card p-4">
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                                        <div>⭐⭐⭐⭐⭐</div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 mb-4">
-                                    <div class="card p-4">
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                                        <div>⭐⭐⭐⭐⭐</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                </div>
+                        </section>
+                    </div>
 
                    
 

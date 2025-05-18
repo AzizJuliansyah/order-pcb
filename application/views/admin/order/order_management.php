@@ -272,7 +272,7 @@
                                                     <?php if ($item['order_status'] == 'order_pending'): ?>
                                                         <span class="badge border border-warning text-warning font-size-12 m-2">Pesanan Menunggu</span>
                                                     <?php elseif ($item['order_status'] == 'order_confirmed'): ?>
-                                                        <span class="badge border border-secondary text-secondary font-size-12 m-2">Pesanan Diterima</span>
+                                                        <span class="badge border border-info text-info font-size-12 m-2">Pesanan Diterima</span>
                                                     <?php elseif ($item['order_status'] == 'order_processing'): ?>
                                                         <span class="badge border border-primary text-primary font-size-12 m-2">Pesanan Diproses</span>
                                                     <?php elseif ($item['order_status'] == 'order_completed'): ?>
@@ -280,7 +280,7 @@
                                                     <?php elseif ($item['order_status'] == 'order_cancelled'): ?>
                                                         <span class="badge border border-danger text-danger font-size-12 m-2">Pesanan Dibatalkan</span>
                                                     <?php elseif ($item['order_status'] == 'order_refunded'): ?>
-                                                        <span class="badge border border-info text-info font-size-12 m-2">Pesanan di refund</span>
+                                                        <span class="badge border border-secondary text-secondary font-size-12 m-2">Pesanan di refund</span>
                                                     <?php elseif ($item['order_status'] == 'order_failed'): ?>
                                                         <span class="badge border border-dark text-dark font-size-12 m-2">Pesanan gagal</span>
                                                     <?php else: ?>

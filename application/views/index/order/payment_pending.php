@@ -22,7 +22,7 @@
                                 </div>
                             </div>
                             <div class="col-lg-6 content-right">
-                                <img src="<?= base_url('public/template_assets/images/login/01.png') ?>" class="img-fluid image-right" alt="">
+                                <img src="<?= base_url('public/local_assets/images/payment_pending.jpg') ?>" class="img-fluid image-right" alt="Image by redgreystock on Freepik">
                             </div>
                             </div>
                         </div>

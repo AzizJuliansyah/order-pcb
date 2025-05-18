@@ -19,239 +19,71 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ml-auto navbar-list align-items-center">
-                        <li>
-                            <div class="iq-search-bar device-search">
-                                <form action="#" class="searchbox">
-                                    <a class="search-link" href="#"><i class="ri-search-line"></i></a>
-                                    <input type="text" class="text search-input" placeholder="Search here...">
-                                </form>
-                            </div>
-                        </li>
-                        <li class="nav-item nav-icon search-content">
-                            <a href="#" class="search-toggle rounded" id="dropdownSearch" data-toggle="dropdown"
-                                aria-haspopup="true" aria-expanded="false">
-                                <i class="ri-search-line"></i>
+                        <li class="nav-item nav-icon nav-item-icon dropdown">
+                            <a href="<?= base_url('chat') ?>" class="">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="#555" viewBox="0 0 24 24">
+                                    <path d="M21 6.5a2.5 2.5 0 0 0-2.5-2.5h-13A2.5 2.5 0 0 0 3 6.5v8A2.5 2.5 0 0 0 5.5 17H6v3l4-3h8.5a2.5 2.5 0 0 0 2.5-2.5v-8zM5.5 5h13A1.5 1.5 0 0 1 20 6.5v8a1.5 1.5 0 0 1-1.5 1.5H9.672L7 18v-2.5H5.5A1.5 1.5 0 0 1 4 14.5v-8A1.5 1.5 0 0 1 5.5 5z"/>
+                                </svg>
                             </a>
-                            <div class="iq-search-bar iq-sub-dropdown dropdown-menu" aria-labelledby="dropdownSearch">
-                                <form action="#" class="searchbox p-2">
-                                    <div class="form-group mb-0 position-relative">
-                                        <input type="text" class="text search-input font-size-12"
-                                            placeholder="type here to search...">
-                                        <a href="#" class="search-link"><i class="las la-search"></i></a>
-                                    </div>
-                                </form>
-                            </div>
                         </li>
                         <li class="nav-item nav-icon nav-item-icon dropdown">
-                            <a href="#" class="search-toggle dropdown-toggle" id="dropdownMenuButton2"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" class="feather feather-mail">
-                                    <path
-                                        d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z">
-                                    </path>
-                                    <polyline points="22,6 12,13 2,6"></polyline>
-                                </svg>
-                                <span class="bg-primary"></span>
-                            </a>
-                            <div class="iq-sub-dropdown dropdown-menu" aria-labelledby="dropdownMenuButton2">
-                                <div class="card shadow-none m-0">
-                                    <div class="card-body p-0 ">
-                                        <div class="cust-title p-3">
-                                            <div class="d-flex align-items-center justify-content-between">
-                                                <h5 class="mb-0">All Messages</h5>
-                                                <a class="badge badge-primary badge-card" href="#">3</a>
-                                            </div>
-                                        </div>
-                                        <div class="px-3 pt-0 pb-0 sub-card">
-                                            <a href="#" class="iq-sub-card">
-                                                <div class="media align-items-center cust-card py-3 border-bottom">
-                                                    <div class="">
-                                                        <img class="avatar-50 rounded-small"
-                                                            src="<?= base_url('public/template_assets/images/user/01.jpg') ?>" alt="01">
-                                                    </div>
-                                                    <div class="media-body ml-3">
-                                                        <div class="d-flex align-items-center justify-content-between">
-                                                            <h6 class="mb-0">Emma Watson</h6>
-                                                            <small class="text-dark"><b>12 : 47 pm</b></small>
-                                                        </div>
-                                                        <small class="mb-0">Lorem ipsum dolor sit amet</small>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                            <a href="#" class="iq-sub-card">
-                                                <div class="media align-items-center cust-card py-3 border-bottom">
-                                                    <div class="">
-                                                        <img class="avatar-50 rounded-small"
-                                                            src="<?= base_url('public/template_assets/images/user/02.jpg') ?>" alt="02">
-                                                    </div>
-                                                    <div class="media-body ml-3">
-                                                        <div class="d-flex align-items-center justify-content-between">
-                                                            <h6 class="mb-0">Ashlynn Franci</h6>
-                                                            <small class="text-dark"><b>11 : 30 pm</b></small>
-                                                        </div>
-                                                        <small class="mb-0">Lorem ipsum dolor sit amet</small>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                            <a href="#" class="iq-sub-card">
-                                                <div class="media align-items-center cust-card py-3">
-                                                    <div class="">
-                                                        <img class="avatar-50 rounded-small"
-                                                            src="<?= base_url('public/template_assets/images/user/03.jpg') ?>" alt="03">
-                                                    </div>
-                                                    <div class="media-body ml-3">
-                                                        <div class="d-flex align-items-center justify-content-between">
-                                                            <h6 class="mb-0">Kianna Carder</h6>
-                                                            <small class="text-dark"><b>11 : 21 pm</b></small>
-                                                        </div>
-                                                        <small class="mb-0">Lorem ipsum dolor sit amet</small>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                        </div>
-                                        <a class="right-ic btn btn-primary btn-block position-relative p-2" href="#"
-                                            role="button">
-                                            View All
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="nav-item nav-icon nav-item-icon dropdown">
-                            <a href="#" class="search-toggle dropdown-toggle" id="dropdownMenuButton"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" class="feather feather-bell">
-                                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-                                </svg>
-                                <span class="bg-primary "></span>
-                            </a>
-                            <div class="iq-sub-dropdown dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <div class="card shadow-none m-0">
-                                    <div class="card-body p-0 ">
-                                        <div class="cust-title p-3">
-                                            <div class="d-flex align-items-center justify-content-between">
-                                                <h5 class="mb-0">Notifications</h5>
-                                                <a class="badge badge-primary badge-card" href="#">3</a>
-                                            </div>
-                                        </div>
-                                        <div class="px-3 pt-0 pb-0 sub-card">
-                                            <a href="#" class="iq-sub-card">
-                                                <div class="media align-items-center cust-card py-3 border-bottom">
-                                                    <div class="">
-                                                        <img class="avatar-50 rounded-small"
-                                                            src="<?= base_url('public/template_assets/images/user/01.jpg') ?>" alt="01">
-                                                    </div>
-                                                    <div class="media-body ml-3">
-                                                        <div class="d-flex align-items-center justify-content-between">
-                                                            <h6 class="mb-0">Emma Watson</h6>
-                                                            <small class="text-dark"><b>12 : 47 pm</b></small>
-                                                        </div>
-                                                        <small class="mb-0">Lorem ipsum dolor sit amet</small>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                            <a href="#" class="iq-sub-card">
-                                                <div class="media align-items-center cust-card py-3 border-bottom">
-                                                    <div class="">
-                                                        <img class="avatar-50 rounded-small"
-                                                            src="<?= base_url('public/template_assets/images/user/02.jpg') ?>" alt="02">
-                                                    </div>
-                                                    <div class="media-body ml-3">
-                                                        <div class="d-flex align-items-center justify-content-between">
-                                                            <h6 class="mb-0">Ashlynn Franci</h6>
-                                                            <small class="text-dark"><b>11 : 30 pm</b></small>
-                                                        </div>
-                                                        <small class="mb-0">Lorem ipsum dolor sit amet</small>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                            <a href="#" class="iq-sub-card">
-                                                <div class="media align-items-center cust-card py-3">
-                                                    <div class="">
-                                                        <img class="avatar-50 rounded-small"
-                                                            src="<?= base_url('public/template_assets/images/user/03.jpg') ?>" alt="03">
-                                                    </div>
-                                                    <div class="media-body ml-3">
-                                                        <div class="d-flex align-items-center justify-content-between">
-                                                            <h6 class="mb-0">Kianna Carder</h6>
-                                                            <small class="text-dark"><b>11 : 21 pm</b></small>
-                                                        </div>
-                                                        <small class="mb-0">Lorem ipsum dolor sit amet</small>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                        </div>
-                                        <a class="right-ic btn btn-primary btn-block position-relative p-2" href="#"
-                                            role="button">
-                                            View All
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="nav-item nav-icon dropdown caption-content">
-                            <a href="#" class="search-toggle dropdown-toggle  d-flex align-items-center" id="dropdownMenuButton4"
+                            <a href="#" class="search-toggle dropdown-toggle mr-2 d-flex align-items-center" id="dropdownMenuButton4"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <div class="caption mr-2">
                                     <h6 class="mb-0 line-height font-weight-bold"><?= $user['nama'] ?></h6>
                                 </div>
                                 <div class="iq-avatar">
                                     <?php if ($user['foto'] != null) { ?>
-                                        <img src="<?= base_url('public/' . $user['foto']) ?>" class="avatar-40 rounded-circle" alt="user">
+                                        <img src="<?= base_url('public/' . $user['foto']) ?>" class="avatar-30 rounded-circle" alt="user">
                                     <?php } else { ?>
-                                        <img src="<?= base_url('public/local_assets/images/user_default.png') ?>" class="avatar-40 rounded-circle" alt="user">
+                                        <img src="<?= base_url('public/local_assets/images/user_default.png') ?>" class="avatar-30 rounded-circle" alt="user">
                                     <?php } ?>
                                 </div>
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-right border-none" aria-labelledby="dropdownMenuButton">
-                                <li class="dropdown-item d-flex align-items-center">
+                            <ul class="dropdown-menu dropdown-menu-right border-none p-0" aria-labelledby="dropdownMenuButton">
+                                <!-- <li class="dropdown-item d-flex align-items-center" style="max-height: 40px">
                                     <i class="las la-home font-size-20 text-primary"></i>
                                     <a href="<?= base_url('home') ?>">Home</a>
-                                </li>
+                                </li> -->
                                 <?php if (has_access(['1'])) { ?>
-                                    <li class="dropdown-item d-flex align-items-center">
+                                    <li class="dropdown-item d-flex align-items-center" style="max-height: 40px">
                                         <i class="las la-tachometer-alt font-size-20 text-primary"></i>
                                         <a href="<?= base_url('superadmin/dashboard') ?>">Dashboard</a>
                                     </li>
                                 <?php } elseif (has_access(['2'])) { ?>
-                                    <li class="dropdown-item d-flex align-items-center">
+                                    <li class="dropdown-item d-flex align-items-center" style="max-height: 40px">
                                         <i class="las la-tachometer-alt font-size-20 text-primary"></i>
                                         <a href="<?= base_url('admin/dashboard') ?>">Dashboard</a>
                                     </li>
                                 <?php } elseif (has_access(['3'])) { ?>
-                                    <li class="dropdown-item d-flex align-items-center">
+                                    <li class="dropdown-item d-flex align-items-center" style="max-height: 40px">
                                         <i class="las la-tachometer-alt font-size-20 text-primary"></i>
                                         <a href="<?= base_url('operator/dashboard') ?>">Dashboard</a>
                                     </li>
                                 <?php } elseif (has_access(['4'])) { ?>
-                                    <li class="dropdown-item d-flex align-items-center">
+                                    <li class="dropdown-item d-flex align-items-center" style="max-height: 40px">
                                         <i class="las la-tachometer-alt font-size-20 text-primary"></i>
                                         <a href="<?= base_url('customerservice/dashboard') ?>">Dashboard</a>
                                     </li>
                                 <?php } elseif (has_access(['5'])) { ?>
-                                    <li class="dropdown-item d-flex align-items-center">
+                                    <li class="dropdown-item d-flex align-items-center" style="max-height: 40px">
                                         <i class="las la-tachometer-alt font-size-20 text-primary"></i>
                                         <a href="<?= base_url('customer/dashboard') ?>">Dashboard</a>
                                     </li>
                                 <?php } ?>
-                                <li class="dropdown-item d-flex align-items-center">
+                                <li class="dropdown-item d-flex align-items-center" style="max-height: 40px">
                                     <i class="las la-shopping-bag font-size-20 text-primary"></i>
                                     <a href="<?= base_url('order') ?>">Order</a>
                                 </li>
-                                <li class="dropdown-item d-flex align-items-center border-top">
+                                <li class="dropdown-item d-flex align-items-center border-top" style="max-height: 40px">
                                     <i class="las la-user-circle font-size-20 text-primary"></i>
                                     <a href="<?= base_url('user/profile') ?>">My Profile</a>
                                 </li>
-                                <li class="dropdown-item d-flex align-items-center">
+                                <li class="dropdown-item d-flex align-items-center" style="max-height: 40px">
                                     <i class="las la-user-edit font-size-20 text-primary"></i>
                                     <a href="<?= base_url('user/edit_profile') ?>">Edit Profile</a>
                                 </li>
-                                <li class="dropdown-item d-flex align-items-center border-top">
+                                <li class="dropdown-item d-flex align-items-center border-top" style="max-height: 40px">
                                     <i class="las la-sign-out-alt font-size-20 text-primary"></i>
                                     <a href="<?= base_url('auth/logout') ?>">Logout</a>
                                 </li>

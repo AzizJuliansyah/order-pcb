@@ -3,7 +3,7 @@
         $method = $this->router->fetch_method();
     ?>
 
-    <?php if (!in_array($method, ['login', 'register', 'forgot_password', 'reset_password', 'checkout_success', 'payment_success', 'payment_pending', 'payment_failed'])): ?>
+    <?php if (!in_array($method, ['login', 'register', 'forgot_password', 'reset_password', 'checkout_success', 'payment_success', 'payment_pending', 'payment_failed', 'index'])): ?>
         <!-- Footer -->
         <footer class="iq-footer">
             <div class="container-fluid">
@@ -50,7 +50,7 @@
     <!-- Chart Custom JavaScript -->
     <script async src="<?= base_url('public/template_assets/js/chart-custom.js') ?>"></script>
     <!-- Chart Custom JavaScript -->
-    <script async src="<?= base_url('public/template_assets/js/slider.js') ?>"></script>
+    <script async src="<?= base_url('public/template_assets/js/slider.js?v=' . time()) ?>"></script>
 
     <!-- app JavaScript -->
     <script src="<?= base_url('public/template_assets/js/app.js') ?>"></script>

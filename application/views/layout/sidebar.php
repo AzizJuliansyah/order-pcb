@@ -68,7 +68,7 @@
                 <?php } ?>
 
                 <?php if (has_access(['2'])) { ?>
-                    <li class="<?= set_active(['dashboard'], 'active', 2) ?>">
+                    <li class="<?= set_active(['dashboard'], 'active', 2) ?> <?= set_active_with_from('order_detail', 'dashboard') ?>">
                         <a href="<?= base_url('admin/dashboard') ?>">
                             <i class="las la-tachometer-alt font-size-32"></i>
                             <span class="ml-4">Dashboards</span>
@@ -157,21 +157,37 @@
                             <span class="ml-4">Dashboards</span>
                         </a>
                     </li>
+                    <li class="">
+                        <a href="#order" class="collapsed" data-toggle="collapse" aria-expanded="false">
+                            <i class="las la-clipboard-list font-size-32"></i>
+                            <span class="ml-4 mr-1">Data Order</span>
+                            <i class="las la-angle-right iq-arrow-right arrow-active"></i>
+                            <i class="las la-angle-down iq-arrow-right arrow-hover"></i>
+                        </a>
+                        <ul id="order" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                            <li class="<?= set_active(['order_list'], 'active', 2) ?> <?= set_active_with_from('order_detail', 'list') ?>">
+                                <a href="<?= base_url('customerservice/order_list') ?>">
+                                    <i class="las la-minus"></i><span>Order List</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                 <?php } ?>
                 <?php if (has_access(['5'])) { ?>
-                    <li class="<?= set_active(['dashboard'], 'active', 2) ?>">
+                    <li class="<?= set_active(['dashboard'], 'active', 2) ?> <?= set_active_with_from('order_detail', 'dashboard') ?>">
                         <a href="<?= base_url('customer/dashboard') ?>">
                             <i class="las la-tachometer-alt font-size-32"></i>
                             <span class="ml-4">Dashboards</span>
                         </a>
                     </li>
-                    <li class="<?= set_active(['order_list'], 'active', 2) ?> <?= set_active_with_from('order_detail', 'list') ?>">
-                        <a href="<?= base_url('customer/order_list') ?>">
-                            <i class="las la-history font-size-32"></i>
-                            <span class="ml-4">History Transaksi</span>
-                        </a>
-                    </li>
+                    
                 <?php } ?>
+                <li class="<?= set_active(['history'], 'active', 2) ?> <?= set_active_with_from('order_detail', 'history') ?>">
+                    <a href="<?= base_url('customer/history') ?>">
+                        <i class="las la-history font-size-32"></i>
+                        <span class="ml-4">History Transaksi</span>
+                    </a>
+                </li>
                 <li class="<?= set_active(['order'], 'active', 2) ?>">
                     <a href="<?= base_url('order') ?>">
                         <i class="las la-shopping-bag font-size-32"></i>

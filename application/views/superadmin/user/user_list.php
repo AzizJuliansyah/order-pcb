@@ -4,13 +4,11 @@
         <div class="container-fluid">
             <div class="row">
                 <?php 
-                // Ikon dan warna per role (bisa kamu sesuaikan sendiri)
                 $role_styles = [
                     1 => ['icon' => 'las la-crown', 'color' => 'text-danger'],
                     2 => ['icon' => 'las la-tools', 'color' => 'text-primary'],
                     3 => ['icon' => 'las la-headset', 'color' => 'text-info'],
                     4 => ['icon' => 'las la-user-tag', 'color' => 'text-success'],
-                    // Tambahkan sesuai role_id lainnya
                 ];
                 ?>
 
@@ -37,11 +35,11 @@
                                     <div class="d-flex justify-content-between mt-1">
                                         <button type="button" class="btn mr-1 bg-success-light">
                                             Active : 
-                                            <span class="badge badge-success ml-2"><?= $item['total_aktif'] ?></span>
+                                            <span class="badge badge-success ml-2"><?= number_format($item['total_aktif']) ?></span>
                                         </button>
                                         <button type="button" class="btn ml-1 bg-danger-light">
                                             Inactive : 
-                                            <span class="badge badge-danger ml-2"><?= $item['total_nonaktif'] ?></span>
+                                            <span class="badge badge-danger ml-2"><?= number_format($item['total_nonaktif']) ?></span>
                                         </button>
                                     </div>
                                 </div>

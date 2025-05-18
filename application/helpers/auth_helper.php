@@ -38,3 +38,14 @@ function has_access($allowed_roles = [])
     return in_array($role_id, $allowed_roles);
 }
 
+function get_user_role($id) {
+    $CI =& get_instance();
+    $CI->load->database();
+
+    $query = $CI->db->get_where('role', ['role_id' => $id])->row();
+    if ($query) {
+        return $query->jabatan;
+    }
+
+    return '-';
+}

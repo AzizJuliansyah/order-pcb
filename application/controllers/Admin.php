@@ -26,15 +26,102 @@ class Admin extends CI_Controller {
 		$data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
 
 		$data['title'] = 'Admin Dashboard';
-        
 
+		$data['errors'] = $this->session->flashdata('errors') ?? [];
+		$data['old'] = $this->session->flashdata('old') ?? [];
+
+		// --- 1. Payment Status Stats ---
+		$payment_statuses = [
+			'payment_pending',
+			'payment_process',
+			'payment_success',
+			'payment_cancelled'
+		];
+
+		$payment_stats = [];
+		foreach ($payment_statuses as $status) {
+			$row = $this->db->query("
+				SELECT 
+					COUNT(order_id) AS total_orders,
+					MAX(date_created) AS last_created,
+					TIMESTAMPDIFF(HOUR, MAX(date_created), NOW()) AS hours_since_last_created
+				FROM orders
+				WHERE payment_status = ?
+			", [$status])->row_array();
+
+			$payment_stats[$status] = $row;
+		}
+
+		$data['payment_stats'] = $payment_stats;
+
+		// --- 2. Order Status Stats ---
+		$order_statuses = [
+			'order_pending',
+			'order_confirmed',
+			'order_processing',
+			'order_completed',
+			'order_cancelled',
+			'order_refunded',
+			'order_failed'
+		];
+
+		$order_stats = [];
+		foreach ($order_statuses as $status) {
+			$row = $this->db->query("
+				SELECT 
+					COUNT(order_id) AS total_orders,
+					MAX(date_created) AS last_created,
+					TIMESTAMPDIFF(HOUR, MAX(date_created), NOW()) AS hours_since_last_created
+				FROM orders
+				WHERE order_status = ?
+			", [$status])->row_array();
+
+			$order_stats[$status] = $row;
+		}
+
+		$data['order_stats'] = $order_stats;
+
+		// --- 3. Global Order Stats ---
+		$global_orders = $this->db->query("
+			SELECT 
+				COUNT(order_id) AS total_orders,
+				MAX(date_created) AS last_created,
+				TIMESTAMPDIFF(HOUR, MAX(date_created), NOW()) AS hours_since_last_created
+			FROM orders
+		")->row_array();
+
+		$data['global_order_stats'] = $global_orders;
+
+		$recent_order_users = $this->db
+			->select('user.foto, user.nama, user.email, orders.date_created AS order_date')
+			->from('orders')
+			->join('user', 'user.id = orders.user_id', 'left')
+			->order_by('orders.date_created', 'DESC')
+			->limit(5)
+			->get()
+			->result_array();
+
+		$data['recent_order_users'] = $recent_order_users;
+
+		// --- 4. Last Order ---
+		$this->db->from('orders');
+		$this->db->join('user', 'user.id = orders.user_id', 'left');
+		$this->db->order_by('orders.date_created', 'DESC');
+		$this->db->limit(1);
+		$last_order = $this->db->get()->row_array();
+
+		$data['last_order'] = $last_order;
+
+
+		// --- Load Views ---
 		$this->load->view('layout/header', $data);
 		$this->load->view('layout/navbar', $data);
-        $this->load->view('layout/sidebar', $data);
+		$this->load->view('layout/sidebar', $data);
 		$this->load->view('admin/dashboard', $data);
 		$this->load->view('layout/alert');
 		$this->load->view('layout/footer');
 	}
+
 
     public function order_settings_cnc()
 	{
@@ -926,6 +1013,7 @@ class Admin extends CI_Controller {
 
 					$snapToken = \Midtrans\Snap::getSnapToken($params);
 
+					$this->session->set_flashdata('success', 'Order berhasil diterima.');
 					$data = [
 						'total_price' => $clean_total_price,
 						'order_status' => 'order_confirmed',
@@ -934,6 +1022,7 @@ class Admin extends CI_Controller {
 						'snap_token' => $snapToken,
 					];
 				} else {
+					$this->session->set_flashdata('success', 'Operator berhasil diganti.');
 					$data = [
 						'operator' => $operator_id,
 						'admin' => $admin_id,
@@ -942,7 +1031,7 @@ class Admin extends CI_Controller {
 
 				$this->Order_model->update_orders($order_id, $data);
 
-				$this->session->set_flashdata('success', 'Order berhasil diterima.');
+				
 				redirect($redirect);
 			}
 

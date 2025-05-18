@@ -4,7 +4,7 @@
         <div class="content-page">
             <div class="container-fluid p-0">
                 <div class="row m-sm-0 px-3">
-                    <div class="col-lg-7 col-sm-12">
+                    <div class="col-lg-8 col-sm-12">
                         <div class="card border-radius-5 bottom-right shadow-showcase">
                             <div class="card-body">
                                 <?php
@@ -313,7 +313,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-5 col-sm-12">
+                    <div class="col-lg-4 col-sm-12">
                         <div class="card border-radius-5 bottom-right shadow-showcase">
                             <div class="card-body">
                                 <h4 class="card-title mb-0">Cart <i class="las la-shopping-cart"></i></h4>
