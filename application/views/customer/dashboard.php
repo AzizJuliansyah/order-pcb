@@ -45,7 +45,7 @@
                                 <div class="col-sm-4 float-right">
                                     <div class="form-group">
                                         <a href="<?= base_url('order') ?>" class="btn btn-white link-shadow"><span class=" text-primary d-flex align-items-center mb-2">Add New Order <i class="las la-plus font-size-20 ml-2"></i></span></a>
-                                        <a href="<?= base_url('order') ?>" class="btn btn-white link-shadow"><span class=" text-primary d-flex align-items-center">History Transaksi</span></a>
+                                        <a href="<?= base_url('customer/history') ?>" class="btn btn-white link-shadow"><span class=" text-primary d-flex align-items-center">History Transaksi</span></a>
                                     </div>
                                 </div>
                             </div>
@@ -55,6 +55,7 @@
                 <div class="col-12 col-lg-4 col-md-6">
                     <h5 class="card-title mb-0">Lastest Order</h5>
                     <div class="card card-block card-stretch card-height bottom-right shadow-showcase">
+                    <?php if (!empty($last_order)): ?>
                         <div class="card-header border-bottom-0 p-0">
                             <div class="iq-header-title ml-2 mt-2 mr-2">
                                 <div class="d-flex justify-content-between mb-0">
@@ -182,6 +183,15 @@
                                 </div>
                             </div>
                         </div>
+                        <?php else: ?>
+                            <div class="col-12 mt-3">
+                                <div class="text-center">
+                                    <i class="las la-box-open text-muted" style="font-size: 5rem;"></i>
+                                    <h6 class="text-muted">Belum ada order yang masuk</h6>
+                                    <small class="text-muted">Order terakhir yang masuk akan ditampilkan di sini.</small>
+                                </div>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </div>
                 

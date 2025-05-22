@@ -248,7 +248,7 @@ $has_sidebar = isset($has_sidebar) ? $has_sidebar : true;
                             </div>
                         </section>
 
-                        <section class="section px-3" style="margin-top: -250px;">
+                        <section class="section px-3">
                             <div class="bd-example">
                                 <div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel">
                                     <ol class="carousel-indicators">

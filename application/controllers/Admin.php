@@ -990,36 +990,13 @@ class Admin extends CI_Controller {
 				$input_total_price = $this->input->post('total_price');
 				$clean_total_price = preg_replace('/[^\d]/', '', $input_total_price);
 
-				if ($order['total_price'] == null) {
-					$midtrans_server_key = $this->db->get_where('settings', ['settings_id' => '6'])->row_array();
-					$shipping_info = json_decode($order['shipping_info'], true);
-
-					\Midtrans\Config::$serverKey = $midtrans_server_key['item'];
-					\Midtrans\Config::$isProduction = false;
-					\Midtrans\Config::$isSanitized = true;
-					\Midtrans\Config::$is3ds = true;
-
-					$params = [
-						'transaction_details' => [
-							'order_id' => $order['order_code'],
-							'date' => $order['date_created'],
-							'gross_amount' => $clean_total_price,
-						],
-						'customer_details' => [
-							'first_name'    => $shipping_info['nama'],
-							'phone'         => $shipping_info['nomor'],
-						],
-					];
-
-					$snapToken = \Midtrans\Snap::getSnapToken($params);
-
-					$this->session->set_flashdata('success', 'Order berhasil diterima.');
+				if (!empty($input_total_price)) {
+					$this->session->set_flashdata('success', 'Berhasil menetapkan harga.');
 					$data = [
 						'total_price' => $clean_total_price,
 						'order_status' => 'order_confirmed',
 						'operator' => $operator_id,
 						'admin' => $admin_id,
-						'snap_token' => $snapToken,
 					];
 				} else {
 					$this->session->set_flashdata('success', 'Operator berhasil diganti.');
@@ -1074,6 +1051,33 @@ class Admin extends CI_Controller {
 			}
 
 			redirect($redirect);
+		} elseif ($action === 'update_tokopedia_link') {
+			$this->form_validation->set_rules('tokopedia_link', 'Tokopedia Link', 'required|trim', [
+				'required' => '%s wajib diisi.',
+			]);
+			if ($this->form_validation->run() === FALSE) {
+				$this->session->set_flashdata('old', [
+					'tokopedia_link' => set_value('tokopedia_link'),
+				]);
+				$this->session->set_flashdata('errors', [
+					'tokopedia_link' => form_error('tokopedia_link'),
+				]);
+				redirect($redirect);
+			} else {
+				$admin_id = $this->session->userdata('user_id');
+				$tokopedia_link = $this->input->post('tokopedia_link');
+
+				$data = [
+					'tokopedia_link' => $tokopedia_link,
+					'admin' => $admin_id,
+				];
+
+				$this->db->where('order_id', $order_id);
+				$this->db->update('orders', $data);
+	
+				$this->session->set_flashdata('success', 'Tokopedia Link berhasil diupdate.');
+				redirect($redirect);
+			}
 		} else {
 			$this->session->set_flashdata('error', 'Aksi tidak dikenali.');
 			redirect($redirect);

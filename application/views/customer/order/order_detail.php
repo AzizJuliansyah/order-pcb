@@ -363,19 +363,139 @@
                                                 <h6>Total</h6>
                                                 <h5 class="text-primary font-weight-700"><?= $order['total_price'] == 0 ? '-' : 'Rp. ' . number_format($order['total_price'], 2, ',', '.') ?></h5>
                                              </div>
-                                             <?php if (!empty($order['snap_token'])): ?>
-                                                <?php if ($order['user_id'] == $this->session->userdata('user_id')): ?>
-                                                   <div class="d-flex justify-content-end mr-2 mb-2">
-                                                      <button type="button"
-                                                               class="btn btn-primary-dark"
-                                                               id="pay-button"
-                                                               data-snap-token="<?= $order['snap_token']; ?>"
-                                                               data-order-id="<?= $order['order_code']; ?>">
-                                                            <i class="las la-file-invoice-dollar font-size-20"></i> Bayar
-                                                      </button>
+                                             <div class="d-flex justify-content-end mr-2 mb-2">
+                                                <div class="form-group mt-3 ml-3">
+                                                   <button type="button" class="btn btn-primary-dark" data-toggle="modal" data-target="#Bayar"><i class="las la-file-invoice-dollar font-size-20"></i> Bayar</button>
+                                                   <div id="Bayar" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="BayarTitle" aria-hidden="true">
+                                                      <div class="modal-dialog modal-dialog-scrollable" role="document">
+                                                         <div class="modal-content border-radius-10">
+                                                            <div class="modal-header">
+                                                               <h4 class="card-title text-dark mb-0">Invoice# <?= $order['order_code'] ?></h4>
+                                                               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                  <span aria-hidden="true">×</span>
+                                                               </button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                               <div class="form-group text-left mt-3">
+                                                                  <h6 class="card-title text-dark mb-0">Admin : <?= get_admin_name($order['admin']) ?></h6>
+                                                                  <h6 class="card-title text-dark mb-0">Operator : <?= get_admin_name($order['operator']) ?></h6>
+                                                               </div>
+
+                                                               <div class="col-12">
+                                                                  <div class="divider-text">
+                                                                     <span>Payment Details</span>
+                                                                  </div>
+                                                               </div>
+                                                                        
+                                                               <div class="form-group">
+                                                               <?php if ($order['total_price'] != 0) { ?>
+                                                                     <?php if ($order['approved_price'] != 1) { ?>
+                                                                        <?= form_open('customer/approve_order', ['id' => 'TerimaOrderForm']) ?>
+                                                                           <input type="hidden" name="order_id" value="<?= encrypt_id($order['order_id']) ?>">
+                                                                           <div class="form-group">
+                                                                              <div class="checkbox">
+                                                                                 <label><input class="mr-2 <?= !empty($errors['approved_price']) ? 'is-invalid' : '' ?>" name="approved_price" value="1" type="checkbox" required>Approve Price</label>
+                                                                              </div>
+                                                                              <?php if (!empty($errors['approved_price'])): ?>
+                                                                                 <div class="invalid-feedback"><?= $errors['approved_price'] ?></div>
+                                                                              <?php endif; ?>
+                                                                           </div>
+                                                                           <div class="row">
+                                                                              <div class="col-12 col-md-6 mb-2">
+                                                                                 <div class="d-flex align-items-center justify-content-between">
+                                                                                    <label class="btn btn-outline-primary flex-grow-1">
+                                                                                       <input type="radio" name="payment_method" value="midtrans" id="midtrans" class=" <?= !empty($errors['payment_method']) ? 'is-invalid' : '' ?>" autocomplete="off" required> Midtrans
+                                                                                    </label>
+                                                                                    <i class="la la-question-circle font-size-20 text-muted ml-2" data-toggle="tooltip" data-placement="top" title="Dengan memilih Midtrans, Anda dapat melakukan pembayaran secara langsung melalui berbagai metode seperti QRIS, GoPay, DANA, transfer bank, dan lainnya."></i>
+                                                                                 </div>
+                                                                              </div>
+                                                                              <div class="col-12 col-md-6 mb-2">
+                                                                                 <div class="d-flex align-items-center justify-content-between">
+                                                                                    <label class="btn btn-outline-success flex-grow-1">
+                                                                                       <input type="radio" name="payment_method" value="tokopedia" id="tokopedia" class=" <?= !empty($errors['payment_method']) ? 'is-invalid' : '' ?>" autocomplete="off" required> Tokopedia
+                                                                                    </label>
+                                                                                    <i class="la la-question-circle font-size-20 text-muted ml-2" data-toggle="tooltip" data-placement="top" title="Jika memilih Tokopedia, Anda perlu menunggu hingga admin menyediakan tautan pembayaran melalui platform Tokopedia."></i>
+                                                                                 </div>
+                                                                              </div>
+                                                                              <?php if (!empty($errors['payment_method'])): ?>
+                                                                                 <div class="invalid-feedback"><?= $errors['payment_method'] ?></div>
+                                                                              <?php endif; ?>
+                                                                           </div>
+                                                                           <div class="d-flex justify-content-end mt-3">
+                                                                              <button type="submit" class="btn btn-primary-dark">Submit</button>
+                                                                           </div>
+                                                                        <?= form_close() ?>
+                                                                     <?php } else { ?>
+                                                                        <h6 class="card-title text-dark mb-0 mt-3">Payment Method : <?= $order['payment_method'] ?></h6>
+                                                                        <h6 class="card-title text-dark mb-0">Payment Nominal : <?= $order['total_price'] == 0 ? '-' : 'Rp. ' . number_format($order['total_price'], 2, ',', '.') ?></h6>
+                                                                        <div>
+                                                                           <div class="d-flex align-items-center">
+                                                                              <h6 class="card-title text-dark mb-0 mr-2">Payment Status:</h6>
+                                                                              <?php if ($order['payment_status'] == 'payment_pending'): ?>
+                                                                                 <span class="badge badge-warning font-size-12">Menunggu Pembayaran</span>
+                                                                              <?php elseif ($order['payment_status'] == 'payment_process'): ?>
+                                                                                 <span class="badge badge-primary font-size-12">Pembayaran Diproses</span>
+                                                                              <?php elseif ($order['payment_status'] == 'payment_success'): ?>
+                                                                                 <span class="badge badge-success font-size-12">Pembayaran Berhasil</span>
+                                                                              <?php elseif ($order['payment_status'] == 'payment_cancelled'): ?>
+                                                                                 <span class="badge badge-dark font-size-12">Pembayaran Dibatalkan</span>
+                                                                              <?php else: ?>
+                                                                                 <span class="badge badge-light font-size-12">Status Tidak Diketahui</span>
+                                                                              <?php endif; ?>
+                                                                           </div>
+
+                                                                           <?php if (!empty($order['payment_info'])): ?>
+                                                                              <?php $payment_info = json_decode($order['payment_info'], true); ?>
+                                                                              <div class="d-flex">
+                                                                                 <!-- Spacer to align time below the badge -->
+                                                                                 <div style="width: 137px;"></div>
+                                                                                 <p class="font-size-12 mb-0"><?= format_bulan($payment_info['payment_time']) ?></p>
+                                                                              </div>
+                                                                           <?php endif; ?>
+                                                                        </div>
+
+                                                                     <?php } ?>
+                                                                     <?php if (!empty($order['snap_token']) && $order['payment_method'] == 'midtrans'): ?>
+                                                                        <?php if ($order['user_id'] == $this->session->userdata('user_id')): ?>
+                                                                           <div class="d-flex mt-3">
+                                                                              <button type="button"
+                                                                                       class="btn btn-primary-dark flex-grow-1"
+                                                                                       id="pay-button"
+                                                                                       data-snap-token="<?= $order['snap_token']; ?>"
+                                                                                       data-order-id="<?= $order['order_code']; ?>"
+                                                                                       data-dismiss="modal">
+                                                                                    <i class="las la-file-invoice-dollar font-size-20"></i> Bayar
+                                                                              </button>
+                                                                           </div>
+                                                                        <?php endif; ?>
+                                                                     <?php elseif (!empty($order['tokopedia_link']) && $order['payment_method'] == 'tokopedia'): ?>
+                                                                        <?php if ($order['user_id'] == $this->session->userdata('user_id')): ?>
+                                                                           <div class="form-group">
+                                                                              <label for="tokopedia_link" class="font-size-14" style="margin-bottom: -13px;">Link tokopedia :</label>
+                                                                              <textarea type="text" class="form-control border-radius-5" rows="5" name="tokopedia_link" id="tokopedia_link" readonly><?= $order['tokopedia_link'] ?></textarea>
+                                                                              <a href="<?= $order['tokopedia_link'] ?>" target="_blank">Atau klik disini!</a>
+                                                                           </div>
+                                                                        <?php endif; ?>
+                                                                     <?php endif; ?>
+                                                                  <?php } else { ?>
+                                                                     <div class="col-12">
+                                                                        <div class="text-center">
+                                                                              <i class="las la-hourglass-half text-muted" style="font-size: 5rem;"></i>
+                                                                              <h6 class="text-muted mb-1">Transaksi ini sedang menunggu verifikasi dari admin.</h6>
+                                                                              <small class="text-muted">Informasi lengkap akan ditampilkan setelah verifikasi selesai.</small>
+                                                                        </div>
+                                                                     </div>
+                                                                  <?php } ?>
+                                                               </div>
+                                                            </div>
+                                                            <!-- <div class="modal-footer">
+                                                               <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
+                                                            </div> -->
+                                                         </div>
+                                                      </div>
                                                    </div>
-                                                <?php endif; ?>
-                                             <?php endif; ?>
+                                                </div>
+                                             </div>
 
                                     </div>
                                  </div>

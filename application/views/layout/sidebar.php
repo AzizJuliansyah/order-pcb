@@ -122,7 +122,7 @@
                     </li>
                 <?php } ?>
                 <?php if (has_access(['3'])) { ?>
-                    <li class="<?= set_active(['dashboard'], 'active', 2) ?>">
+                    <li class="<?= set_active(['dashboard'], 'active', 2) ?> <?= set_active_with_from('order_detail', 'dashboard') ?>"">
                         <a href="<?= base_url('operator/dashboard') ?>">
                             <i class="las la-tachometer-alt font-size-32"></i>
                             <span class="ml-4">Dashboards</span>

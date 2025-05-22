@@ -901,8 +901,8 @@ class Index extends CI_Controller {
 	{
 		is_logged_in();
 		
-		// $last_order_code = $this->session->flashdata('last_order_code');
-		$last_order_code = 'ABCDEF';
+		$last_order_code = $this->session->flashdata('last_order_code');
+		// $last_order_code = 'ABCDEF';
 		$user_id = $this->session->userdata('user_id');
 
 		if (!$last_order_code) {
@@ -934,8 +934,8 @@ class Index extends CI_Controller {
 	{
 		is_logged_in();
 		
-		// $last_order_code = $this->session->flashdata('last_order_code');
-		$last_order_code = 'ABCDEF';
+		$last_order_code = $this->session->flashdata('last_order_code');
+		// $last_order_code = 'ABCDEF';
 		$user_id = $this->session->userdata('user_id');
 
 		if (!$last_order_code) {
@@ -967,8 +967,8 @@ class Index extends CI_Controller {
 	{
 		is_logged_in();
 		
-		// $last_order_code = $this->session->flashdata('last_order_code');
-		$last_order_code = 'ABCDEF';
+		$last_order_code = $this->session->flashdata('last_order_code');
+		// $last_order_code = 'ABCDEF';
 		$user_id = $this->session->userdata('user_id');
 
 		if (!$last_order_code) {

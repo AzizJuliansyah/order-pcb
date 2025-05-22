@@ -96,4 +96,8 @@
             icon.classList.add('la-eye');
         }
     }
+
+
+
+    localStorage.removeItem('activeChatRoom');
 </script>

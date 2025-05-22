@@ -21,11 +21,49 @@ class Customerservice extends CI_Controller {
 		$data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
 
 		$data['title'] = 'Customer Service Dashboard';
-        
 
+		$data['errors'] = $this->session->flashdata('errors') ?? [];
+		$data['old'] = $this->session->flashdata('old') ?? [];
+
+		// --- 3. Global Order Stats ---
+		$global_chats = $this->db->query("
+			SELECT 
+				COUNT(chat_id) AS total_chats,
+				MAX(date_created) AS last_created,
+				TIMESTAMPDIFF(HOUR, MAX(date_created), NOW()) AS hours_since_last_created
+			FROM chat
+			WHERE receiver_id = $user_id
+		")->row_array();
+
+		$data['global_chat_stats'] = $global_chats;
+
+		// 5 pengirim terakhir yang mengirim ke user login
+		$recent_chat_users = $this->db
+			->select('user.foto, user.nama, user.email, chat.date_created AS chat_date')
+			->from('chat')
+			->join('user', 'user.id = chat.sender_id', 'left')
+			->where('chat.receiver_id', $user_id)
+			->order_by('chat.date_created', 'DESC')
+			->limit(5)
+			->get()
+			->result_array();
+
+		$data['recent_chat_users'] = $recent_chat_users;
+
+		// --- 4. Last Order ---
+		$this->db->from('orders');
+		$this->db->join('user', 'user.id = orders.user_id', 'left');
+		$this->db->order_by('orders.date_created', 'DESC');
+		$this->db->limit(1);
+		$last_order = $this->db->get()->row_array();
+
+		$data['last_order'] = $last_order;
+
+
+		// --- Load Views ---
 		$this->load->view('layout/header', $data);
 		$this->load->view('layout/navbar', $data);
-        $this->load->view('layout/sidebar', $data);
+		$this->load->view('layout/sidebar', $data);
 		$this->load->view('customerservice/dashboard', $data);
 		$this->load->view('layout/alert');
 		$this->load->view('layout/footer');

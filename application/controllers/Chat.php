@@ -67,39 +67,90 @@ class Chat extends CI_Controller {
         $receiver_id = $this->input->post('user_id');
         $sender_id = $this->session->userdata('user_id');
 
-        $this->db->where('sender_id', $receiver_id);
-        $this->db->where('receiver_id', $sender_id);
-        $this->db->where('is_read', 0);
-        $this->db->update('chat', ['is_read' => 1]);
+        // Update semua pesan jadi read
+        // $this->db->where('sender_id', $receiver_id);
+        // $this->db->where('receiver_id', $sender_id);
+        // $this->db->where('is_read', 0);
+        // $this->db->update('chat', ['is_read' => 1]);
 
-        $data['messages'] = $this->Chat_model->get_chat_between($sender_id, $receiver_id);
+        // Ambil semua pesan
+        $messages = $this->Chat_model->get_chat_between($sender_id, $receiver_id);
+        $grouped = [];
+
+        foreach ($messages as $msg) {
+            $date = date('Y-m-d', strtotime($msg['date_created']));
+            $grouped[$date][] = $msg;
+        }
+
+        $data['grouped_messages'] = $grouped;
         $data['sender_id'] = $sender_id;
 
-        $this->load->view('index/chat/chat_messages_partial', $data);
+        // Render HTML chat-nya
+        $renderedHtml = $this->load->view('index/chat/chat_messages_partial', $data, TRUE);
+
+        // Hitung unread dari user yang aktif ke user login
+        $unreadCount = $this->db->where([
+            'receiver_id' => $sender_id,  // user login sebagai penerima
+            'sender_id' => $receiver_id,  // user aktif sebagai pengirim
+            'is_read' => 0
+        ])->count_all_results('chat');
+
+        // Kirim JSON
+        echo json_encode([
+            'messages' => $renderedHtml,
+            'unread_count' => $unreadCount
+        ]);
     }
+
+
 
     public function get_unread_counts() {
         $user_id = $this->session->userdata('user_id');
     
-        $this->db->select('u.id, u.nama, u.foto, r.jabatan as role_nama,
-            (SELECT COUNT(*) FROM chat 
-             WHERE sender_id = u.id 
-             AND receiver_id = ' . $user_id . ' 
-             AND is_read = 0) AS unread_count,
-            MAX(c.date_created) AS last_chat_date');
-        $this->db->from('chat c');
-        $this->db->join('user u', 'u.id = IF(c.sender_id = ' . $user_id . ', c.receiver_id, c.sender_id)');
-        $this->db->join('role r', 'r.role_id = u.role_id');
-        $this->db->group_start();
-        $this->db->where('c.sender_id', $user_id);
-        $this->db->or_where('c.receiver_id', $user_id);
-        $this->db->group_end();
-        $this->db->group_by(['u.id', 'u.nama', 'u.foto', 'r.jabatan']);
-        $this->db->order_by('last_chat_date', 'DESC');
+        // Ambil role_id user saat ini
+        $user = $this->db->get_where('user', ['id' => $user_id])->row_array();
+        $role_id = $user['role_id'];
     
-        $result = $this->db->get()->result_array();
+        // Jika bukan customer service (role_id ≠ 4), hanya tampilkan CS (role_id = 4)
+        if (in_array($role_id, [1, 2, 3, 5])) {
+            $this->db->select('u.id, u.nama, u.foto, r.jabatan as role_nama,
+                (SELECT COUNT(*) FROM chat 
+                 WHERE sender_id = u.id 
+                 AND receiver_id = ' . $user_id . ' 
+                 AND is_read = 0) AS unread_count');
+            $this->db->from('user u');
+            $this->db->join('role r', 'r.role_id = u.role_id');
+            $this->db->where('u.role_id', 4); // khusus customer service
+            $this->db->order_by('u.nama', 'ASC');
+    
+            $result = $this->db->get()->result_array();
+    
+        } elseif ($role_id == 4) {
+            // Jika user adalah customer service, ambil semua chat partner
+            $this->db->select('u.id, u.nama, u.foto, r.jabatan as role_nama,
+                (SELECT COUNT(*) FROM chat 
+                 WHERE sender_id = u.id 
+                 AND receiver_id = ' . $user_id . ' 
+                 AND is_read = 0) AS unread_count,
+                MAX(c.date_created) AS last_chat_date');
+            $this->db->from('chat c');
+            $this->db->join('user u', 'u.id = IF(c.sender_id = ' . $user_id . ', c.receiver_id, c.sender_id)');
+            $this->db->join('role r', 'r.role_id = u.role_id');
+            $this->db->group_start();
+            $this->db->where('c.sender_id', $user_id);
+            $this->db->or_where('c.receiver_id', $user_id);
+            $this->db->group_end();
+            $this->db->group_by(['u.id', 'u.nama', 'u.foto', 'r.jabatan']);
+            $this->db->order_by('last_chat_date', 'DESC');
+    
+            $result = $this->db->get()->result_array();
+        } else {
+            $result = [];
+        }
+    
         echo json_encode($result);
     }
+    
     
     
     

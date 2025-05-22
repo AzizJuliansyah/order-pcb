@@ -18,75 +18,148 @@
                 <div class="col-12 col-lg-4 col-md-6">
                     <h5 class="card-title mb-0">Lastest Order</h5>
                     <div class="card card-block card-stretch card-height bottom-right shadow-showcase">
-                        <div class="card-header border-bottom-0 p-0">
-                            <div class="iq-header-title ml-2 mt-2 mr-2">
-                                <div class="d-flex justify-content-between mb-0">
-                                    <h5 class="card-title mb-0">Order # <?= $last_order['order_code'] ?></h5>
-                                    <p class="font-size-12 mb-0"><?= format_bulan($last_order['date_created']) ?></p>
-                                </div>
-                            </div>
-                            <div class="float-right mb-0">
-                                <div class="d-flex align-items-center">
-                                    <?php if ($last_order['payment_status'] == 'payment_pending'): ?>
-                                        <span class="badge badge-warning font-size-12 m-2">Menunggu Pembayaran</span>
-                                    <?php elseif ($last_order['payment_status'] == 'payment_process'): ?>
-                                        <span class="badge badge-primary font-size-12 m-2">Pembayaran Diproses</span>
-                                    <?php elseif ($last_order['payment_status'] == 'payment_success'): ?>
-                                        <span class="badge badge-success font-size-12 m-2">Pembayaran Berhasil</span>
-                                    <?php elseif ($last_order['payment_status'] == 'payment_cancelled'): ?>
-                                        <span class="badge badge-dark font-size-12 m-2">Pembayaran Dibatalkan</span>
-                                    <?php else: ?>
-                                        <span class="badge badge-light font-size-12 m-2">Status Tidak Diketahui</span>
-                                    <?php endif; ?>
-    
-                                    <?php if ($last_order['order_status'] == 'order_pending'): ?>
-                                        <span class="badge border border-warning text-warning font-size-12 m-2">Pesanan Menunggu</span>
-                                    <?php elseif ($last_order['order_status'] == 'order_confirmed'): ?>
-                                        <span class="badge border border-info text-info font-size-12 m-2">Pesanan Diterima</span>
-                                    <?php elseif ($last_order['order_status'] == 'order_processing'): ?>
-                                        <span class="badge border border-primary text-primary font-size-12 m-2">Pesanan Diproses</span>
-                                    <?php elseif ($last_order['order_status'] == 'order_completed'): ?>
-                                        <span class="badge border border-success text-success font-size-12 m-2">Pesanan Selesai</span>
-                                    <?php elseif ($last_order['order_status'] == 'order_cancelled'): ?>
-                                        <span class="badge border border-danger text-danger font-size-12 m-2">Pesanan Dibatalkan</span>
-                                    <?php elseif ($last_order['order_status'] == 'order_refunded'): ?>
-                                        <span class="badge border border-secondary text-secondary font-size-12 m-2">Pesanan di refund</span>
-                                    <?php elseif ($last_order['order_status'] == 'order_failed'): ?>
-                                        <span class="badge border border-dark text-dark font-size-12 m-2">Pesanan gagal</span>
-                                    <?php else: ?>
-                                        <span class="badge border border-light text-light font-size-12 m-2">Status Tidak Diketahui</span>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body text-center p-0">                            
-                            <div class="form-group rounded mb-0">
-                                <div class="d-flex align-items-start m-3">
-                                    <div class="mr-3">
-                                        <?php if ($last_order['foto'] != null) { ?>
-                                            <img src="<?= base_url('public/' . $last_order['foto']) ?>" class="img-fluid rounded-circle avatar-60" alt="image">
-                                        <?php } else { ?>
-                                            <img src="<?= base_url('public/local_assets/images/user_default.png') ?>" class="img-fluid rounded-circle avatar-60" alt="image">
-                                        <?php } ?>
+                        <?php if (!empty($last_order)): ?>
+                            <div class="card-header border-bottom-0 p-0">
+                                <div class="iq-header-title ml-2 mt-2 mr-2">
+                                    <div class="d-flex justify-content-between mb-0">
+                                        <h5 class="card-title mb-0">Order # <?= $last_order['order_code'] ?></h5>
+                                        <p class="font-size-12 mb-0"><?= format_bulan($last_order['date_created']) ?></p>
                                     </div>
-                                    <div class="text-left">
-                                        <div class="iq-header-title">
-                                            <h5 class="card-title mb-0"><?= $last_order['nama'] ?></h4>
+                                </div>
+                                <div class="float-right mb-0">
+                                    <div class="d-flex align-items-center">
+                                        <?php if ($last_order['payment_status'] == 'payment_pending'): ?>
+                                            <span class="badge badge-warning font-size-12 m-2">Menunggu Pembayaran</span>
+                                        <?php elseif ($last_order['payment_status'] == 'payment_process'): ?>
+                                            <span class="badge badge-primary font-size-12 m-2">Pembayaran Diproses</span>
+                                        <?php elseif ($last_order['payment_status'] == 'payment_success'): ?>
+                                            <span class="badge badge-success font-size-12 m-2">Pembayaran Berhasil</span>
+                                        <?php elseif ($last_order['payment_status'] == 'payment_cancelled'): ?>
+                                            <span class="badge badge-dark font-size-12 m-2">Pembayaran Dibatalkan</span>
+                                        <?php else: ?>
+                                            <span class="badge badge-light font-size-12 m-2">Status Tidak Diketahui</span>
+                                        <?php endif; ?>
+        
+                                        <?php if ($last_order['order_status'] == 'order_pending'): ?>
+                                            <span class="badge border border-warning text-warning font-size-12 m-2">Pesanan Menunggu</span>
+                                        <?php elseif ($last_order['order_status'] == 'order_confirmed'): ?>
+                                            <span class="badge border border-info text-info font-size-12 m-2">Pesanan Diterima</span>
+                                        <?php elseif ($last_order['order_status'] == 'order_processing'): ?>
+                                            <span class="badge border border-primary text-primary font-size-12 m-2">Pesanan Diproses</span>
+                                        <?php elseif ($last_order['order_status'] == 'order_completed'): ?>
+                                            <span class="badge border border-success text-success font-size-12 m-2">Pesanan Selesai</span>
+                                        <?php elseif ($last_order['order_status'] == 'order_cancelled'): ?>
+                                            <span class="badge border border-danger text-danger font-size-12 m-2">Pesanan Dibatalkan</span>
+                                        <?php elseif ($last_order['order_status'] == 'order_refunded'): ?>
+                                            <span class="badge border border-secondary text-secondary font-size-12 m-2">Pesanan di refund</span>
+                                        <?php elseif ($last_order['order_status'] == 'order_failed'): ?>
+                                            <span class="badge border border-dark text-dark font-size-12 m-2">Pesanan gagal</span>
+                                        <?php else: ?>
+                                            <span class="badge border border-light text-light font-size-12 m-2">Status Tidak Diketahui</span>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body text-center p-0">                            
+                                <div class="form-group rounded mb-0">
+                                    <div class="d-flex align-items-start m-3">
+                                        <div class="mr-3">
+                                            <?php if ($last_order['foto'] != null) { ?>
+                                                <img src="<?= base_url('public/' . $last_order['foto']) ?>" class="img-fluid rounded-circle avatar-60" alt="image">
+                                            <?php } else { ?>
+                                                <img src="<?= base_url('public/local_assets/images/user_default.png') ?>" class="img-fluid rounded-circle avatar-60" alt="image">
+                                            <?php } ?>
                                         </div>
-                                        <p class="mb-0"><?= $last_order['email'] ?></p>
+                                        <div class="text-left">
+                                            <div class="iq-header-title">
+                                                <h5 class="card-title mb-0"><?= $last_order['nama'] ?></h4>
+                                            </div>
+                                            <p class="mb-0"><?= $last_order['email'] ?></p>
+                                        </div>
                                     </div>
-                                </div>
-                                                        
-                                <div class="border-top ml-3 mr-3">
-                                    <div class="mt-2 d-flex justify-content-end">
-                                        <a href="<?= base_url('admin/order_detail/' . encrypt_id($last_order['order_id'])) . '?from=dashboard' ?>" class="btn btn-primary font-size-14 d-flex align-items-center pr-0">
-                                            <span class="mr-2">Detail Pesanan</span>
-                                            <i class="las la-angle-right"></i>
-                                        </a>
+                                                            
+                                    <div class="border-top ml-3 mr-3">
+                                        <div class="mt-2 d-flex align-items-center">
+                                            <button type="button" class="btn btn-outline-warning mr-2" data-toggle="modal" data-target="#ShippingInfo"></i>Shipping Info</button>
+                                            <div id="ShippingInfo" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="ShippingInfoTitle" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-scrollable" role="document">
+                                                <div class="modal-content border-radius-10">
+                                                    <div class="modal-header">
+                                                        <h4 class="card-title text-dark mb-0">Invoice# <?= $last_order['order_code'] ?></h4>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">×</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="form-group text-left">
+                                                            <h6 class="card-title text-dark mb-0">Operator : <?= get_admin_name($last_order['operator']) ?></h6>
+                                                        </div>
+
+                                                        <div class="col-12">
+                                                            <div class="divider-text">
+                                                            <span>History Shipping Status</span>
+                                                            </div>
+                                                        </div>
+                                                                
+                                                        <div class="form-group mt-3 ml-3">
+                                                            <div class="profile-line m-0 d-flex align-items-center justify-content-between position-relative">
+                                                            <ul class="list-inline p-0 m-0 w-100">
+                                                                <?php if (!empty($shipping_status_list)): ?>
+                                                                    <?php foreach ($shipping_status_list as $item): ?>
+                                                                        <li>
+                                                                        <div class="row align-items-top">
+                                                                            <div class="col-md-12">
+                                                                                <div class="media profile-media pb-3 align-items-top">
+                                                                                    <div class="profile-dots border-primary mt-1"></div>
+                                                                                    <div class="ml-4">
+                                                                                    <h6 style="margin-bottom: -8px;">
+                                                                                        <?= get_shipping_status_name($item['shipping_id']) ?>
+                                                                                    </h6>
+                                                                                    <small class="text-muted">
+                                                                                        <?= format_bulan($item['date']) ?>
+                                                                                    </small>
+                                                                                    </div>
+                                                                                </div>   
+                                                                            </div>
+                                                                        </div>
+                                                                        </li>
+                                                                    <?php endforeach; ?>
+                                                                <?php else: ?>
+                                                                    <div class="col-12">
+                                                                        <div class="text-center">
+                                                                            <i class="las la-box-open text-muted" style="font-size: 5rem;"></i>
+                                                                            <h6 class="text-muted">Belum ada history pengiriman</h6>
+                                                                            <small class="text-muted">Semua history yang masuk akan ditampilkan di sini.</small>
+                                                                        </div>
+                                                                    </div>
+                                                                <?php endif; ?>
+                                                            </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
+                                                    </div>
+                                                </div>
+                                                </div>
+                                            </div>
+                                            <a href="<?= base_url('admin/order_detail/' . encrypt_id($last_order['order_id'])) . '?from=dashboard' ?>" class="btn btn-primary font-size-14 d-flex align-items-center pr-0">
+                                                <span class="mr-2">Detail Pesanan</span>
+                                                <i class="las la-angle-right"></i>
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        <?php else: ?>
+                            <div class="col-12 mt-3">
+                                <div class="text-center">
+                                    <i class="las la-box-open text-muted" style="font-size: 5rem;"></i>
+                                    <h6 class="text-muted">Belum ada order yang masuk</h6>
+                                    <small class="text-muted">Order terakhir yang masuk akan ditampilkan di sini.</small>
+                                </div>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </div>
                 <div class="col-12 col-lg-8">

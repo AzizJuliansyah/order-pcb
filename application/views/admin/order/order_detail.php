@@ -60,7 +60,7 @@
                                                          <div class="input-group-prepend">
                                                             <span class="input-group-text border-radius-top-left-5 border-radius-bottom-left-5" id="basic-addon4">Rp.</span>
                                                          </div>
-                                                         <?php if (!empty($order['total_price'])) { ?>
+                                                         <?php if ($order['approved_price'] == 1) { ?>
                                                             <input type="text" class="form-control <?= !empty($errors['total_price']) ? 'is-invalid' : '' ?> border-radius-top-right-5 border-radius-bottom-right-5  max-height-40" name="total_price" id="total_price" value="<?= number_format($order['total_price'], 2, ',', '.') ?>" disabled>
                                                          <?php } else { ?>
                                                             <input type="text" class="form-control <?= !empty($errors['total_price']) ? 'is-invalid' : '' ?> border-radius-top-right-5 border-radius-bottom-right-5  max-height-40" name="total_price" id="total_price" value="<?= number_format($order['total_price'], 2, ',', '.') ?>">
@@ -70,14 +70,28 @@
                                                          <?php endif; ?>
                                                       </div>
                                                    </div>
-                                                   <?php if (!empty($order['snap_token'])) { ?>
-                                                      <div class="form-group">
-                                                         <label for="snap_token" class="font-size-14" style="margin-bottom: -13px;">SnapToken :</label>
-                                                         <input type="text" class="form-control border-radius-5 max-height-40" id="snap_token" value="<?= $order['snap_token'] ?>" disabled>
-                                                      </div>
+                                                   <?php if ($order['approved_price'] == 1) { ?>
+                                                      <?php if ($order['payment_method'] == 'midtrans' && !empty($order['snap_token'])) { ?>
+                                                         <div class="form-group">
+                                                            <label for="snap_token" class="font-size-14" style="margin-bottom: -13px;">SnapToken :</label>
+                                                            <input type="text" class="form-control border-radius-5 max-height-40" id="snap_token" value="<?= $order['snap_token'] ?>" disabled>
+                                                         </div>
                                                          <div class="d-flex justify-content-end">
                                                             <button type="submit" name="action" value="update_snap_token" class="btn btn-outline-secondary">Update SnapToken</button>
                                                          </div>
+                                                      <?php } ?>
+                                                      <?php if ($order['payment_method'] == 'tokopedia') { ?>
+                                                         <div class="form-group">
+                                                            <label for="tokopedia_link" class="font-size-14" style="margin-bottom: -13px;">Harga sudah diterima customer, silakan masukkan link tokopedia :</label>
+                                                            <input type="text" class="form-control <?= !empty($errors['tokopedia_link']) ? 'is-invalid' : '' ?> border-radius-5  max-height-40" name="tokopedia_link" id="tokopedia_link" value="<?= $order['tokopedia_link'] ?>">
+                                                            <?php if (!empty($errors['tokopedia_link'])): ?>
+                                                               <div class="invalid-feedback"><?= $errors['tokopedia_link'] ?></div>
+                                                            <?php endif; ?>
+                                                         </div>
+                                                         <div class="d-flex justify-content-end">
+                                                            <button type="submit" name="action" value="update_tokopedia_link" class="btn btn-outline-secondary">Update Tokopedia Link</button>
+                                                         </div>
+                                                      <?php } ?>
                                                    <?php } ?>
 
                                                    <div class="col-12 mt-2 mb-2">
@@ -149,7 +163,8 @@
                                                          $raw = isset($paymentInfo['raw_response']) ? $paymentInfo['raw_response'] : [];
                                                       ?>
 
-                                                      <?php if (!empty($paymentInfo)): ?>
+                                                      <?php if ($order['payment_status'] == 'payment_success'): ?>
+                                                         <?php if (!empty($order['snap_token']) && $order['payment_method'] == 'midtrans'): ?>
                                                          <table class="table table-bordered">
                                                             <tr>
                                                                <th>Status</th>
@@ -202,6 +217,16 @@
                                                                <td><?= htmlspecialchars($raw['status_message'] ?? '-') ?></td>
                                                             </tr>
                                                          </table>
+                                                         <?php elseif (!empty($order['tokopedia_link']) && $order['payment_method'] == 'tokopedia'): ?>
+                                                            <div class="text-center">
+                                                               <h6 class="text-muted">Informasi pembayaran ada di platform Tokopedia.</h6>
+                                                            </div>
+                                                            <div class="text-left mt-4">
+                                                               <label for="tokopedia_link" class="font-size-14" style="margin-bottom: -13px;">Link tokopedia :</label>
+                                                               <textarea type="text" class="form-control border-radius-5" rows="5" name="tokopedia_link" id="tokopedia_link" readonly><?= $order['tokopedia_link'] ?></textarea>
+                                                               <a href="<?= $order['tokopedia_link'] ?>" target="_blank">Atau klik disini!</a>
+                                                            </div>
+                                                         <?php endif; ?>
                                                       <?php else: ?>
                                                          <div class="col-12">
                                                             <div class="text-center">

@@ -151,6 +151,7 @@
                                                 </div>
                                                 <div class="modal-body">
                                                    <div class="form-group text-left">
+                                                      <h6 class="card-title text-dark mb-0">Admin : <?= get_admin_name($order['admin']) ?></h6>
                                                       <h6 class="card-title text-dark mb-0">Operator : <?= get_admin_name($order['operator']) ?></h6>
                                                    </div>
 

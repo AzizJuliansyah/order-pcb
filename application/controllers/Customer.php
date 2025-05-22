@@ -11,6 +11,8 @@ class Customer extends CI_Controller {
 
         $this->load->helper('time');
 
+		require_once APPPATH . '../vendor/autoload.php';
+
         $this->load->model('User_model');
         $this->load->library('form_validation');
     }
@@ -308,6 +310,96 @@ class Customer extends CI_Controller {
 		$this->load->view('layout/footer');
 			
 	}
+
+	public function approve_order()
+    {
+        $redirect = $this->input->server('HTTP_REFERER') ?? base_url('default-url');
+
+
+        if ($this->input->method() === 'post') {
+            $this->form_validation->set_rules('order_id', 'order_id', 'required|trim', [
+                'required' => '%s wajib diisi.'
+            ]);
+            $this->form_validation->set_rules('approved_price', 'approved_price', 'required|trim', [
+                'required' => '%s wajib diisi.'
+            ]);
+            $this->form_validation->set_rules('payment_method', 'payment_method', 'required|trim', [
+                'required' => '%s wajib pilih salah satu.'
+            ]);
+
+                if ($this->form_validation->run() === FALSE) {
+                    $this->session->set_flashdata('old', [
+                        'approved_price'        => set_value('approved_price'),
+                        'payment_method'        => set_value('payment_method'),
+                    ]);
+                    $this->session->set_flashdata('errors', [
+                        'approved_price'        => form_error('approved_price'),
+                        'payment_method'        => form_error('payment_method'),
+                    ]);
+					redirect($redirect);
+                } else {
+					$approved_price = $this->input->post('approved_price') ? 1 : 0;
+                    $payment_method = $this->input->post('payment_method');
+					$order_id = decrypt_id($this->input->post('order_id'));
+					if (empty($order_id)) {
+						$this->session->set_flashdata('error', 'Gagal mengakses halaman, Order ID tidak ada.');
+						redirect($redirect);
+					}
+
+					$order = $this->db->get_where('orders', ['order_id' => $order_id])->row_array();
+					if (!$order) {
+						$this->session->set_flashdata('error', 'Gagal mengakses halaman, Order ID tidak ada.');
+						redirect("customer/history");
+					}
+
+					if ($payment_method == 'midtrans') {
+						$midtrans_server_key = $this->db->get_where('settings', ['settings_id' => '6'])->row_array();
+						$shipping_info = json_decode($order['shipping_info'], true);
+						$clean_total_price = $order['total_price'];
+
+						\Midtrans\Config::$serverKey = $midtrans_server_key['item'];
+						\Midtrans\Config::$isProduction = false;
+						\Midtrans\Config::$isSanitized = true;
+						\Midtrans\Config::$is3ds = true;
+
+						$params = [
+							'transaction_details' => [
+								'order_id' => $order['order_code'],
+								'date' => $order['date_created'],
+								'gross_amount' => $clean_total_price,
+							],
+							'customer_details' => [
+								'first_name'    => $shipping_info['nama'],
+								'phone'         => $shipping_info['nomor'],
+							],
+						];
+
+						$snapToken = \Midtrans\Snap::getSnapToken($params);
+
+						$data = [
+							'snap_token' => $snapToken,
+							'approved_price' => $approved_price,
+							'payment_method' => $payment_method,
+						];
+					} elseif ($payment_method == 'tokopedia') {
+						$data = [
+							'approved_price' => $approved_price,
+							'payment_method' => $payment_method,
+						];
+					}
+
+
+					$this->db->where('order_id', $order_id);
+					$this->db->update('orders', $data);
+					$this->session->set_flashdata('success', 'Berhasil memilih payment method.');
+                }
+
+            redirect($redirect);
+        } else {
+            $this->session->set_flashdata('error', 'Err.');
+            redirect($redirect);
+        }
+    }
 }
 
 ?>
