@@ -74,7 +74,7 @@
                                         
                                         <div class="form-group col-sm-6">
                                             <label for="nomor">Nomor Telepon/Whatsapp:</label>
-                                            <input type="text" class="form-control border-radius-5 max-height-40 <?= !empty($errors['nomor']) ? 'is-invalid' : '' ?>" name="nomor" id="nomor" value="<?= isset($old['nomor']) ? $old['nomor'] : '' ?>" placeholder="Nomor whatsapp..">
+                                            <input type="text" inputmode="numeric" pattern="\d{10,}" min="0" class="form-control border-radius-5 max-height-40 <?= !empty($errors['nomor']) ? 'is-invalid' : '' ?>" name="nomor" id="nomor" value="<?= isset($old['nomor']) ? $old['nomor'] : '' ?>" placeholder="Nomor whatsapp..">
                                             <?php if (!empty($errors['nomor'])): ?>
                                                 <div class="invalid-feedback"><?= $errors['nomor'] ?></div>
                                             <?php endif; ?>
@@ -115,7 +115,7 @@
                                         </div>
                                         <div class="form-group col-sm-6">
                                             <label for="kode_pos">Kode Pos:</label>
-                                            <input type="number" class="form-control border-radius-5 max-height-40 <?= !empty($errors['kode_pos']) ? 'is-invalid' : '' ?>" name="kode_pos" id="kode_pos" value="<?= isset($old['kode_pos']) ? $old['kode_pos'] : '' ?>" placeholder="Kode pos..">
+                                            <input type="text" inputmode="numeric" pattern="\d{5,}" min="0" class="form-control border-radius-5 max-height-40 <?= !empty($errors['kode_pos']) ? 'is-invalid' : '' ?>" name="kode_pos" id="kode_pos" value="<?= isset($old['kode_pos']) ? $old['kode_pos'] : '' ?>" placeholder="Kode pos..">
                                             <?php if (!empty($errors['kode_pos'])): ?>
                                                 <div class="invalid-feedback"><?= $errors['kode_pos'] ?></div>
                                             <?php endif; ?>

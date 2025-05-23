@@ -80,7 +80,7 @@
                             <div class="col-12 mt-3">
                                 <div class="text-center">
                                     <i class="las la-box-open text-muted" style="font-size: 5rem;"></i>
-                                    <h6 class="text-muted">Belum ada order yang masuk</h6>
+                                    <h6 class="text-muted">Belum ada order yang ditunjukkan untuk anda</h6>
                                     <small class="text-muted">Order terakhir yang masuk akan ditampilkan di sini.</small>
                                 </div>
                             </div>

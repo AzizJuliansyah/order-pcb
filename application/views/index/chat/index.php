@@ -64,9 +64,9 @@
     }
 
     .hover-effect:hover {
-        background-color: #343a40; /* Dark background */
-        color: #fff;                /* White icon/text */
-        border-color: #343a40;      /* Match border */
+        background-color: #343a40;
+        color: #fff;
+        border-color: #343a40;
     }
     .hover-effect:hover i {
         color: #fff;
@@ -100,7 +100,7 @@
                     </a>
                  <?php } ?>
                 <div class="flex-grow-1">
-                    <input type="text" class="form-control my-3" placeholder="Search...">
+                    <input type="text" id="chat-search" class="form-control my-3" placeholder="Search...">
                 </div>
             </div>
         <div class="iq-menu-bt-sidebar ml-0">
@@ -137,6 +137,9 @@
                     </a>
                     </li>
                 <?php endforeach; ?>
+                <li id="no-results" class="text-center text-muted mt-3" style="display: none;">
+                    <i class="las la-search-minus font-size-20"></i> Tidak ada hasil yang cocok.
+                </li>
             </ul>
         </nav>
         <div class="pt-5 pb-2"></div>
@@ -232,6 +235,7 @@
     let activeUserId = null;
     let lastMessageCount = 0;
     let hasMarkedRead = false;
+    let lastSearchValue = '';
     const textarea = document.getElementById('message-input');
 
     textarea.addEventListener('input', function () {
@@ -240,6 +244,31 @@
         const maxHeight = parseInt(window.getComputedStyle(this).getPropertyValue('max-height'));
         this.style.height = Math.min(this.scrollHeight, maxHeight) + 'px';
     });
+
+    const searchInput = document.getElementById('chat-search');
+
+    searchInput.addEventListener('input', function () {
+        lastSearchValue = this.value.toLowerCase();
+        filterChatList(lastSearchValue);
+    });
+    function filterChatList(searchValue) {
+        const users = document.querySelectorAll('#iq-sidebar-toggle li:not(#no-results)');
+        let visibleCount = 0;
+
+        users.forEach(user => {
+            const nama = user.querySelector('[data-nama]').dataset.nama.toLowerCase();
+            const role = user.querySelector('[data-user-role-nama]').dataset.userRoleNama.toLowerCase();
+
+            if (nama.includes(searchValue) || role.includes(searchValue)) {
+                user.style.display = '';
+                visibleCount++;
+            } else {
+                user.style.display = 'none';
+            }
+        });
+
+        document.getElementById('no-results').style.display = (visibleCount === 0) ? '' : 'none';
+    }
 
 
 
@@ -359,7 +388,9 @@
                  `;
              });
 
-             $('.chat-list').html(chatListHTML);
+             $('.chat-list').html(chatListHTML + $('#no-results')[0].outerHTML);
+
+             filterChatList(lastSearchValue);
          });
     }
 

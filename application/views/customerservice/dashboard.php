@@ -1,7 +1,7 @@
 <!-- Wrapper Start -->
 <div class="wrapper">
     <div class="content-page">
-        <div class="container-fluid">
+        <div class="container-fluid mb-5">
             <div class="row m-sm-0">
                 <div class="col-lg-12 mb-1">
                     <div class="row">
@@ -205,9 +205,69 @@
                     </div>
                 </div>
                 
+                <div class="col-12 col-lg-6 py-0 mt-3 lastest-chat-list">
+                    <h5 class="mb-1">5 Chat Terakhir</h5>
+                    <?php foreach ($recent_chat_users as $user): ?>
+                        <a href="<?= base_url('chat') ?>" class="card mb-2 py-1 px-2 chat-user"
+                            data-user-id="<?= $user['user_id'] ?>"
+                            data-user-role-nama="<?= get_user_role($user['role_id']) ?>"
+                            data-nama="<?= $user['nama'] ?>"
+                            data-foto="<?= base_url('public/' . ($user['foto'] ?? 'local_assets/images/user_default.png')) ?>">
+                            <div class="d-flex justify-content-between">
+                                <div class="d-flex align-items-start">
+                                    <?php if ($user['foto'] != null) { ?>
+                                            <img src="<?= base_url('public/' . $user['foto']) ?>" class="rounded avatar-60 mr-1" alt="<?= $user['nama'] ?>" width="40" height="40">
+                                    <?php } else { ?>
+                                            <img src="<?= base_url('public/local_assets/images/user_default.png') ?>" class="rounded avatar-60 mr-1" alt="<?= $user['nama'] ?>" width="40" height="40">
+                                    <?php } ?>
+                                    <div class="flex-grow-1 p-0 mb-0 ml-3">
+                                        <div class="d-flex align-items-center">
+                                            <h6 class="text-dark d-inline-block text-truncate d-block d-sm-none" style="max-width: 115px;"><?= $user['nama'] ?> </h6>
+                                            <div class="small ml-2 d-inline-block text-truncate d-block d-sm-none" style="max-width: 95px;">( <?= get_user_role($user['role_id']) ?> )</div>
+                                        </div>
+                                        <div class="d-flex align-items-center">
+                                            <h6 class="text-dark d-none d-md-block"><?= $user['nama'] ?> </h6>
+                                            <div class="small ml-2 d-none d-md-block">( <?= get_user_role($user['role_id']) ?> )</div>
+                                        </div>
+                                        <?php
+                                            $first_line = explode("\n", $user['last_message'])[0];
+                                        ?>
+                                        <div class="small text-muted d-inline-block text-truncate" style="max-width: 200px;margin-top: -5px">
+                                            <?= htmlspecialchars($first_line) ?>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-column justify-content-between align-items-end" style="min-height: 40px;">
+                                    <div class="badge bg-success <?= $user['total_unread_counts'] > 0 ? '' : 'invisible' ?>">
+                                        <?= $user['total_unread_counts'] ?>
+                                    </div>
+                                    <div class="small text-muted"><?= date('H:i', strtotime($user['last_chat_time'])) ?></div>
+                                </div>
+
+                            </div>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
             </div>
         </div>
     </div>
 </div>
 <!-- Wrapper End-->
 
+
+<script>
+    $('.lastest-chat-list').on('click', '.chat-user', function (e) {
+        const userId = $(this).data('user-id');
+        const userRole = $(this).data('user-role-nama');
+        const nama = $(this).data('nama');
+        const foto = $(this).data('foto');
+        
+
+        localStorage.setItem('activeChatRoom', JSON.stringify({
+            userId: userId,
+            userRole: userRole,
+            nama: nama,
+            foto: foto
+        }));
+    });
+</script>

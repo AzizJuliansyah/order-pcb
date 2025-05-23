@@ -39,16 +39,35 @@ class Customerservice extends CI_Controller {
 
 		// 5 pengirim terakhir yang mengirim ke user login
 		$recent_chat_users = $this->db
-			->select('user.foto, user.nama, user.email, chat.date_created AS chat_date')
+			->select('
+				user.id AS user_id,
+				user.foto,
+				user.nama,
+				user.email,
+				user.role_id,
+				MAX(chat.date_created) AS last_chat_time,
+				(
+					SELECT message FROM chat 
+					WHERE sender_id = user.id AND receiver_id = ' . $user_id . ' 
+					ORDER BY date_created DESC 
+					LIMIT 1
+				) AS last_message,
+				(
+					SELECT COUNT(*) FROM chat 
+					WHERE sender_id = user.id AND receiver_id = ' . $user_id . ' AND is_read = 0
+				) AS total_unread_counts
+			')
 			->from('chat')
-			->join('user', 'user.id = chat.sender_id', 'left')
+			->join('user', 'user.id = chat.sender_id')
 			->where('chat.receiver_id', $user_id)
-			->order_by('chat.date_created', 'DESC')
+			->group_by('user.id')
+			->order_by('last_chat_time', 'DESC')
 			->limit(5)
 			->get()
 			->result_array();
 
 		$data['recent_chat_users'] = $recent_chat_users;
+
 
 		// --- 4. Last Order ---
 		$this->db->from('orders');
