@@ -20,17 +20,24 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ml-auto navbar-list align-items-center">
                         <li class="nav-item nav-icon nav-item-icon dropdown">
-                            <a href="<?= base_url('chat') ?>" class="d-flex align-items-center">
+                            <a href="<?= base_url('chat') ?>">
+                            <div class="icon-wrapper" style="position: relative; display: inline-block;">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#555" viewBox="0 0 24 24">
-                                    <path d="M21 6.5a2.5 2.5 0 0 0-2.5-2.5h-13A2.5 2.5 0 0 0 3 6.5v8A2.5 2.5 0 0 0 5.5 17H6v3l4-3h8.5a2.5 2.5 0 0 0 2.5-2.5v-8zM5.5 5h13A1.5 1.5 0 0 1 20 6.5v8a1.5 1.5 0 0 1-1.5 1.5H9.672L7 18v-2.5H5.5A1.5 1.5 0 0 1 4 14.5v-8A1.5 1.5 0 0 1 5.5 5z"/>
+                                    <path d="M21 6.5a2.5 2.5 0 0 0-2.5-2.5h-13A2.5 2.5 0 0 0 3 6.5v8A2.5 2.5 0 0 0 5.5 17H6v3l4-3h8.5a2.5 2.5 0 0 0 2.5-2.5v-8zM5.5 5h13A1.5 1.5 0 0 1 20 6.5v8a1.5 1.5 0 0 1-1.5 1.5H9.672L7 18v-2.5H5.5A1.5 1.5 0 0 1 4 14.5v-8A1.5 1.5 0 0 1 5.5 5z" />
                                 </svg>
+
                                 <?php if (get_total_unread_count() > 0) { ?>
-                                    <div class="small" style="margin-top: -20px; margin-left: -15px;">
-                                        <span class="badge bg-success text-white">
-                                            <?= get_total_unread_count(); ?>
-                                        </span>
-                                    </div>
+                                    <span class="badge bg-success text-white" style="
+                                        position: absolute;
+                                        top: 17px;
+                                        right: -6px;
+                                        font-size: 10px;
+                                    ">
+                                        <?= get_total_unread_count(); ?>
+                                    </span>
                                 <?php } ?>
+                            </div>
+
                             </a>
                         </li>
                         <li class="nav-item nav-icon nav-item-icon dropdown">
@@ -48,10 +55,10 @@
                                 </div>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-right border-none p-0" aria-labelledby="dropdownMenuButton">
-                                <!-- <li class="dropdown-item d-flex align-items-center" style="max-height: 45px">
+                                <li class="dropdown-item d-flex align-items-center" style="max-height: 45px">
                                     <i class="las la-home font-size-20 text-primary"></i>
-                                    <a href="<?= base_url('home') ?>">Home</a>
-                                </li> -->
+                                    <a href="<?= base_url('') ?>">Landing Page</a>
+                                </li>
                                 <?php if (has_access(['1'])) { ?>
                                     <li class="dropdown-item d-flex align-items-center" style="max-height: 45px">
                                         <i class="las la-tachometer-alt font-size-20 text-primary"></i>

@@ -30,12 +30,15 @@
         document.addEventListener('DOMContentLoaded', function () {
             const forms = document.querySelectorAll('form');
             forms.forEach(form => {
-                form.addEventListener('submit', function () {
-                    document.getElementById('loading').style.display = 'block';
-                });
+                if (form.id !== 'chat-form') {
+                    form.addEventListener('submit', function () {
+                        document.getElementById('loading').style.display = 'block';
+                    });
+                }
             });
         });
     </script>
+
 
 
 

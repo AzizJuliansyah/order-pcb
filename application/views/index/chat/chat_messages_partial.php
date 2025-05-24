@@ -25,6 +25,9 @@ function readable_date($dateStr) {
                 <img src="<?= $src ?>" class="rounded-circle mr-1" width="40" height="40">
             </div>
             <small class="flex-shrink-1  <?= $msg['sender_id'] == $sender_id ? 'bg-success-light' : 'bg-dark-light' ?> text-left text-dark rounded px-2 ml-2 mr-2">
+                <?php if ($msg['attachment'] != null && file_exists('public/' . $msg['attachment'])) { ?>
+                    <img src="<?= base_url('public/' . $msg['attachment']) ?>" alt="" class="img-fluid rounded mt-1" style="max-width: 100%; max-height: 200px;">
+                <?php } ?>
                 <div class="text-dark"><?= nl2br(htmlentities($msg['message'])) ?></div>
                 <div class="small d-flex justify-content-end text-dark time"><?= date('H:i', strtotime($msg['date_created'])) ?></div>
             </small>

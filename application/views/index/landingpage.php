@@ -21,6 +21,11 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ancizar+Serif:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">  
+
     <style>
         #loading-center {
             background: url("<?= base_url('public/' . get_website_logo()) ?>") no-repeat center center;
@@ -36,7 +41,6 @@
         .text-underline a {
             text-decoration: none;
             position: relative;
-            padding-bottom: 5px;
             color: inherit;
             transition: color 0.3s ease;
         }
@@ -76,18 +80,23 @@
             font-weight: bold;
         }
         .custom-carousel {
-        width: 100vw;
-        max-width: 100%;
-        overflow: hidden;
-        border-radius: 25px;
-        margin: 0 auto;
-    }
+            width: 100vw;
+            max-width: 100%;
+            overflow: hidden;
+            border-radius: 25px;
+            margin: 0 auto;
+        }
 
-    .custom-carousel img {
-        object-fit: cover;
-        height: 80vh;
-        border-radius: 25px;
-    }
+        .custom-carousel img {
+            object-fit: cover;
+            height: 80vh;
+            border-radius: 25px;
+        }
+        h1 {
+            font-family: "Ancizar Serif", serif;
+            font-size: 4rem;
+            font-weight: 600;
+        }
     </style>
 
 
@@ -123,30 +132,26 @@ $has_sidebar = isset($has_sidebar) ? $has_sidebar : true;
                         <i class="ri-menu-3-line"></i>
                     </button>
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <div class="d-flex justify-content-center mr-5">
-                            <ul class="navbar-nav ml-auto navbar-list align-items-center">
-                                <li class="nav-item nav-icon text-underline">
-                                    <a href="#products" class="">
-                                        <strong>Product</strong>
-                                    </a>
-                                </li>
-                                <li class="nav-item nav-icon text-underline">
-                                    <a href="#pricing" class="">
-                                        <strong>Pricing</strong>
-                                    </a>
-                                </li>
-                                <li class="nav-item nav-icon text-underline">
-                                    <a href="#" class="">
-                                        <strong>FaQ</strong>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
                         <ul class="navbar-nav ml-auto navbar-list align-items-center">
+                            <li class="nav-item nav-icon nav-item-icon dropdown text-underline">
+                                <a href="#products" class="">
+                                    <strong>Product</strong>
+                                </a>
+                            </li>
+                            <li class="nav-item nav-icon nav-item-icon dropdown text-underline">
+                                <a href="#pricing" class="">
+                                    <strong>Pricing</strong>
+                                </a>
+                            </li>
+                            <li class="nav-item nav-icon nav-item-icon dropdown text-underline">
+                                <a href="#" class="">
+                                    <strong>FaQ</strong>
+                                </a>
+                            </li>
                             <?php if ($this->session->userdata('user_id')) { ?>
-                                <li class="nav-item nav-icon p-0 ml-1 mr-1 mt-2">
+                                <li class="nav-item nav-icon nav-item-icon dropdown text-underline">
                                     <?php if ($role_id == 1) { ?>
-                                        <a href="<?= base_url('superadmin/dashboard') ?>" class="d-flex align-items-center">
+                                        <a href="<?= base_url('superadmin/dashboard') ?>" class="">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                                 stroke-linejoin="round" class="feather feather-grid mr-2">
@@ -157,7 +162,7 @@ $has_sidebar = isset($has_sidebar) ? $has_sidebar : true;
                                             </svg>
                                         </a>
                                     <?php } elseif ($role_id == 2) { ?>
-                                        <a href="<?= base_url('admin/dashboard') ?>" class="d-flex align-items-center">
+                                        <a href="<?= base_url('admin/dashboard') ?>" class="">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                                 stroke-linejoin="round" class="feather feather-grid mr-2">
@@ -168,7 +173,7 @@ $has_sidebar = isset($has_sidebar) ? $has_sidebar : true;
                                             </svg>
                                         </a>
                                     <?php } elseif ($role_id == 3) { ?>
-                                        <a href="<?= base_url('operator/dashboard') ?>" class="d-flex align-items-center">
+                                        <a href="<?= base_url('operator/dashboard') ?>" class="">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                                 stroke-linejoin="round" class="feather feather-grid mr-2">
@@ -179,7 +184,7 @@ $has_sidebar = isset($has_sidebar) ? $has_sidebar : true;
                                             </svg>
                                         </a>
                                     <?php } elseif ($role_id == 4) { ?>
-                                        <a href="<?= base_url('customerservice/dashboard') ?>" class="d-flex align-items-center">
+                                        <a href="<?= base_url('customerservice/dashboard') ?>" class="">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                                 stroke-linejoin="round" class="feather feather-grid mr-2">
@@ -190,7 +195,7 @@ $has_sidebar = isset($has_sidebar) ? $has_sidebar : true;
                                             </svg>
                                         </a>
                                     <?php } elseif ($role_id == 5) { ?>
-                                        <a href="<?= base_url('customer/dashboard') ?>" class="d-flex align-items-center">
+                                        <a href="<?= base_url('customer/dashboard') ?>" class="">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                                 stroke-linejoin="round" class="feather feather-grid mr-2">
@@ -203,14 +208,14 @@ $has_sidebar = isset($has_sidebar) ? $has_sidebar : true;
                                     <?php } ?>
                                 </li>
                             <?php } else { ?>
-                                <li class="nav-item nav-icon mt-2 mb-2">
+                                <li class="nav-item nav-icon nav-item-icon dropdown mb-2">
                                     <a href="<?= base_url('auth/login') ?>" class="">
                                         <span class="btn btn-outline-light text-dark d-flex align-items-center">
                                             <span>Login</span>
                                         </span>
                                     </a>
                                 </li>
-                                <li class="nav-item nav-icon mt-2 mb-2">
+                                <li class="nav-item nav-icon nav-item-icon dropdown mb-2">
                                     <a href="<?= base_url('auth/register') ?>" class="">
                                         <span class="btn btn-primary text-white d-flex align-items-center">
                                             <span>Register</span>
@@ -235,11 +240,19 @@ $has_sidebar = isset($has_sidebar) ? $has_sidebar : true;
 
                     <div class="col-12 p-0">
 
-                    <section class="section mb-4" style="background-image: url('public/local_assets/images/background.jpg'); background-size: cover; background-position: center;">
+                        <section class="section mb-4" style="background-image: url('public/local_assets/images/background.jpg'); background-size: cover; background-position: center;">
                             <div class="container" style="height:  78vh;">
                                 <div class="row">
                                     <div class="col-md-6 mt-5">
                                         <h1 class="text-dark">Jasa Pembuatan PCB dan CNC Profeisonal</h1>
+                                        <div class="d-flex align-items-center mt-3">
+                                            <div class="mr-3">
+                                                <a href="<?= base_url('order') ?>" class="btn btn-primary btn-lg">Order Sekarang</a>
+                                            </div>
+                                            <div class="ml-3">
+                                                <a href="#products" class="btn btn-white link-shadow btn-lg text-primary">Lihat Produk</a>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="col-md-6">
                                         <img src="<?= base_url('public/local_assets/images/illustrator.png') ?>" class="img-fluid" alt="Illustration" width="100%">

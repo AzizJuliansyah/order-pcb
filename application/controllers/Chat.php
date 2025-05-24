@@ -67,13 +67,6 @@ class Chat extends CI_Controller {
         $receiver_id = $this->input->post('user_id');
         $sender_id = $this->session->userdata('user_id');
 
-        // Update semua pesan jadi read
-        // $this->db->where('sender_id', $receiver_id);
-        // $this->db->where('receiver_id', $sender_id);
-        // $this->db->where('is_read', 0);
-        // $this->db->update('chat', ['is_read' => 1]);
-
-        // Ambil semua pesan
         $messages = $this->Chat_model->get_chat_between($sender_id, $receiver_id);
         $grouped = [];
 
@@ -85,17 +78,14 @@ class Chat extends CI_Controller {
         $data['grouped_messages'] = $grouped;
         $data['sender_id'] = $sender_id;
 
-        // Render HTML chat-nya
         $renderedHtml = $this->load->view('index/chat/chat_messages_partial', $data, TRUE);
 
-        // Hitung unread dari user yang aktif ke user login
         $unreadCount = $this->db->where([
-            'receiver_id' => $sender_id,  // user login sebagai penerima
-            'sender_id' => $receiver_id,  // user aktif sebagai pengirim
+            'receiver_id' => $sender_id,
+            'sender_id' => $receiver_id,
             'is_read' => 0
         ])->count_all_results('chat');
 
-        // Kirim JSON
         echo json_encode([
             'messages' => $renderedHtml,
             'unread_count' => $unreadCount
@@ -107,11 +97,9 @@ class Chat extends CI_Controller {
     public function get_unread_counts() {
         $user_id = $this->session->userdata('user_id');
     
-        // Ambil role_id user saat ini
         $user = $this->db->get_where('user', ['id' => $user_id])->row_array();
         $role_id = $user['role_id'];
     
-        // Jika bukan customer service (role_id ≠ 4), hanya tampilkan CS (role_id = 4)
         if (in_array($role_id, [1, 2, 3, 5])) {
             $this->db->select('u.id, u.nama, u.foto, r.jabatan as role_nama,
                 (SELECT COUNT(*) FROM chat 
@@ -120,13 +108,12 @@ class Chat extends CI_Controller {
                  AND is_read = 0) AS unread_count');
             $this->db->from('user u');
             $this->db->join('role r', 'r.role_id = u.role_id');
-            $this->db->where('u.role_id', 4); // khusus customer service
+            $this->db->where('u.role_id', 4);
             $this->db->order_by('u.nama', 'ASC');
     
             $result = $this->db->get()->result_array();
     
         } elseif ($role_id == 4) {
-            // Jika user adalah customer service, ambil semua chat partner
             $this->db->select('u.id, u.nama, u.foto, r.jabatan as role_nama,
                 (SELECT COUNT(*) FROM chat 
                  WHERE sender_id = u.id 
@@ -159,14 +146,36 @@ class Chat extends CI_Controller {
 
     public function send_message()
     {
-        $data = [
-            'sender_id' => $this->session->userdata('user_id'),
-            'receiver_id' => $this->input->post('receiver_id'),
-            'message' => $this->input->post('message'),
-            'is_read' => 0,
-        ];
-        $this->db->insert('chat', $data);
+        $message = $this->input->post('message');
+        $receiver_id = $this->input->post('receiver_id');
+        $sender_id = $this->session->userdata('user_id');
+
+        $foto = null;
+        if (!empty($_FILES['foto']['name'])) {
+            $config['upload_path'] = './public/web_assets/images/chat/';
+            $config['allowed_types'] = 'jpg|jpeg|png|gif';
+            $config['encrypt_name'] = TRUE;
+
+            $this->load->library('upload', $config);
+
+            if ($this->upload->do_upload('foto')) {
+                $upload_data = $this->upload->data();
+                $foto = 'web_assets/images/chat/' . $upload_data['file_name'];
+            }
+        }
+
+        if ($message || $foto) {
+            $data = [
+                'sender_id' => $sender_id,
+                'receiver_id' => $receiver_id,
+                'message' => $message,
+                'attachment' => $foto,
+                'is_read' => 0,
+            ];
+            $this->db->insert('chat', $data);
+        }
     }
+
 
 
     public function mark_as_read()

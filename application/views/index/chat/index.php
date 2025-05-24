@@ -149,7 +149,7 @@
 <div class="wrapper">
     <div class="content-page" style="margin-top: -20px">
         <div class="container-fluid">
-           <div class="card" style="height: 80vh;">
+           <div class="card bottom-right shadow-showcase" style="height: 80vh;">
                 <div class="messages-card">
                     <div class="py-1 px-4 border-bottom">
                         <div class="d-flex align-items-center">
@@ -202,26 +202,30 @@
 
 
                     <div class="flex-grow-0 py-1 px-3 border-top">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div class="badge border border-dark text-dark rounded-circle mr-2 image-upload-wrapper hover-effect" style="cursor: pointer;">
-                                <i class="las la-image upload-button font-size-20" style="margin-top: 3px;"></i>
-                                <input class="file-upload d-none" type="file" name="foto" accept="image/*" onchange="previewNewPhoto(this)">
-                            </div>
+                        <form id="chat-form" enctype="multipart/form-data">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div class="badge border border-dark text-dark rounded-circle mr-2 image-upload-wrapper hover-effect" style="cursor: pointer;">
+                                    <i class="las la-image upload-button font-size-20" style="margin-top: 3px;"></i>
+                                    <input class="file-upload d-none" type="file" name="foto" id="chat-photo" accept="image/*" onchange="previewNewPhoto(this)">
+                                </div>
 
-                            <div class="input-group">
-                                <textarea
-                                    class="form-control"
-                                    id="message-input"
-                                    placeholder="Type your message..."
-                                    rows="1"
-                                    style="overflow-y: auto; resize: none; max-height: 80px;"
-                                ></textarea>
+                                <div class="input-group">
+                                    <textarea
+                                        class="form-control"
+                                        id="message-input"
+                                        name="message"
+                                        placeholder="Type your message..."
+                                        rows="1"
+                                        style="overflow-y: auto; resize: none; max-height: 80px;"
+                                    ></textarea>
 
-                                <div class="input-group-append">
-                                    <button class="input-group-text bg-primary" id="send-message"><i class="las la-paper-plane font-size-20"></i></button>
+                                    <div class="input-group-append">
+                                        <button type="submit" class="input-group-text bg-primary" id="send-message"><i class="las la-paper-plane font-size-20"></i></button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </form>
+
                     </div>
                 </div>
             </div>
@@ -399,27 +403,43 @@
 
 
 
-    function sendMessage() {
-        const msg = $('#message-input').val();
-        if (!msg || !activeUserId) return;
-
-        $.post("<?= base_url('chat/send_message') ?>", {
-            receiver_id: activeUserId,
-            message: msg
-        }, function () {
-            $('#message-input').val('');
-            loadMessages(activeUserId, true);
-        });
-    }
-    $('#send-message').on('click', function () {
-        sendMessage();
-    });
-    $('#message-input').on('keypress', function (e) {
-        if (e.which === 13 && !e.shiftKey) {
+    $(document).ready(function () {
+        $('#chat-form').on('submit', function (e) {
             e.preventDefault();
-            sendMessage();
-        }
+
+            const msg = $('#message-input').val();
+            const file = $('#chat-photo')[0].files[0];
+
+            if (!msg.trim() && !file) return;
+
+            const formData = new FormData(this);
+            formData.append('receiver_id', activeUserId);
+
+            $.ajax({
+                url: "<?= base_url('chat/send_message') ?>",
+                method: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function () {
+                    $('#message-input').val('');
+                    $('#chat-photo').val('');
+                    $('#image-preview').attr('src', '');
+                    $('#image-preview-container').hide();
+                    $('#chat-messages').show();
+                    loadMessages(activeUserId, true);
+                }
+            });
+        });
+
+        $('#message-input').on('keydown', function (e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                $('#chat-form').submit();
+            }
+        });
     });
+
     function previewNewPhoto(input) {
         if (input.files && input.files[0]) {
             const reader = new FileReader();
