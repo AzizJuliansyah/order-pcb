@@ -67,35 +67,516 @@
         body {
             scroll-behavior: smooth;
         }
-        .section {
-            padding: 80px 0;
-        }
-        .section-heading {
-            font-weight: 700;
-            font-size: 2rem;
-            margin-bottom: 40px;
-        }
-        .card-price {
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-        .custom-carousel {
-            width: 100vw;
-            max-width: 100%;
-            overflow: hidden;
-            border-radius: 25px;
-            margin: 0 auto;
-        }
-
-        .custom-carousel img {
-            object-fit: cover;
-            height: 80vh;
-            border-radius: 25px;
-        }
+        
         h1 {
             font-family: "Ancizar Serif", serif;
             font-size: 4rem;
             font-weight: 600;
+        }
+    </style>
+
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --accent-color: #3b82f6;
+            --dark-color: #1f2937;
+            --light-color: #f8fafc;
+            --text-muted: #64748b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--dark-color);
+            overflow-x: hidden;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><pattern id="circuit" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M20,20 L80,20 L80,80 L20,80 Z" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.2)"/><circle cx="80" cy="80" r="2" fill="rgba(255,255,255,0.2)"/></pattern></defs><rect width="100%" height="100%" fill="url(%23circuit)"/></svg>') repeat;
+            opacity: 0.3;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2rem;
+            max-width: 600px;
+        }
+
+        .cta-button {
+            background: white;
+            color: var(--primary-color);
+            padding: 15px 40px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        /* Section Styles */
+        .section {
+            padding: 5rem 0;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Features Section */
+        .features-section {
+            background: var(--light-color);
+        }
+
+        .feature-card {
+            background: white;
+            padding: 1rem;
+            border-radius: 15px;
+            text-align: center;
+            height: 100%;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+
+        .feature-text {
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Pricing Section */
+        .pricing-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            height: 100%;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .pricing-card.featured {
+            border-color: var(--primary-color);
+            transform: scale(1.05);
+        }
+
+        .pricing-card.featured::before {
+            content: 'POPULER';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary-color);
+            color: white;
+            padding: 8px 25px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .price {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 1rem 0;
+        }
+
+        .price-unit {
+            font-size: 1rem;
+            color: var(--text-muted);
+            font-weight: normal;
+        }
+
+        .pricing-features {
+            list-style: none;
+            padding: 0;
+            margin: 2rem 0;
+        }
+
+        .pricing-features li {
+            padding: 0.5rem 0;
+            color: var(--text-muted);
+        }
+
+        .pricing-features li i {
+            color: var(--primary-color);
+            margin-right: 0.5rem;
+        }
+
+        .pricing-button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .pricing-button:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            color: white;
+            text-decoration: none;
+        }
+
+        /* Gallery Section */
+        .gallery-section {
+            background: var(--light-color);
+        }
+
+        
+
+        .slide-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .slide-description {
+            opacity: 0.9;
+        }
+        
+        .cta-section {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            position: relative;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><pattern id="circuit-cta" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M20,20 L80,20 L80,80 L20,80 Z" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.2)"/><circle cx="80" cy="80" r="2" fill="rgba(255,255,255,0.2)"/></pattern></defs><rect width="100%" height="100%" fill="url(%23circuit-cta)"/></svg>') repeat;
+            opacity: 0.3;
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .cta-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        /* .carousel-inner {
+            width: 100%;
+            height: 400px;
+            overflow: hidden;
+        }
+        .carousel-inner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        } */
+
+        .carousel-item img {
+            aspect-ratio: 16 / 9;
+            width: 100%;
+            object-fit: cover;
+        }
+
+        .cta-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .cta-buttons {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .cta-btn {
+            display: inline-block;
+            background: white;
+            color: var(--primary-color);
+            padding: 15px 30px;
+            margin: 10px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            min-width: 140px;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .cta-btn i {
+            margin-right: 8px;
+        }
+
+        .register-btn {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .register-btn:hover {
+            background: white;
+            color: var(--primary-color);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--dark-color);
+            color: white;
+            padding: 3rem 0 1rem 0;
+        }
+
+        .footer-content {
+            padding-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-brand {
+            margin-bottom: 2rem;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .footer-logo i {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-right: 10px;
+        }
+
+        .footer-logo span {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .footer-brand .brand-name {
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        .footer-contact {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-contact li {
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .footer-contact i {
+            width: 20px;
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+
+        .footer-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .payment-methods {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+
+        .payment-icon {
+            background: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            color: var(--dark-color);
+        }
+
+        .footer-bottom {
+            padding-top: 1rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .pricing-card.featured {
+                transform: none;
+                margin-top: 2rem;
+            }
+            
+            .gallery-arrow {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Animation */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
     </style>
 
@@ -119,7 +600,7 @@ $has_sidebar = isset($has_sidebar) ? $has_sidebar : true;
     <div class="iq-top-navbar">
         <div class="iq-navbar-custom">
             <nav class="navbar navbar-expand-lg navbar-light p-0">
-                <div class="iq-sidebar-logo d-flex align-items-center">
+                <div class="iq-sidebar-logo d-flex align-items-center mb-0 p-0">
                     <a href="<?= base_url('') ?>" class="header-logo">
                         <img src="<?= base_url('public/' . get_website_logo()) ?>" alt="logo">
                         <h4 class="logo-title text-uppercase"><?= get_website_name() ?></h4>
@@ -144,8 +625,8 @@ $has_sidebar = isset($has_sidebar) ? $has_sidebar : true;
                                 </a>
                             </li>
                             <li class="nav-item nav-icon nav-item-icon dropdown text-underline">
-                                <a href="#" class="">
-                                    <strong>FaQ</strong>
+                                <a href="#portfolio" class="">
+                                    <strong>Portfolio</strong>
                                 </a>
                             </li>
                             <?php if ($this->session->userdata('user_id')) { ?>
@@ -215,7 +696,7 @@ $has_sidebar = isset($has_sidebar) ? $has_sidebar : true;
                                         </span>
                                     </a>
                                 </li>
-                                <li class="nav-item nav-icon nav-item-icon dropdown mb-2">
+                                <li class="nav-item nav-icon nav-item-icon dropdown border-0 mb-2">
                                     <a href="<?= base_url('auth/register') ?>" class="">
                                         <span class="btn btn-primary text-white d-flex align-items-center">
                                             <span>Register</span>
@@ -244,104 +725,281 @@ $has_sidebar = isset($has_sidebar) ? $has_sidebar : true;
                             <div class="container" style="height:  78vh;">
                                 <div class="row">
                                     <div class="col-md-6 mt-5">
-                                        <h1 class="text-dark">Jasa Pembuatan PCB dan CNC Profeisonal</h1>
-                                        <div class="d-flex align-items-center mt-3">
-                                            <div class="mr-3">
-                                                <a href="<?= base_url('order') ?>" class="btn btn-primary btn-lg">Order Sekarang</a>
-                                            </div>
-                                            <div class="ml-3">
-                                                <a href="#products" class="btn btn-white link-shadow btn-lg text-primary">Lihat Produk</a>
-                                            </div>
+                                        <div class="hero-content">
+                                            <h1 class="hero-title fade-in text-dark">PCB & CNC Professional Services</h1>
+                                            <p class="hero-subtitle fade-in text-dark" style='font-family: "Ancizar Serif", serif;'>Solusi terdepan untuk kebutuhan PCB custom dan layanan CNC berkualitas tinggi dengan teknologi modern dan presisi tinggi.</p>
+                                            <a href="#pricing" class="cta-button fade-in">Mulai Order Sekarang</a>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <img src="<?= base_url('public/local_assets/images/illustrator.png') ?>" class="img-fluid" alt="Illustration" width="100%">
+                                    <div class="col-md-6 ">
+                                        <img src="<?= base_url('public/local_assets/images/illustrator.png') ?>" class="img-fluid d-none d-md-block" alt="Illustration" width="100%">
                                     </div>
                                 </div>
                             </div>
                         </section>
 
-                        <section class="section px-3">
-                            <div class="bd-example">
-                                <div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel">
-                                    <ol class="carousel-indicators">
-                                        <li data-target="#carouselExampleCaptions" data-slide-to="0" class="active"></li>
-                                        <li data-target="#carouselExampleCaptions" data-slide-to="1"></li>
-                                        <li data-target="#carouselExampleCaptions" data-slide-to="2"></li>
-                                    </ol>
-                                    <div class="carousel-inner">
-                                        <div class="carousel-item active">
-                                            <img src="<?= base_url('public/local_assets/images/notfound_image.png') ?>" class="d-block w-100" alt="#">
-                                            <div class="carousel-caption d-none d-md-block">
-                                                <h4 class="text-white">First slide label</h4>
-                                                <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
-                                            </div>
-                                        </div>
-                                        <div class="carousel-item">
-                                            <img src="<?= base_url('public/local_assets/images/notfound_image.png') ?>" class="d-block w-100" alt="#">
-                                            <div class="carousel-caption d-none d-md-block">
-                                                <h4 class="text-white">Second slide label</h4>
-                                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                                            </div>
-                                        </div>
-                                        <div class="carousel-item">
-                                            <img src="<?= base_url('public/local_assets/images/notfound_image.png') ?>" class="d-block w-100" alt="#">
-                                            <div class="carousel-caption d-none d-md-block">
-                                                <h4 class="text-white">Third slide label</h4>
-                                                <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <a class="carousel-control-prev" href="#carouselExampleCaptions" role="button" data-slide="prev">
-                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                        <span class="sr-only">Previous</span>
-                                    </a>
-                                    <a class="carousel-control-next" href="#carouselExampleCaptions" role="button" data-slide="next">
-                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                        <span class="sr-only">Next</span>
-                                    </a>
-                                </div>
-                            </div>
-                        </section>
-
-
-                        <!-- Card Section -->
-                        <section class="section bg-primary-light mt-4 mb-4">
+                        <section class="section about-section" id="products">
                             <div class="container">
-                                <h2 class="section-heading text-center font-weight-bold mb-5">Layanan PCB & CNC Profesional</h2>
+                                <div class="row align-items-center mb-5">
+                                    <div class="col-lg-6">
+                                        <div class="about-image fade-in">
+                                            <img src="https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=600&h=400&fit=crop&auto=format" alt="PCB Manufacturing" class="img-fluid rounded shadow-lg">
+                                            <div class="image-overlay">
+                                                <div class="overlay-content">
+                                                    <h4>PCB Manufacturing</h4>
+                                                    <p>Teknologi terdepan untuk hasil presisi tinggi</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="about-content fade-in">
+                                            <h2 class="about-title">Printed Circuit Board (PCB)</h2>
+                                            <p class="about-description">
+                                                PCB adalah fondasi dari setiap perangkat elektronik modern. Kami menyediakan layanan manufaktur PCB dengan berbagai spesifikasi, mulai dari single layer hingga multi-layer complex design.
+                                            </p>
+                                            <div class="about-features">
+                                                <div class="feature-item">
+                                                    <i class="fas fa-check-circle"></i>
+                                                    <span>Single & Multi-layer PCB</span>
+                                                </div>
+                                                <div class="feature-item">
+                                                    <i class="fas fa-check-circle"></i>
+                                                    <span>Material berkualitas tinggi (FR4, Aluminum, Flexible)</span>
+                                                </div>
+                                                <div class="feature-item">
+                                                    <i class="fas fa-check-circle"></i>
+                                                    <span>Presisi hingga 0.1mm trace width</span>
+                                                </div>
+                                                <div class="feature-item">
+                                                    <i class="fas fa-check-circle"></i>
+                                                    <span>Surface Mount Technology (SMT) ready</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
-                                <!-- Row 1: Layanan PCB dan CNC -->
+                                <div class="row align-items-center">
+                                    <div class="col-lg-6 order-lg-2">
+                                        <div class="about-image fade-in">
+                                            <img src="https://images.unsplash.com/photo-1565106430482-8f6e74349ca1?w=600&h=400&fit=crop&auto=format" alt="CNC Machining" class="img-fluid rounded shadow-lg">
+                                            <div class="image-overlay">
+                                                <div class="overlay-content">
+                                                    <h4>CNC Machining</h4>
+                                                    <p>Precision engineering untuk komponen custom</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 order-lg-1">
+                                        <div class="about-content fade-in">
+                                            <h2 class="about-title">Computer Numerical Control (CNC)</h2>
+                                            <p class="about-description">
+                                                Layanan CNC machining kami menghadirkan presisi tinggi untuk kebutuhan komponen custom Anda. Dari prototyping hingga production scale, kami siap membantu mewujudkan desain Anda.
+                                            </p>
+                                            <div class="about-features">
+                                                <div class="feature-item">
+                                                    <i class="fas fa-check-circle"></i>
+                                                    <span>3-axis, 4-axis, dan 5-axis machining</span>
+                                                </div>
+                                                <div class="feature-item">
+                                                    <i class="fas fa-check-circle"></i>
+                                                    <span>Material: Aluminum, Steel, Brass, Plastic</span>
+                                                </div>
+                                                <div class="feature-item">
+                                                    <i class="fas fa-check-circle"></i>
+                                                    <span>Toleransi ±0.01mm</span>
+                                                </div>
+                                                <div class="feature-item">
+                                                    <i class="fas fa-check-circle"></i>
+                                                    <span>Surface finishing & coating options</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Features Section -->
+                        <section class="section features-section" id="features">
+                            <div class="container">
+                                <h2 class="section-title fade-in">Keunggulan Layanan Kami</h2>
+                                <p class="section-subtitle fade-in">Mengapa memilih layanan PCB dan CNC dari kami</p>
+                                
                                 <div class="row">
-                                    <div class="col-md-6 mb-4">
+                                    <div class="col-lg-4 col-md-6 mb-4">
+                                        <div class="feature-card fade-in">
+                                            <div class="feature-icon">
+                                                <i class="las la-microchip"></i>
+                                            </div>
+                                            <h3 class="feature-title">Teknologi Modern</h3>
+                                            <p class="feature-text">Menggunakan mesin CNC dan peralatan PCB terbaru dengan presisi tinggi untuk hasil yang sempurna.</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-lg-4 col-md-6 mb-4">
+                                        <div class="feature-card fade-in">
+                                            <div class="feature-icon">
+                                                <i class="las la-bolt"></i>
+                                            </div>
+                                            <h3 class="feature-title">Pengerjaan Cepat</h3>
+                                            <p class="feature-text">Waktu pengerjaan yang efisien tanpa mengorbankan kualitas, dengan sistem tracking order real-time.</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-lg-4 col-md-6 mb-4">
+                                        <div class="feature-card fade-in">
+                                            <div class="feature-icon">
+                                                <i class="las la-shield-alt"></i>
+                                            </div>
+                                            <h3 class="feature-title">Kualitas Terjamin</h3>
+                                            <p class="feature-text">Standar kualitas internasional dengan quality control ketat di setiap tahap produksi.</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-lg-4 col-md-6 mb-4">
+                                        <div class="feature-card fade-in">
+                                            <div class="feature-icon">
+                                                <i class="las la-headset"></i>
+                                            </div>
+                                            <h3 class="feature-title">Support 24/7</h3>
+                                            <p class="feature-text">Tim support yang siap membantu Anda kapan saja dengan respon cepat dan solusi terbaik.</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-lg-4 col-md-6 mb-4">
+                                        <div class="feature-card fade-in">
+                                            <div class="feature-icon">
+                                                <i class="las la-shipping-fast"></i>
+                                            </div>
+                                            <h3 class="feature-title">Pengiriman Cepat</h3>
+                                            <p class="feature-text">Jaringan pengiriman ke seluruh Indonesia dengan packaging aman dan tracking lengkap.</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-lg-4 col-md-6 mb-4">
+                                        <div class="feature-card fade-in">
+                                            <div class="feature-icon">
+                                                <i class="las la-tags"></i>
+                                            </div>
+                                            <h3 class="feature-title">Harga Kompetitif</h3>
+                                            <p class="feature-text">Harga terbaik di kelasnya dengan berbagai paket yang dapat disesuaikan dengan budget Anda.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Pricing Section -->
+                        <section class="section" id="pricing">
+                            <div class="container">
+                                <h2 class="section-title fade-in">Paket Harga</h2>
+                                <p class="section-subtitle fade-in">Pilih paket yang sesuai dengan kebutuhan proyek Anda</p>
+                                
+                                <div class="row justify-content-center">
+                                    <div class="col-lg-4 col-md-6 mb-4">
+                                        <div class="pricing-card fade-in">
+                                            <h3>PCB Basic</h3>
+                                            <div class="price">Rp 50K<span class="price-unit">/pcs</span></div>
+                                            <ul class="pricing-features">
+                                                <li><i class="las la-check"></i> Single Layer PCB</li>
+                                                <li><i class="las la-check"></i> Ukuran maksimal 10x10cm</li>
+                                                <li><i class="las la-check"></i> Material FR4 standar</li>
+                                                <li><i class="las la-check"></i> Solder mask hijau</li>
+                                                <li><i class="las la-check"></i> Pengerjaan 3-5 hari</li>
+                                            </ul>
+                                            <a href="#" class="pricing-button">Pilih Paket</a>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-lg-4 col-md-6 mb-4">
+                                        <div class="pricing-card featured fade-in">
+                                            <h3>PCB Professional</h3>
+                                            <div class="price">Rp 120K<span class="price-unit">/pcs</span></div>
+                                            <ul class="pricing-features">
+                                                <li><i class="las la-check"></i> Double Layer PCB</li>
+                                                <li><i class="las la-check"></i> Ukuran maksimal 15x15cm</li>
+                                                <li><i class="las la-check"></i> Material FR4 premium</li>
+                                                <li><i class="las la-check"></i> Pilihan warna solder mask</li>
+                                                <li><i class="las la-check"></i> Via plating</li>
+                                                <li><i class="las la-check"></i> Pengerjaan 2-3 hari</li>
+                                            </ul>
+                                            <a href="#" class="pricing-button">Pilih Paket</a>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-lg-4 col-md-6 mb-4">
+                                        <div class="pricing-card fade-in">
+                                            <h3>CNC Machining</h3>
+                                            <div class="price">Rp 200K<span class="price-unit">/jam</span></div>
+                                            <ul class="pricing-features">
+                                                <li><i class="las la-check"></i> Presisi tinggi ±0.01mm</li>
+                                                <li><i class="las la-check"></i> Berbagai material</li>
+                                                <li><i class="las la-check"></i> 3D CAD support</li>
+                                                <li><i class="las la-check"></i> Finishing berkualitas</li>
+                                                <li><i class="las la-check"></i> Quality inspection</li>
+                                            </ul>
+                                            <a href="#" class="pricing-button">Pilih Paket</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="section" style="background-image: url('public/local_assets/images/bg2.jpg'); background-size: cover; background-position: center;">
+                            <div class="container">
+                                <div class="row align-items-center">
+                                    <div class="col-lg-8">
+                                        <div class="cta-content fade-in">
+                                            <h1 class="cta-title text-white">Siap Memulai Proyek Anda?</h1>
+                                            <p class="cta-subtitle text-white">Bergabunglah dengan ribuan customer yang telah mempercayakan kebutuhan PCB dan CNC mereka kepada kami. Dapatkan akses ke dashboard khusus untuk tracking order dan konsultasi gratis.</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="cta-buttons fade-in">
+                                            <a href="#" class="cta-btn login-btn">
+                                                <i class="fas fa-sign-in-alt"></i>
+                                                Login
+                                            </a>
+                                            <a href="#" class="cta-btn register-btn">
+                                                <i class="fas fa-user-plus"></i>
+                                                Register
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Gallery Section -->
+                        <section class="section gallery-section" id="portfolio">
+                            <div class="container">
+                                <h2 class="section-title fade-in">Portfolio Karya Kami</h2>
+                                <p class="section-subtitle fade-in">Lihat hasil kerja berkualitas tinggi yang telah kami kerjakan</p>
+                                
+                                <div class="row justify-content-center">
+                                    <div class="col-lg-8 fade-in">
                                         <div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel">
                                             <ol class="carousel-indicators">
-                                                <li data-target="#carouselExampleCaptions" data-slide-to="0" class="active"></li>
-                                                <li data-target="#carouselExampleCaptions" data-slide-to="1"></li>
-                                                <li data-target="#carouselExampleCaptions" data-slide-to="2"></li>
+                                                <?php foreach ($carousel_images as $index => $image): ?>
+                                                    <li data-target="#carouselExampleCaptions" data-slide-to="<?= $index ?>" class="<?= $index === 0 ? 'active' : '' ?>"></li>
+                                                <?php endforeach; ?>
                                             </ol>
-                                            <div class="carousel-inner">
-                                                <div class="carousel-item active">
-                                                    <img src="<?= base_url('public/local_assets/images/notfound_image.png') ?>" class="d-block w-100" alt="#">
-                                                    <div class="carousel-caption d-none d-md-block">
-                                                        <h4 class="text-white">First slide label</h4>
-                                                        <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+
+                                            <div class="carousel-inner rounded">
+                                                <?php foreach ($carousel_images as $index => $image): ?>
+                                                    <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
+                                                        <img src="<?= base_url('public/' . $image->images) ?>" class="d-block w-100" alt="carousel">
+                                                        <div class="carousel-caption d-none d-md-block">
+                                                            <h4 class="text-white"><?= htmlspecialchars($image->heading) ?></h4>
+                                                            <p><?= htmlspecialchars($image->sub_heading) ?></p>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="carousel-item">
-                                                    <img src="<?= base_url('public/local_assets/images/notfound_image.png') ?>" class="d-block w-100" alt="#">
-                                                    <div class="carousel-caption d-none d-md-block">
-                                                        <h4 class="text-white">Second slide label</h4>
-                                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                                                    </div>
-                                                </div>
-                                                <div class="carousel-item">
-                                                    <img src="<?= base_url('public/local_assets/images/notfound_image.png') ?>" class="d-block w-100" alt="#">
-                                                    <div class="carousel-caption d-none d-md-block">
-                                                        <h4 class="text-white">Third slide label</h4>
-                                                        <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
-                                                    </div>
-                                                </div>
+                                                <?php endforeach; ?>
                                             </div>
+
                                             <a class="carousel-control-prev" href="#carouselExampleCaptions" role="button" data-slide="prev">
                                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                                 <span class="sr-only">Previous</span>
@@ -351,264 +1009,83 @@ $has_sidebar = isset($has_sidebar) ? $has_sidebar : true;
                                                 <span class="sr-only">Next</span>
                                             </a>
                                         </div>
-                                    </div>
-                                    <div class="col-md-6 mb-4">
-                                    </div>
-                                    <div class="col-md-6 mb-4">
-                                        <div class="card p-4 h-100 bottom-right shadow-showcase rounded">
-                                            <h4 class="font-weight-bold">Jasa Pembuatan PCB</h4>
-                                            <p>Kami menyediakan layanan pembuatan PCB berkualitas tinggi untuk kebutuhan elektronik Anda, mulai dari prototype hingga produksi massal.</p>
-                                            <ul class="list-unstyled">
-                                                <li>✔️ Desain hingga produksi</li>
-                                                <li>✔️ Berbagai ukuran & lapisan</li>
-                                                <li>✔️ Finishing profesional</li>
-                                            </ul>
-                                            <button class="btn btn-sm btn-primary mt-2">Order Sekarang</button>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-4">
-                                        <div class="card p-4 h-100 bottom-right shadow-showcase rounded">
-                                            <h4 class="font-weight-bold">Jasa CNC Milling & Engraving</h4>
-                                            <p>Kami juga melayani pemotongan dan engraving menggunakan mesin CNC presisi untuk berbagai kebutuhan teknis dan artistik.</p>
-                                            <ul class="list-unstyled">
-                                                <li>✔️ Akurasi tinggi</li>
-                                                <li>✔️ Bahan metal, akrilik, kayu</li>
-                                                <li>✔️ Hasil rapi & cepat</li>
-                                            </ul>
-                                            <button class="btn btn-sm btn-primary mt-2">Order Sekarang</button>
-                                        </div>
-                                    </div>
-                                </div>
 
-                                <!-- Row 2: Detail layanan dan keunggulan -->
-                                <div class="row mt-4">
-                                    <div class="col-md-4 mb-4">
-                                        <div class="card p-4 h-100 bottom-right shadow-showcase rounded">
-                                            <h5 class="font-weight-bold">Spesifikasi PCB</h5>
-                                            <p>Kustomisasi lengkap dari jenis material, ketebalan, hingga finishing.</p>
-                                            <ul class="list-unstyled">
-                                                <li>🧩 FR4, CEM1, Aluminium</li>
-                                                <li>📏 2-8 Layer</li>
-                                                <li>✨ Surface Finish: HASL, ENIG</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 mb-4">
-                                        <div class="card p-4 h-100 bottom-right shadow-showcase rounded">
-                                            <h5 class="font-weight-bold">Kenapa Memilih Kami?</h5>
-                                            <p>Lebih dari sekadar jasa, kami adalah partner produksi terbaik Anda.</p>
-                                            <ul class="list-unstyled">
-                                                <li>✅ Tim ahli & berpengalaman</li>
-                                                <li>🚚 Pengiriman cepat & aman</li>
-                                                <li>📞 Layanan support 24/7</li>
-                                            </ul>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </section>
 
-                        <section class="row col-12 section px-3">
-                            <div class="col-lg-4 col-sm-12">
-                                <h4 class="font-weight-bold mb-3">Pilih Paket Sesuai Kebutuhan Anda</h4>
-                                <p class="mb-2">Kami menyediakan beberapa pilihan paket layanan dengan fitur dan harga yang berbeda-beda, sesuai kebutuhan Anda.</p>
-                                <ul class="pl-3">
-                                    <li><strong>Basic</strong> – Cocok untuk penggunaan personal ringan.</li>
-                                    <li><strong>Standard</strong> – Direkomendasikan untuk pengguna reguler.</li>
-                                    <li><strong>Platinum</strong> – Fitur lengkap dan performa lebih tinggi.</li>
-                                    <li><strong>Premium</strong> – Untuk kebutuhan profesional & skala besar.</li>
-                                </ul>
-                                <p class="mt-3">Klik tombol <strong>Purchase</strong> di bawah paket pilihan Anda untuk melakukan pemesanan.</p>
-                            </div>
 
-                            <div class="col-lg-8 col-sm-12">
-                                <div class="card" id="pricing">
-                                    <div class="card-body">
-                                        <div class="table-responsive pricing pt-2">
-                                            <table id="my-table" class="table">
-                                            <thead>
-                                                <tr>
-                                                    <th class="text-center prc-wrap"></th>
-                                                    <th class="text-center prc-wrap">
-                                                        <div class="prc-box">
-                                                        <div class="h3 pt-4">$19<small> / Per month</small>
-                                                        </div> <span class="type">Basic</span>
-                                                        </div>
-                                                    </th>
-                                                    <th class="text-center prc-wrap">
-                                                        <div class="prc-box active">
-                                                        <div class="h3 pt-4">$39<small> / Per month</small>
-                                                        </div> <span class="type">Standard</span>
-                                                        </div>
-                                                    </th>
-                                                    <th class="text-center prc-wrap">
-                                                        <div class="prc-box">
-                                                        <div class="h3 pt-4">$119<small> / Per month</small>
-                                                        </div> <span class="type">Platinum</span>
-                                                        </div>
-                                                    </th>
-                                                    <th class="text-center prc-wrap">
-                                                        <div class="prc-box">
-                                                        <div class="h3 pt-4">$219<small> / Per month</small>
-                                                        </div> <span class="type">Premium</span>
-                                                        </div>
-                                                    </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <th class="text-center" scope="row">New Movies</th>
-                                                    <td class="text-center child-cell"><i class="ri-check-line ri-2x"></i>
-                                                    </td>
-                                                    <td class="text-center child-cell active"><i class="ri-check-line ri-2x"></i>
-                                                    </td>
-                                                    <td class="text-center child-cell"><i class="ri-check-line ri-2x"></i>
-                                                    </td>
-                                                    <td class="text-center child-cell"><i class="ri-check-line ri-2x"></i>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <th class="text-center" scope="row">Streamit Special</th>
-                                                    <td class="text-center child-cell"><i class="ri-close-line i_close"></i>
-                                                    </td>
-                                                    <td class="text-center child-cell active"><i class="ri-check-line ri-2x"></i>
-                                                    </td>
-                                                    <td class="text-center child-cell"><i class="ri-check-line ri-2x"></i>
-                                                    </td>
-                                                    <td class="text-center child-cell"><i class="ri-check-line ri-2x"></i>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <th class="text-center" scope="row">Sofbox series</th>
-                                                    <td class="text-center child-cell"><i class="ri-close-line i_close"></i>
-                                                    </td>
-                                                    <td class="text-center child-cell active"><i class="ri-check-line ri-2x"></i>
-                                                    </td>
-                                                    <td class="text-center child-cell"><i class="ri-check-line ri-2x"></i>
-                                                    </td>
-                                                    <td class="text-center child-cell"><i class="ri-check-line ri-2x"></i>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <th class="text-center" scope="row">Xamin TV shows</th>
-                                                    <td class="text-center child-cell"><i class="ri-check-line ri-2x"></i>
-                                                    </td>
-                                                    <td class="text-center child-cell active"><i class="ri-check-line ri-2x"></i>
-                                                    </td>
-                                                    <td class="text-center child-cell"><i class="ri-check-line ri-2x"></i>
-                                                    </td>
-                                                    <td class="text-center child-cell"><i class="ri-check-line ri-2x"></i>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <th class="text-center" scope="row">Prokit HD shows</th>
-                                                    <td class="text-center child-cell">SD (480p)</td>
-                                                    <td class="text-center child-cell active">HD (720p)</td>
-                                                    <td class="text-center child-cell">FHD (1080p)</td>
-                                                    <td class="text-center child-cell">FHD (1080p)</td>
-                                                </tr>
-                                                <tr>
-                                                    <th class="text-center" scope="row">Unlimited Graphina plug-in</th>
-                                                    <td class="text-center child-cell"><i class="ri-close-line i_close"></i>
-                                                    </td>
-                                                    <td class="text-center child-cell active"><i class="ri-close-line i_close"></i>
-                                                    </td>
-                                                    <td class="text-center child-cell"><i class="ri-check-line ri-2x"></i>
-                                                    </td>
-                                                    <td class="text-center child-cell"><i class="ri-check-line ri-2x"></i>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="text-center"><i class="ri-close-line i_close"></i>
-                                                    </td>
-                                                    <td class="text-center"> <a href="#" class="btn btn-primary mt-3">Purchase</a>
-                                                    </td>
-                                                    <td class="text-center"> <a href="#" class="btn btn-primary mt-3">Purchase</a>
-                                                    </td>
-                                                    <td class="text-center"> <a href="#" class="btn btn-primary mt-3">Purchase</a>
-                                                    </td>
-                                                    <td class="text-center"> <a href="#" class="btn btn-primary mt-3">Purchase</a>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
+                        
 
-                        <!-- Grid Titles -->
-                        <section class="bg-light">
+                        <!-- Footer -->
+                        <!-- <footer class="footer">
                             <div class="container">
-                                <h2 class="section-heading text-center p-5">Kenapa Memilih Kami?</h2>
-                                <div class="row text-center">
-                                    <div class="col-md-3 mb-4">
-                                        <i class="las la-microchip fa-3x text-primary font-size-40 mb-3"></i>
-                                        <h5>Teknologi Modern</h5>
-                                        <p>Kami menggunakan mesin terbaru untuk hasil PCB dan CNC yang presisi dan konsisten.</p>
-                                    </div>
-                                    <div class="col-md-3 mb-4">
-                                        <i class="las la-stopwatch fa-3x text-success font-size-40 mb-3"></i>
-                                        <h5>Proses Cepat</h5>
-                                        <p>Pesanan Anda kami proses dengan cepat tanpa mengorbankan kualitas produksi.</p>
-                                    </div>
-                                    <div class="col-md-3 mb-4">
-                                        <i class="las la-tools fa-3x text-warning font-size-40 mb-3"></i>
-                                        <h5>Custom Sesuai Kebutuhan</h5>
-                                        <p>Anda bebas menentukan ukuran, bahan, dan spesifikasi sesuai keperluan proyek Anda.</p>
-                                    </div>
-                                    <div class="col-md-3 mb-4">
-                                        <i class="las la-hand-holding-usd fa-3x text-info font-size-40 mb-3"></i>
-                                        <h5>Harga Transparan</h5>
-                                        <p>Estimasi harga langsung terlihat tanpa biaya tersembunyi, cocok untuk budgeting proyek Anda.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
-
-
-                        <!-- Image Feature -->
-                        <section class="section">
-                            <div class="container">
-                                <h2 class="section-heading">Title Heading</h2>
-                                <div class="row">
-                                    <div class="col-md-4 mb-4">
-                                        <div class="card" style="height: 250px;"></div>
-                                    </div>
-                                    <div class="col-md-4 mb-4">
-                                        <div class="card" style="height: 250px;"></div>
-                                    </div>
-                                    <div class="col-md-4 mb-4">
-                                        <div class="card p-4">
-                                            <p>Text inside a card</p>
-                                            <button class="btn btn-sm btn-dark">View</button>
+                                <div class="footer-content">
+                                    <div class="row">
+                                        <div class="col-lg-4 col-md-6">
+                                            <div class="footer-brand">
+                                                <div class="footer-logo">
+                                                    <i class="fas fa-microchip"></i>
+                                                    <span><span class="brand-name">UNIKEYIC</span> ELECTRONICS</span>
+                                                </div>
+                                                <ul class="footer-contact">
+                                                    <li><i class="fas fa-phone"></i> +65 8183 7168</li>
+                                                    <li><i class="fas fa-envelope"></i> support@unikeyic.com</li>
+                                                </ul>
+                                                <div class="social-links">
+                                                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                                                    <a href="#"><i class="fab fa-twitter"></i></a>
+                                                    <a href="#"><i class="fab fa-instagram"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-lg-2 col-md-6">
+                                            <div class="footer-section">
+                                                <h4 class="footer-title text-white">Company</h4>
+                                                <ul class="footer-links">
+                                                    <li><a href="#">About Us</a></li>
+                                                    <li><a href="#">Contact Us</a></li>
+                                                    <li><a href="#">Manufacturers</a></li>
+                                                    <li><a href="#">Newsroom</a></li>
+                                                    <li><a href="#">Return & Refund Policy</a></li>
+                                                    <li><a href="#">Delivery Policy</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-lg-3 col-md-6">
+                                            <div class="footer-section">
+                                                <h4 class="footer-title text-white">Services</h4>
+                                                <ul class="footer-links">
+                                                    <li><a href="#">Products</a></li>
+                                                    <li><a href="#">RFQ</a></li>
+                                                    <li><a href="#">Quality Control</a></li>
+                                                    <li><a href="#">Warehouse & Logistic</a></li>
+                                                    <li><a href="#">Design & Engineering</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-lg-3 col-md-6">
+                                            <div class="footer-section">
+                                                <h4 class="footer-title text-white">SSL Encrypted Payment</h4>
+                                                <div class="payment-methods">
+                                                    <span class="payment-icon"><i class="fab fa-cc-paypal"></i></span>
+                                                    <span class="payment-icon"><i class="fab fa-cc-mastercard"></i></span>
+                                                    <span class="payment-icon"><i class="fab fa-cc-visa"></i></span>
+                                                    <span class="payment-icon"><i class="fab fa-alipay"></i></span>
+                                                    <span class="payment-icon"><i class="fas fa-university"></i></span>
+                                                    <span class="payment-icon"><i class="fas fa-truck"></i></span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </section>
-
-                        <!-- Testimonials -->
-                        <section class="section bg-light">
-                            <div class="container">
-                                <h2 class="section-heading">Section Heading</h2>
-                                <div class="row">
-                                    <div class="col-md-6 mb-4">
-                                        <div class="card p-4">
-                                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                                            <div>⭐⭐⭐⭐⭐</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-4">
-                                        <div class="card p-4">
-                                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                                            <div>⭐⭐⭐⭐⭐</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
+                        </footer> -->
                     </div>
 
                    
@@ -621,6 +1098,33 @@ $has_sidebar = isset($has_sidebar) ? $has_sidebar : true;
         </div>
     </div>
     <!-- Wrapper End-->
+
+    <script>
+        // Fade in animation
+        function checkFadeIn() {
+            const fadeElements = document.querySelectorAll('.fade-in');
+            
+            fadeElements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < window.innerHeight - elementVisible) {
+                    element.classList.add('visible');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', checkFadeIn);
+        window.addEventListener('load', checkFadeIn);
+
+        // Smooth scrolling for CTA button
+        document.querySelector('.cta-button').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.querySelector('#pricing').scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    </script>
 
     <?php
         $controller = $this->router->fetch_class();

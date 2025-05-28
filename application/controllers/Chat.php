@@ -5,6 +5,7 @@ class Chat extends CI_Controller {
 
     public function __construct() {
         parent::__construct();
+        is_logged_in();
         $this->load->model('Chat_model');
     }
 
@@ -77,6 +78,7 @@ class Chat extends CI_Controller {
 
         $data['grouped_messages'] = $grouped;
         $data['sender_id'] = $sender_id;
+        $data['receiver_id'] = $receiver_id;
 
         $renderedHtml = $this->load->view('index/chat/chat_messages_partial', $data, TRUE);
 
@@ -91,6 +93,29 @@ class Chat extends CI_Controller {
             'unread_count' => $unreadCount
         ]);
     }
+
+    public function delete_message()
+    {
+        $chat_id = $this->input->post('chat_id');
+
+        $chat = $this->db->get_where('chat', ['chat_id' => $chat_id])->row_array();
+
+        if ($chat) {
+            if (!empty($chat['attachment'])) {
+                $file_path = FCPATH . 'public/' . $chat['attachment'];
+                if (file_exists($file_path)) {
+                    unlink($file_path);
+                }
+            }
+
+            $this->db->delete('chat', ['chat_id' => $chat_id]);
+
+            echo json_encode(['status' => 'success']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Pesan tidak ditemukan']);
+        }
+    }
+
 
 
 

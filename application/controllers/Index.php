@@ -44,6 +44,8 @@ class Index extends CI_Controller {
 			$data['role_id'] = $user['role_id'];
 		}
 
+		$data['carousel_images'] = $this->db->get('carousel_images')->result();
+
 		$data['title'] = 'Landing Page';
 
 		$data['has_sidebar'] = false;

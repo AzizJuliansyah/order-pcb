@@ -208,6 +208,10 @@ class Superadmin extends CI_Controller {
 		$data['title'] = 'UI UX Settings';
 
         $data['settings'] = $this->db->where_in('settings_id', [3, 4])->get('settings')->result_array();
+        $data['carousel_images'] = $this->db->get('carousel_images')->result_array();
+
+        $data['errors'] = $this->session->flashdata('errors') ?? [];
+        $data['old'] = $this->session->flashdata('old') ?? [];
 
 		$this->load->view('layout/header', $data);
 		$this->load->view('layout/navbar', $data);
@@ -235,7 +239,156 @@ class Superadmin extends CI_Controller {
 		$this->load->view('layout/footer');
 	}
 
-    
+    public function tambah_carousel_images()
+    {
+        $redirect = $this->input->server('HTTP_REFERER') ?? base_url('default-url');
+
+        if ($this->input->method() === 'post') {
+            $this->form_validation->set_rules('heading', 'Heading', 'required|trim', [
+                'required' => '%s wajib diisi.'
+            ]);
+            $this->form_validation->set_rules('sub_heading', 'Sub Heading', 'required|trim', [
+                'required' => '%s wajib diisi.'
+            ]);
+
+            if ($this->form_validation->run() === FALSE) {
+                $this->session->set_flashdata('old', [
+                    'heading'     => set_value('heading'),
+                    'sub_heading'  => set_value('sub_heading'),
+                ]);
+                $this->session->set_flashdata('errors', [
+                    'heading'     => form_error('heading'),
+                    'sub_heading'  => form_error('sub_heading'),
+                ]);
+                redirect($redirect);
+            }
+
+            $heading = $this->input->post('heading', TRUE);
+            $sub_heading = $this->input->post('sub_heading', TRUE);
+
+            // Proses Upload Gambar
+            $config['upload_path'] = './public/web_assets/images/carousel_images/';
+            $config['allowed_types'] = 'jpg|jpeg|png|webp';
+            $config['max_size'] = 5120; // Max 2MB
+            // $config['encrypt_name'] = TRUE;
+
+            $this->load->library('upload', $config);
+
+            if (!$this->upload->do_upload('image')) {
+                $this->session->set_flashdata('error', $this->upload->display_errors());
+                redirect($redirect);
+            } else {
+                $uploadData = $this->upload->data();
+                $image_name = $uploadData['file_name'];
+
+                // Simpan ke database
+                $data = [
+                    'heading'     => $heading,
+                    'sub_heading'  => $sub_heading,
+                    'images'       => 'web_assets/images/carousel_images/' . $image_name,
+                ];
+                $this->db->insert('carousel_images', $data);
+
+                $this->session->set_flashdata('success', 'Carousel berhasil ditambah.');
+                redirect($redirect);
+            }
+        } else {
+            $this->session->set_flashdata('error', 'Gagal menambahkan carousel.');
+            redirect($redirect);
+        }
+    }
+
+    public function edit_carousel_images()
+    {
+        $redirect = $this->input->server('HTTP_REFERER') ?? base_url('default-url');
+
+        $encrypted_carousel_images_id = $this->input->post('carousel_images_id');
+        $carousel_images_id = decrypt_id($encrypted_carousel_images_id);
+        $carousel = $this->db->get_where('carousel_images', ['id' => $carousel_images_id])->row_array();
+        if (!$carousel) {
+            $this->session->set_flashdata('error', 'Data tidak ditemukan.');
+            redirect($redirect);
+        }
+
+        if ($this->input->method() === 'post') {
+            $this->form_validation->set_rules('heading', 'Heading', 'required|trim');
+            $this->form_validation->set_rules('sub_heading', 'Sub Heading', 'required|trim');
+
+            if ($this->form_validation->run() === FALSE) {
+                $this->session->set_flashdata('errors', [
+                    'heading'     => form_error('heading'),
+                    'sub_heading' => form_error('sub_heading'),
+                ]);
+                redirect($redirect);
+            }
+
+            $heading = $this->input->post('heading', TRUE);
+            $sub_heading = $this->input->post('sub_heading', TRUE);
+
+            $data = [
+                'heading'     => $heading,
+                'sub_heading' => $sub_heading,
+            ];
+
+            // Jika user upload gambar baru
+            if (!empty($_FILES['image']['name'])) {
+                $config['upload_path']   = './public/web_assets/images/carousel_images/';
+                $config['allowed_types'] = 'jpg|jpeg|png|webp';
+                $config['max_size']      = 5120; // 5MB
+                // $config['encrypt_name']  = TRUE;
+
+                $this->load->library('upload', $config);
+
+                if ($this->upload->do_upload('image')) {
+                    // Hapus gambar lama jika ada
+                    if (!empty($carousel['images']) && file_exists(FCPATH . 'public/' . $carousel['images'])) {
+                        unlink(FCPATH . 'public/' . $carousel['images']);
+                    }
+
+                    $uploadData = $this->upload->data();
+                    $data['images'] = 'web_assets/images/carousel_images/' . $uploadData['file_name'];
+                } else {
+                    $this->session->set_flashdata('error', $this->upload->display_errors());
+                    redirect($redirect);
+                }
+            }
+
+            $this->db->update('carousel_images', $data, ['id' => $carousel_images_id]);
+
+            $this->session->set_flashdata('success', 'Carousel berhasil diperbarui.');
+            redirect($redirect);
+        }
+
+        $this->session->set_flashdata('error', 'Metode tidak valid.');
+        redirect($redirect);
+    }
+
+    public function delete_carousel_images()
+    {
+        
+        $redirect = $this->input->server('HTTP_REFERER') ?? base_url('default-url');
+
+        $encrypted_carousel_images_id = $this->input->post('carousel_images_id');
+        $carousel_images_id = decrypt_id($encrypted_carousel_images_id);
+        $carousel = $this->db->get_where('carousel_images', ['id' => $carousel_images_id])->row_array();
+        if (!$carousel) {
+            $this->session->set_flashdata('error', 'Data tidak ditemukan.');
+            redirect($redirect);
+        }
+
+        // Hapus file gambar jika ada
+        if (!empty($carousel['images']) && file_exists(FCPATH . 'public/' . $carousel['images'])) {
+            unlink(FCPATH . 'public/' . $carousel['images']);
+        }
+
+        $this->db->delete('carousel_images', ['id' => $carousel_images_id]);
+
+        $this->session->set_flashdata('success', 'Carousel berhasil dihapus.');
+        redirect($redirect);
+    }
+
+
+
 
 
 

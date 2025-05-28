@@ -25,7 +25,6 @@ class Customerservice extends CI_Controller {
 		$data['errors'] = $this->session->flashdata('errors') ?? [];
 		$data['old'] = $this->session->flashdata('old') ?? [];
 
-		// --- 3. Global Order Stats ---
 		$global_chats = $this->db->query("
 			SELECT 
 				COUNT(chat_id) AS total_chats,

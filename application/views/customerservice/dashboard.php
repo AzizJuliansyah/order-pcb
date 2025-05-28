@@ -204,8 +204,10 @@
                         </div>
                     </div>
                 </div>
-                
+
+
                 <div class="col-12 col-lg-6 py-0 mt-3 lastest-chat-list">
+                    
                     <h5 class="mb-1">5 Chat Terakhir</h5>
                     <?php foreach ($recent_chat_users as $user): ?>
                         <a href="<?= base_url('chat') ?>" class="card mb-2 py-1 px-2 chat-user"
@@ -248,6 +250,8 @@
                         </a>
                     <?php endforeach; ?>
                 </div>
+                
+                
             </div>
         </div>
     </div>
@@ -261,6 +265,8 @@
         const userRole = $(this).data('user-role-nama');
         const nama = $(this).data('nama');
         const foto = $(this).data('foto');
+
+        
         
 
         localStorage.setItem('activeChatRoom', JSON.stringify({

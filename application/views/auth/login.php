@@ -1,4 +1,4 @@
-<div class="d-flex justify-content-center mt-5">
+<div class="d-flex justify-content-center my-5">
     <div class="card bottom-right p-3 shadow-showcase border-radius-5 m-2 w-100" style="max-width: 450px;">
         <div class="card-header border-bottom-0 p-0">
             <div class="d-flex justify-content-center">
@@ -70,10 +70,16 @@
                 </button>
             </div>
 
-            <div class="d-flex justify-content-center mb-5">
+            <div class="d-flex justify-content-center mb-0">
                 <div class="d-flex align-items-center mt-1">
                     <h6 class="mr-2">Don't have an account?</h6>
                     <a href="<?= base_url('auth/register') ?>">Register</a>
+                </div>
+            </div>
+            <div class="d-flex justify-content-center mb-5">
+                <div class="d-flex align-items-center">
+                    <h6 class="mr-2">Or back to</h6>
+                    <a href="<?= base_url('') ?>">Landing Page</a>
                 </div>
             </div>
         </div>

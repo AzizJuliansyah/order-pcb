@@ -345,6 +345,13 @@
             }
 
             if (activeUserId === userId) {
+                let openedDropdownId = null;
+                $('.status-dropdown .dropdown-menu.show').each(function () {
+                    const parent = $(this).closest('.status-dropdown');
+                    openedDropdownId = parent.data('chat-id');
+                });
+
+
                 $('#chat-messages').html(res.messages);
                 if (scrollOnLoad || userAtBottom) {
                     scrollToBottom();
@@ -355,9 +362,35 @@
                 } else {
                     $('#new-message-alert').hide();
                 }
+
+                if (openedDropdownId) {
+                    const dropdownToggle = $(`.status-dropdown[data-chat-id="${openedDropdownId}"] [data-toggle="dropdown"]`);
+                    dropdownToggle.dropdown('toggle');
+                }
             }
         });
     }
+
+    $(document).on('click', '.delete-chat-btn', function (e) {
+        e.preventDefault();
+
+        const chatId = $(this).data('chat-id');
+        const $chatBubble = $(this).closest('.chat-message-right');
+
+        if (confirm('Yakin ingin menghapus pesan ini?')) {
+            $.post("<?= base_url('chat/delete_message') ?>", { chat_id: chatId }, function (response) {
+                const res = JSON.parse(response);
+                if (res.status === 'success') {
+                    $chatBubble.fadeOut(300, function () {
+                        $(this).remove();
+                    });
+                } else {
+                    alert('Gagal menghapus pesan');
+                }
+            });
+        }
+    });
+
 
     function updateUnreadCounts() {
          $.get("<?= base_url('chat/get_unread_counts') ?>", function(data) {
