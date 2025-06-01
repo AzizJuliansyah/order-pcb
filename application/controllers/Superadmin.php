@@ -266,7 +266,6 @@ class Superadmin extends CI_Controller {
             $heading = $this->input->post('heading', TRUE);
             $sub_heading = $this->input->post('sub_heading', TRUE);
 
-            // Proses Upload Gambar
             $config['upload_path'] = './public/web_assets/images/carousel_images/';
             $config['allowed_types'] = 'jpg|jpeg|png|webp';
             $config['max_size'] = 5120; // Max 2MB
@@ -281,7 +280,6 @@ class Superadmin extends CI_Controller {
                 $uploadData = $this->upload->data();
                 $image_name = $uploadData['file_name'];
 
-                // Simpan ke database
                 $data = [
                     'heading'     => $heading,
                     'sub_heading'  => $sub_heading,
@@ -330,7 +328,6 @@ class Superadmin extends CI_Controller {
                 'sub_heading' => $sub_heading,
             ];
 
-            // Jika user upload gambar baru
             if (!empty($_FILES['image']['name'])) {
                 $config['upload_path']   = './public/web_assets/images/carousel_images/';
                 $config['allowed_types'] = 'jpg|jpeg|png|webp';
@@ -340,7 +337,6 @@ class Superadmin extends CI_Controller {
                 $this->load->library('upload', $config);
 
                 if ($this->upload->do_upload('image')) {
-                    // Hapus gambar lama jika ada
                     if (!empty($carousel['images']) && file_exists(FCPATH . 'public/' . $carousel['images'])) {
                         unlink(FCPATH . 'public/' . $carousel['images']);
                     }

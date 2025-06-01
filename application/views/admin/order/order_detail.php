@@ -336,7 +336,7 @@
                                              <h6><?= $user_info['nama'] ?></h6>
                                              <small><?= $user_info['email'] ?></small>
                                           </div>
-                                          </div>
+                                       </div>
                                     </div>
                                  </div>
                                  <div class="row">

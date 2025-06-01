@@ -182,6 +182,40 @@
                     </li>
                     
                 <?php } ?>
+                <?php if (has_access(['2'])) { ?>
+                    <li class="">
+                        <a href="#blog" class="collapsed" data-toggle="collapse" aria-expanded="false">
+                            <i class="las la-blog font-size-32"></i>
+                            <span class="ml-4 mr-1">Data Blog</span>
+                            <i class="las la-angle-right iq-arrow-right arrow-active"></i>
+                            <i class="las la-angle-down iq-arrow-right arrow-hover"></i>
+                        </a>
+                        <ul id="blog" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                            <li class="<?= set_active(['blog_management'], 'active', 2) ?>">
+                                <a href="<?= base_url('blog/blog_management') ?>">
+                                    <i class="las la-minus"></i><span>Blog Management</span>
+                                </a>
+                            </li>
+                            <li class="<?= set_active(['pending_blog'], 'active', 2) ?>">
+                                <a href="<?= base_url('blog/pending_blog') ?>">
+                                    <i class="las la-minus"></i><span>Blog Pending</span>
+                                </a>
+                            </li>
+                            <li class="<?= set_active(['blog_list'], 'active', 2) ?>">
+                                <a href="<?= base_url('blog/blog_list') ?>">
+                                    <i class="las la-minus"></i><span>Blog</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                <?php } else { ?>
+                    <li class="<?= set_active(['blog/blog_list'], 'active', 2) ?>">
+                        <a href="<?= base_url('blog/blog_list') ?>">
+                            <i class="las la-blog font-size-32"></i>
+                            <span class="ml-4">Blog</span>
+                        </a>
+                    </li>
+                <?php } ?>
                 <li class="<?= set_active(['history'], 'active', 2) ?> <?= set_active_with_from('order_detail', 'history') ?>">
                     <a href="<?= base_url('customer/history') ?>">
                         <i class="las la-history font-size-32"></i>
@@ -194,6 +228,7 @@
                         <span class="ml-4">Order</span>
                     </a>
                 </li>
+                
             </ul>
         </nav>
         <div class="pt-5 pb-2"></div>

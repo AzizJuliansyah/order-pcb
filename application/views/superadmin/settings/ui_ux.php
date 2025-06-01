@@ -220,8 +220,8 @@
                                                         <?= $item['images'] ?>
                                                     <?php } ?>
                                                 </td>
-                                                <td><?= $item['heading'] ?></td>
-                                                <td><?= $item['sub_heading'] ?></td>
+                                                <td class="d-inline-block text-truncate" style="max-width: 145px;"><?= $item['heading'] ?></td>
+                                                <td class="d-inline-block text-truncate" style="max-width: 145px;"><?= $item['sub_heading'] ?></td>
                                                 <td><?= format_bulan($item['date_updated']) ?></td>
                                                 <td>
                                                     <div class="d-flex align-items-center">

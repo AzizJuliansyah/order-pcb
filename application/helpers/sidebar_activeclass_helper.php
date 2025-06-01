@@ -30,17 +30,17 @@ if ( ! function_exists('set_active')) {
 
 
     function set_active_with_from($page, $from_check, $class = 'active')
-{
-    $CI =& get_instance();
+    {
+        $CI =& get_instance();
 
-    $current_page = $CI->uri->segment(2); // ambil misal 'order_detail'
-    $from_param = $CI->input->get('from'); // ambil ?from=xxx
+        $current_page = $CI->uri->segment(2); // ambil misal 'order_detail'
+        $from_param = $CI->input->get('from'); // ambil ?from=xxx
 
-    if ($current_page === $page && $from_param === $from_check) {
-        return $class;
+        if ($current_page === $page && $from_param === $from_check) {
+            return $class;
+        }
+
+        return '';
     }
-
-    return '';
-}
 
 }
