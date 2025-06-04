@@ -46,6 +46,10 @@ class Index extends CI_Controller {
 
 		$data['carousel_images'] = $this->db->get('carousel_images')->result();
 
+		$this->db->limit(16);
+		$this->db->order_by('blog_id', 'DESC');
+		$data['blogs'] = $this->db->get_where('blog', ['status' => 'approved'])->result_array();
+
 		$data['title'] = 'Landing Page';
 
 		$data['has_sidebar'] = false;

@@ -578,6 +578,116 @@
             opacity: 1;
             transform: translateY(0);
         }
+
+        .blog-slider {
+            overflow: hidden;
+            position: relative;
+        }
+
+        .slider-track {
+            display: flex;
+            transition: transform 0.5s ease;
+            width: 100%;
+        }
+
+        .slide {
+            flex: 0 0 100%;
+            max-width: 100%;
+            flex-wrap: wrap;
+        }
+
+        
+        .pagination-info {
+            color: #6c757d;
+            font-size: 14px;
+        }
+        
+        .view-all-link {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .view-all-link:hover {
+            color: #0056b3;
+            text-decoration: underline;
+        }
+        
+        .nav-arrow {
+            width: 40px;
+            height: 40px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin: 0 5px;
+        }
+        
+        .nav-arrow:hover {
+            background: #f8f9fa;
+            border-color: #adb5bd;
+        }
+        
+        .nav-arrow.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: #f8f9fa;
+        }
+        
+        .nav-arrow.disabled:hover {
+            background: #f8f9fa;
+            border-color: #dee2e6;
+        }
+        
+        .nav-arrow svg {
+            width: 16px;
+            height: 16px;
+            color: #6c757d;
+        }
+        
+        .controls-section {
+            margin-top: 20px;
+        }
+        
+        @media (max-width: 992px) {
+            .blog-card {
+                flex: 0 0 50%;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .blog-card {
+                flex: 0 0 50%;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .blog-card {
+                flex: 0 0 50%;
+            }
+        }
+        @media (max-width: 576px) {
+            .mobile-truncate-3 {
+                font-size: 12px; /* atur ukuran font sesuai kebutuhan */
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        }
+        .mobile-truncate-3 {
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
     </style>
 
 
@@ -1016,76 +1126,86 @@ $has_sidebar = isset($has_sidebar) ? $has_sidebar : true;
                         </section>
 
 
-                        
-
-                        <!-- Footer -->
-                        <!-- <footer class="footer">
+                        <!-- Blog Section -->
+                        <section class="section" id="blog">
                             <div class="container">
-                                <div class="footer-content">
-                                    <div class="row">
-                                        <div class="col-lg-4 col-md-6">
-                                            <div class="footer-brand">
-                                                <div class="footer-logo">
-                                                    <i class="fas fa-microchip"></i>
-                                                    <span><span class="brand-name">UNIKEYIC</span> ELECTRONICS</span>
+                                <h2 class="section-title fade-in">Blog Kami</h2>
+                                <p class="section-subtitle fade-in">Lihat hasil karya tulis yang telah kami kerjakan</p>
+                                <div class="row mx-1">
+                                
+                                    <div class="blog-slider overflow-hidden position-relative">
+                                        <div class="slider-track d-flex transition" id="sliderWrapper">
+                                            <?php foreach ($blogs as $i => $item): ?>
+                                                <?php if ($i % 8 === 0): ?>
+                                                    <?php if ($i > 0): ?>
+                                                        </div> <!-- Tutup slide sebelumnya -->
+                                                    <?php endif; ?>
+                                                    <div class="slide d-flex flex-wrap"> <!-- Buka slide baru -->
+                                                <?php endif; ?>
+
+                                                <div class="blog-card col-6 col-lg-3 p-0">
+                                                    <div class="card m-1">
+                                                        <div class="card-body p-0">
+                                                            <div class="text-center">
+                                                                <img src="<?= !empty($item['thumbnail']) ? base_url('public/' . $item['thumbnail']) : base_url('public/local_assets/images/notfound_image.png') ?>" alt="Thumbnail" class="img-fluid rounded-top">
+                                                            </div>
+                                                            <div class="p-2">
+                                                                <a href="<?= base_url('blog/view_blog/' . $item['slug']) ?>">
+                                                                    <h6 class="mobile-truncate-3"><?= htmlspecialchars($item['title']) ?></h6>
+                                                                </a>
+                                                                <div class="d-flex justify-content-end mt-2">
+                                                                    <a href="<?= base_url('blog/view_blog/' . $item['slug']) ?>" class="btn btn-sm bg-primary-light d-flex align-items-center font-size-12 mr-2">
+                                                                        <span class="text-primary font-size-12 mr-1">View</span>
+                                                                        <i class="las la-angle-right font-size-14 text-primary mr-0"></i>
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <ul class="footer-contact">
-                                                    <li><i class="fas fa-phone"></i> +65 8183 7168</li>
-                                                    <li><i class="fas fa-envelope"></i> support@unikeyic.com</li>
-                                                </ul>
-                                                <div class="social-links">
-                                                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                                                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                                                    <a href="#"><i class="fab fa-twitter"></i></a>
-                                                    <a href="#"><i class="fab fa-instagram"></i></a>
+
+                                                <?php if ($i === count($blogs) - 1): ?>
+                                                    </div> <!-- Tutup slide terakhir -->
+                                                <?php endif; ?>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    </div>
+
+                                    
+                                    <div class="controls-section col-12">
+                                        <div class="row d-flex justify-content-between align-items-center">
+                                            <div class="col-md-6">
+                                                <div class="text-center text-md-left">
+                                                    <span class="pagination-info">Menampilkan <span id="currentStart">1</span>-<span id="currentEnd">8</span> dari <span id="totalBlogs">16</span> blog</span>
+                                                    <br>
+                                                    <a href="<?= base_url('blog') ?>" class="view-all-link">Lihat semua daftar blog</a>
                                                 </div>
                                             </div>
-                                        </div>
-                                        
-                                        <div class="col-lg-2 col-md-6">
-                                            <div class="footer-section">
-                                                <h4 class="footer-title text-white">Company</h4>
-                                                <ul class="footer-links">
-                                                    <li><a href="#">About Us</a></li>
-                                                    <li><a href="#">Contact Us</a></li>
-                                                    <li><a href="#">Manufacturers</a></li>
-                                                    <li><a href="#">Newsroom</a></li>
-                                                    <li><a href="#">Return & Refund Policy</a></li>
-                                                    <li><a href="#">Delivery Policy</a></li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="col-lg-3 col-md-6">
-                                            <div class="footer-section">
-                                                <h4 class="footer-title text-white">Services</h4>
-                                                <ul class="footer-links">
-                                                    <li><a href="#">Products</a></li>
-                                                    <li><a href="#">RFQ</a></li>
-                                                    <li><a href="#">Quality Control</a></li>
-                                                    <li><a href="#">Warehouse & Logistic</a></li>
-                                                    <li><a href="#">Design & Engineering</a></li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="col-lg-3 col-md-6">
-                                            <div class="footer-section">
-                                                <h4 class="footer-title text-white">SSL Encrypted Payment</h4>
-                                                <div class="payment-methods">
-                                                    <span class="payment-icon"><i class="fab fa-cc-paypal"></i></span>
-                                                    <span class="payment-icon"><i class="fab fa-cc-mastercard"></i></span>
-                                                    <span class="payment-icon"><i class="fab fa-cc-visa"></i></span>
-                                                    <span class="payment-icon"><i class="fab fa-alipay"></i></span>
-                                                    <span class="payment-icon"><i class="fas fa-university"></i></span>
-                                                    <span class="payment-icon"><i class="fas fa-truck"></i></span>
+                                            <div class="col-md-6">
+                                                <div class="text-center text-md-right">
+                                                    <div class="d-inline-flex">
+                                                        <div class="nav-arrow" id="prevBtn">
+                                                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                                                            </svg>
+                                                        </div>
+                                                        <div class="nav-arrow" id="nextBtn">
+                                                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                                            </svg>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </footer> -->
+                        </section>
+
+
+                        
+
                     </div>
 
                    
@@ -1123,6 +1243,74 @@ $has_sidebar = isset($has_sidebar) ? $has_sidebar : true;
             document.querySelector('#pricing').scrollIntoView({
                 behavior: 'smooth'
             });
+        });
+
+        class BlogSlider {
+            constructor() {
+                this.slider = document.getElementById('sliderWrapper');
+                this.prevBtn = document.getElementById('prevBtn');
+                this.nextBtn = document.getElementById('nextBtn');
+                this.currentStart = document.getElementById('currentStart');
+                this.currentEnd = document.getElementById('currentEnd');
+                this.totalBlogs = document.getElementById('totalBlogs');
+                
+                this.currentSlide = 0;
+                this.itemsPerSlide = 8; // Always 8 items per slide
+                this.totalItems = document.querySelectorAll('.blog-card').length;
+                this.totalSlides = Math.ceil(this.totalItems / this.itemsPerSlide);
+                
+                this.init();
+            }
+            
+            init() {
+                this.updatePagination();
+                this.updateNavigation();
+                
+                this.prevBtn.addEventListener('click', () => this.prev());
+                this.nextBtn.addEventListener('click', () => this.next());
+            }
+            
+            prev() {
+                if (this.currentSlide > 0) {
+                    this.currentSlide--;
+                    this.updateSlider();
+                    this.updatePagination();
+                    this.updateNavigation();
+                }
+            }
+            
+            next() {
+                if (this.currentSlide < this.totalSlides - 1) {
+                    this.currentSlide++;
+                    this.updateSlider();
+                    this.updatePagination();
+                    this.updateNavigation();
+                }
+            }
+            
+            updateSlider() {
+                const translateX = -(this.currentSlide * 100);
+                this.slider.style.transform = `translateX(${translateX}%)`;
+            }
+            
+            updatePagination() {
+                const start = (this.currentSlide * this.itemsPerSlide) + 1;
+                const end = Math.min((this.currentSlide + 1) * this.itemsPerSlide, this.totalItems);
+                
+                this.currentStart.textContent = start;
+                this.currentEnd.textContent = end;
+                this.totalBlogs.textContent = this.totalItems;
+            }
+            
+            updateNavigation() {
+                this.prevBtn.classList.toggle('disabled', this.currentSlide === 0);
+                this.nextBtn.classList.toggle('disabled', this.currentSlide >= this.totalSlides - 1);
+            }
+        }
+        
+        // Initialize slider when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            new BlogSlider();
         });
     </script>
 

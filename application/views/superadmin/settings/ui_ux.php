@@ -40,7 +40,7 @@
                                                     <?php if (!empty($item['item']) && file_exists('./public/' . $item['item'])) { ?>
                                                         <img src="<?= base_url('public/' . $item['item']) ?>" class="img-fluid" width="35">
                                                     <?php } else { ?>
-                                                        <?= $item['item'] ?>
+                                                        <span class="d-inline-block text-truncate" style="max-width: 145px;"><?= $item['item'] ?></span>
                                                     <?php } ?>
                                                 </td>
                                                 <td><?= $item['info'] ?></td>
@@ -109,7 +109,76 @@
                                                                                         <button type="submit" class="btn btn-outline-primary">Upload image</button>
                                                                                     </div>
                                                                                 <?= form_close() ?>
+                                                                            <?php } elseif ($item['id'] == 7) { 
+                                                                                $bgDipakai = $item['background_dipakai'];
+                                                                                $itemData = json_decode($item['item'], true);
+                                                                            ?>
+                                                                                <?= form_open_multipart('superadmin/change_type_background', ['id' => 'file-upload-form']) ?>
+                                                                                <input type="hidden" name="settings_id" value="<?= encrypt_id($item['id']) ?>">
+
+                                                                                    <i class="text-danger">Silakan pilih tipe background yang ingin digunakan:</i>
+                                                                                    <div class="form-check">
+                                                                                        <input class="form-check-input bg-selector" type="checkbox" name="background_type"
+                                                                                            value="color" id="colorCheck"
+                                                                                            <?= ($bgDipakai === 'color') ? 'checked' : '' ?>>
+                                                                                        <label class="form-check-label" for="colorCheck">Gunakan Warna</label>
+                                                                                    </div>
+                                                                                    <div class="form-check">
+                                                                                        <input class="form-check-input bg-selector" type="checkbox" name="background_type"
+                                                                                            value="gradient" id="gradientCheck"
+                                                                                            <?= ($bgDipakai === 'gradient') ? 'checked' : '' ?>>
+                                                                                        <label class="form-check-label" for="gradientCheck">Gunakan Gradient</label>
+                                                                                    </div>
+                                                                                    <div class="form-check">
+                                                                                        <input class="form-check-input bg-selector" type="checkbox" name="background_type"
+                                                                                            value="image" id="imageCheck"
+                                                                                            <?= ($bgDipakai === 'image') ? 'checked' : '' ?>>
+                                                                                        <label class="form-check-label" for="imageCheck">Gunakan Gambar</label>
+                                                                                    </div>
+
+
+                                                                                    <div id="colorInput" class="mt-2 <?= ($bgDipakai === 'color') ? '' : 'd-none' ?>">
+                                                                                        <label>Background Color:</label>
+                                                                                        <input type="color" name="color" class="form-control <?= !empty($errors['color']) ? 'is-invalid' : '' ?>" value="<?= isset($itemData['color']) ? $itemData['color'] : '#ffffff' ?>">
+                                                                                        <?php if (!empty($errors['color'])): ?>
+                                                                                            <div class="invalid-feedback d-block"><?= $errors['color'] ?></div>
+                                                                                        <?php endif; ?>
+                                                                                    </div>
+                                                                                    <div id="gradientInput" class="mt-2 <?= ($bgDipakai === 'gradient') ? '' : 'd-none' ?>">
+                                                                                        <label>CSS Gradient:</label>
+                                                                                        <input type="text" name="gradient" class="form-control <?= !empty($errors['gradient']) ? 'is-invalid' : '' ?>" placeholder="contoh: linear-gradient(...)" value="<?= isset($itemData['gradient']) ? $itemData['gradient'] : '' ?>">
+                                                                                        <?php if (!empty($errors['gradient'])): ?>
+                                                                                            <div class="invalid-feedback d-block"><?= $errors['gradient'] ?></div>
+                                                                                        <?php endif; ?>
+                                                                                        <i class="text-danger">Pastikan format linear-gradient nya sesuai dengan format CSS!</i>
+                                                                                    </div>
+                                                                                    <div class="uploader-file file-drag <?= ($bgDipakai === 'image') ? '' : 'd-none' ?>" id="imageInput">
+                                                                                        <input type="file" name="image" accept="image/*" class="file-upload" style="display: none;" />
+                                                                                        <label class="file-label">
+                                                                                            <?php if (!empty($itemData['image']) && file_exists('./public/' . $itemData['image'])) { ?>
+                                                                                                <img src="<?= base_url('public/' . $itemData['image']) ?>" alt="Preview" class="file-image mb-2" style="max-width: 100px;">
+                                                                                            <?php } else { ?>
+                                                                                                <img src="#" alt="Preview" class="file-image hidden mb-2" style="max-width: 100px;">
+                                                                                            <?php } ?>
+                                                                                            <span class="start-one">
+                                                                                                <i class="fa fa-download" aria-hidden="true"></i>
+                                                                                                <span class="d-block">Select a file or drag here</span>
+                                                                                                <span class="not-image hidden d-block text-danger">Please select image</span>
+                                                                                                <span class="file-upload-btn btn btn-primary text-white mt-2">Select a file</span>
+                                                                                            </span>                   
+                                                                                        </label>
+                                                                                        <?php if (!empty($errors['images'])): ?>
+                                                                                            <div class="invalid-feedback d-block"><?= $errors['images'] ?></div>
+                                                                                        <?php endif; ?>
+                                                                                    </div>
+
+                                                                                <div class="float-right mt-3">
+                                                                                    <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
+                                                                                    <button type="submit" class="btn btn-outline-primary">Simpan</button>
+                                                                                </div>
+                                                                                <?= form_close() ?>
                                                                             <?php } ?>
+
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -220,8 +289,8 @@
                                                         <?= $item['images'] ?>
                                                     <?php } ?>
                                                 </td>
-                                                <td class="d-inline-block text-truncate" style="max-width: 145px;"><?= $item['heading'] ?></td>
-                                                <td class="d-inline-block text-truncate" style="max-width: 145px;"><?= $item['sub_heading'] ?></td>
+                                                <td><span class="d-inline-block text-truncate" style="max-width: 145px;"><?= $item['heading'] ?></span></td>
+                                                <td><span class="d-inline-block text-truncate" style="max-width: 145px;"><?= $item['sub_heading'] ?></span></td>
                                                 <td><?= format_bulan($item['date_updated']) ?></td>
                                                 <td>
                                                     <div class="d-flex align-items-center">
@@ -374,56 +443,83 @@
 <script>
     const containers = document.querySelectorAll('.file-drag');
 
-containers.forEach(container => {
-    const label = container.querySelector('.file-label');
-    const input = container.querySelector('.file-upload');
-    const image = container.querySelector('.file-image');
-    const notImage = container.querySelector('.not-image');
-    const uploadBtn = container.querySelector('.file-upload-btn');
+    containers.forEach(container => {
+        const label = container.querySelector('.file-label');
+        const input = container.querySelector('.file-upload');
+        const image = container.querySelector('.file-image');
+        const notImage = container.querySelector('.not-image');
+        const uploadBtn = container.querySelector('.file-upload-btn');
 
-    uploadBtn.addEventListener('click', function (e) {
-        e.preventDefault();
-        input.click();
+        uploadBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            input.click();
+        });
+
+        input.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) previewFile(file, image, notImage);
+        });
+
+        label.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            label.classList.add('dragover');
+        });
+
+        label.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            label.classList.remove('dragover');
+        });
+
+        label.addEventListener('drop', (e) => {
+            e.preventDefault();
+            label.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            input.files = e.dataTransfer.files;
+            if (file) previewFile(file, image, notImage);
+        });
     });
 
-    input.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (file) previewFile(file, image, notImage);
-    });
-
-    label.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        label.classList.add('dragover');
-    });
-
-    label.addEventListener('dragleave', (e) => {
-        e.preventDefault();
-        label.classList.remove('dragover');
-    });
-
-    label.addEventListener('drop', (e) => {
-        e.preventDefault();
-        label.classList.remove('dragover');
-        const file = e.dataTransfer.files[0];
-        input.files = e.dataTransfer.files;
-        if (file) previewFile(file, image, notImage);
-    });
-});
-
-function previewFile(file, image, notImage) {
-    if (file.type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            image.src = e.target.result;
-            image.classList.remove('hidden');
-            notImage.classList.add('hidden');
-        };
-        reader.readAsDataURL(file);
-    } else {
-        image.classList.add('hidden');
-        notImage.classList.remove('hidden');
+    function previewFile(file, image, notImage) {
+        if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                image.src = e.target.result;
+                image.classList.remove('hidden');
+                notImage.classList.add('hidden');
+            };
+            reader.readAsDataURL(file);
+        } else {
+            image.classList.add('hidden');
+            notImage.classList.remove('hidden');
+        }
     }
-}
-
-
 </script>
+
+<script>
+    document.querySelectorAll('.bg-selector').forEach(checkbox => {
+        checkbox.addEventListener('change', function () {
+            document.querySelectorAll('.bg-selector').forEach(cb => cb.checked = false);
+            this.checked = true;
+
+            document.getElementById('colorInput').classList.add('d-none');
+            document.getElementById('gradientInput').classList.add('d-none');
+            document.getElementById('imageInput').classList.add('d-none');
+
+            if (this.value === 'color') {
+                document.getElementById('colorInput').classList.remove('d-none');
+            } else if (this.value === 'gradient') {
+                document.getElementById('gradientInput').classList.remove('d-none');
+            } else if (this.value === 'image') {
+                document.getElementById('imageInput').classList.remove('d-none');
+            }
+        });
+    });
+
+    window.addEventListener('DOMContentLoaded', function () {
+        const checked = document.querySelector('.bg-selector:checked');
+        if (checked) {
+            checked.dispatchEvent(new Event('change'));
+        }
+    });
+</script>
+

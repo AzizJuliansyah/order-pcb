@@ -183,6 +183,162 @@ class Superadmin extends CI_Controller {
         }
     }
 
+    public function change_type_background()
+    {
+        $redirect = $this->input->server('HTTP_REFERER') ?? base_url('default-url');
+
+        if ($this->input->method() !== 'post') {
+            $this->session->set_flashdata('error', 'Item gagal diubah.');
+            return redirect($redirect);
+        }
+
+        $this->form_validation->set_rules('settings_id', 'settings_id', 'required|trim');
+        $encrypted_settings_id = $this->input->post('settings_id');
+        $settings_id = decrypt_id($encrypted_settings_id);
+
+        if (empty($settings_id)) {
+            $this->session->set_flashdata('error', 'Settings ID tidak valid.');
+            return redirect($redirect);
+        }
+
+        $settings = $this->db->get_where('settings', ['settings_id' => $settings_id])->row_array();
+        if (!$settings) {
+            $this->session->set_flashdata('error', 'Data Settings tidak ditemukan.');
+            return redirect($redirect);
+        }
+
+        $background_type = $this->input->post('background_type');
+        if (!in_array($background_type, ['color', 'gradient', 'image', null, ''])) {
+            $this->session->set_flashdata('error', 'Tipe background tidak valid.');
+        }
+        $existingItem = json_decode($settings['item'] ?? '{}', true);
+
+        // Inisialisasi jika null
+        if (!is_array($existingItem)) {
+            $existingItem = ['color' => null, 'gradient' => null, 'image' => null];
+        } else {
+            // Pastikan ketiganya ada
+            $existingItem = array_merge(['color' => null, 'gradient' => null, 'image' => null], $existingItem);
+        }
+
+        if ($background_type === 'color') {
+            $this->form_validation->set_rules('color', 'Warna', 'required|trim');
+            if ($this->form_validation->run() === FALSE) {
+                $this->session->set_flashdata('errors', ['color' => form_error('color')]);
+                return redirect($redirect);
+            }
+            $existingItem['color'] = $this->input->post('color', TRUE);
+            $background_type_update = 'color';
+
+        } elseif ($background_type === 'gradient') {
+            $this->form_validation->set_rules('gradient', 'Gradient', 'required|trim');
+            if ($this->form_validation->run() === FALSE) {
+                $this->session->set_flashdata('errors', ['gradient' => form_error('gradient')]);
+                return redirect($redirect);
+            }
+            $existingItem['gradient'] = $this->input->post('gradient', TRUE);
+            $background_type_update = 'gradient';
+
+        } elseif ($background_type === 'image') {
+            if (isset($_FILES['image']) && $_FILES['image']['name']) {
+                $config['upload_path']   = './public/web_assets/images/settings_images/';
+                $config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+                $config['max_size']      = 2048;
+                $config['file_name']     = 'settings_' . $settings_id . '_' . time();
+
+                $this->load->library('upload', $config);
+
+                if (!$this->upload->do_upload('image')) {
+                    $this->session->set_flashdata('errors', ['image' => $this->upload->display_errors('', '')]);
+                    return redirect($redirect);
+                }
+
+                $uploadData = $this->upload->data();
+                $newImagePath = 'web_assets/images/settings_images/' . $uploadData['file_name'];
+
+                // Hapus image lama jika ada
+                if (!empty($existingItem['image']) && file_exists('./public/' . $existingItem['image'])) {
+                    unlink('./public/' . $existingItem['image']);
+                }
+
+                $existingItem['image'] = $newImagePath;
+                $background_type_update = 'image';
+            } else {
+                $this->session->set_flashdata('error', 'File image wajib dipilih.');
+                return redirect($redirect);
+            }
+
+        } elseif ($background_type === null || $background_type === '') {
+            if ($background_type === 'color') {
+                $this->form_validation->set_rules('color', 'Warna', 'required|trim');
+                if ($this->form_validation->run() === FALSE) {
+                    $this->session->set_flashdata('errors', ['color' => form_error('color')]);
+                    return redirect($redirect);
+                }
+                $existingItem['color'] = $this->input->post('color', TRUE);
+                $background_type_update = 'color';
+    
+            } elseif ($background_type === 'gradient') {
+                $this->form_validation->set_rules('gradient', 'Gradient', 'required|trim');
+                if ($this->form_validation->run() === FALSE) {
+                    $this->session->set_flashdata('errors', ['gradient' => form_error('gradient')]);
+                    return redirect($redirect);
+                }
+                $existingItem['gradient'] = $this->input->post('gradient', TRUE);
+                $background_type_update = 'gradient';
+    
+            } elseif ($background_type === 'image') {
+                if (isset($_FILES['image']) && $_FILES['image']['name']) {
+                    $config['upload_path']   = './public/web_assets/images/settings_images/';
+                    $config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+                    $config['max_size']      = 2048;
+                    $config['file_name']     = 'settings_' . $settings_id . '_' . time();
+    
+                    $this->load->library('upload', $config);
+    
+                    if (!$this->upload->do_upload('image')) {
+                        $this->session->set_flashdata('errors', ['image' => $this->upload->display_errors('', '')]);
+                        return redirect($redirect);
+                    }
+    
+                    $uploadData = $this->upload->data();
+                    $newImagePath = 'web_assets/images/settings_images/' . $uploadData['file_name'];
+    
+                    // Hapus image lama jika ada
+                    if (!empty($existingItem['image']) && file_exists('./public/' . $existingItem['image'])) {
+                        unlink('./public/' . $existingItem['image']);
+                    }
+    
+                    $existingItem['image'] = $newImagePath;
+                    $background_type_update = 'image';
+                } else {
+                    $this->session->set_flashdata('error', 'File image wajib dipilih.');
+                    return redirect($redirect);
+                }
+    
+            }
+        } else {
+            $this->session->set_flashdata('error', 'Tipe background tidak valid.');
+            return redirect($redirect);
+        }
+
+        $data = [
+            'item' => json_encode($existingItem),
+            'background_dipakai' => $background_type_update,
+        ];
+
+        $update = $this->db->update('settings', $data, ['settings_id' => $settings_id]);
+
+        if ($update) {
+            $this->session->set_flashdata('success', 'Item berhasil diperbarui.');
+        } else {
+            $this->session->set_flashdata('error', 'Gagal memperbarui item.');
+        }
+        redirect($redirect);
+    }
+
+
+
     public function auth_google()
 	{
 		$user_id = $this->session->userdata('user_id');
@@ -207,7 +363,7 @@ class Superadmin extends CI_Controller {
 
 		$data['title'] = 'UI UX Settings';
 
-        $data['settings'] = $this->db->where_in('settings_id', [3, 4])->get('settings')->result_array();
+        $data['settings'] = $this->db->where_in('settings_id', [3, 4, 7])->get('settings')->result_array();
         $data['carousel_images'] = $this->db->get('carousel_images')->result_array();
 
         $data['errors'] = $this->session->flashdata('errors') ?? [];

@@ -59,7 +59,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
                 <div id="grid" class="item-content animate__animated animate__fadeIn active" data-toggle-extra="tab-content">
                     <div class="row">
                         <?php if (!empty($blogs)): ?>

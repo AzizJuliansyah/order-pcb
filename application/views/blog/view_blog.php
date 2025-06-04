@@ -229,65 +229,30 @@ $has_sidebar = isset($has_sidebar) ? $has_sidebar : true;
     <div class="wrapper">
         <div class="content-page">
             <div class="container-fluid">
-                <div class="col-12 col-md-6">
-                    <form method="get" action="<?= base_url('blog') ?>">
-                        <div class="input-group mb-3">
-                            <input type="text" name="q" class="form-control" placeholder="Cari judul blog..." value="<?= htmlspecialchars($keyword ?? '') ?>">
-                            <div class="input-group-append">
-                                <button class="btn btn-outline-primary" type="submit">Cari</button>
-                            </div>
+            <div class="d-flex flex-column align-items-center mb-5">
+                <div class="card p-0 border-radius-5 mb-0 mb-1 w-100" style="max-width: 700px;">
+                    <div class="card-header border-bottom-0 p-0">
+                        <div class="text-center">
+                            <?php if ($blog['thumbnail'] && file_exists('public/' . $blog['thumbnail'])) { ?>
+                                <img src="<?= base_url('public/' . $blog['thumbnail']) ?>" alt="Thumbnail" class="img-fluid">
+                            <?php } else { ?>
+                                <span class="text-muted">No Thumbnail</span>
+                            <?php } ?>
                         </div>
-                    </form>
-                </div>
-                <div class="col-12 mx-1">
-                    <div id="grid" class="item-content animate__animated animate__fadeIn active" data-toggle-extra="tab-content">
-                        <?php if (!empty($blogs)): ?>
-                            <div class="row">
-                                <?php foreach ($blogs as $index => $item) { ?>
-                                    <div class="col-6 col-lg-2 col-md-3 p-0">
-                                        <div class="card m-1">
-                                            <div class="card-body p-0">
-                                                <div class="text-center">
-                                                    <img src="<?= !empty($item['thumbnail']) ? base_url('public/' . $item['thumbnail']) : base_url('public/local_assets/images/notfound_image.png') ?>" alt="Thumbnail" class="img-fluid rounded-top">
-                                                </div>
-                                                <div class="p-2">
-                                                    <a href="<?= base_url('blog/view_blog/' . $item['slug']) ?>">
-                                                        <h6 class="mobile-truncate-3"><?= htmlspecialchars($item['title']) ?></h6>
-                                                    </a>
-                                                    <div class="d-flex justify-content-end mt-2">
-                                                        <a href="<?= base_url('blog/view_blog/' . $item['slug']) ?>" class="btn btn-sm bg-primary-light d-flex align-items-center font-size-12 mr-2">
-                                                            <span class="text-primary font-size-12 mr-1">View</span>
-                                                            <i class="las la-angle-right font-size-14 text-primary mr-0"></i>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                <?php } ?>
-                                
-                            </div>
-                            <?php else: ?>
-                                    <div class="text-center my-5 py-5">
-                                        <i class="las la-box-open text-muted" style="font-size: 8rem;"></i>
-                                        <h5 class="mt-3 text-muted">Belum ada blog yang dibuat</h5>
-                                        <p class="text-muted">Semua blog yang baru dibuat akan ditampilkan di sini.</p>
-                                    </div>
-                            <?php endif; ?>
-                            
-
-                    </div>
-                </div>
-                <div class="col-12 mt-5">
-                    <div class="d-flex flex-column flex-md-row justify-content-center justify-content-md-between align-items-center text-center text-md-start gap-2">
-                        <small class="text-muted">
-                            Menampilkan <?= $start ?>–<?= $end ?> blog dari total <?= $total ?> blog
-                        </small>
-                        <div>
-                            <?= $pagination ?>
+                        <div class="form-group mb-0 mt-2 mx-2">
+                            <h4 class="mb-2"><?= $blog['title'] ?></h4>
                         </div>
                     </div>
                 </div>
+                <div class="card p-0 border-radius-5 w-100" style="max-width: 700px;">
+                        <div class="form-group mt-2 mx-2">
+                            <div class="ck-content">
+                                <?= $blog['content'] ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             </div>
         </div>

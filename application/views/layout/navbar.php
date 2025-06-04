@@ -2,10 +2,11 @@
     <div class="iq-navbar-custom">
         <nav class="navbar navbar-expand-lg navbar-light p-0">
             <div class="iq-navbar-logo d-flex align-items-center justify-content-between">
-                <i class="ri-menu-line wrapper-menu"></i>
+                <?php if ($this->router->fetch_method() != 'order') : ?>
+                    <i class="ri-menu-line wrapper-menu"></i>
+                <?php endif; ?>
                 <a href="<?= base_url('') ?>" class="header-logo">
                     <h4 class="logo-title text-uppercase"><?= get_website_name() ?></h4>
-
                 </a>
             </div>
             <div class="navbar-breadcrumb">

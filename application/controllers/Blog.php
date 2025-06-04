@@ -8,16 +8,114 @@ class Blog extends CI_Controller {
         parent::__construct();
         // $this->load->model('Blog_model');
         $this->load->library('form_validation');
-        is_logged_in();
+        
     }
 
     public function index()
     {
-        redirect('blog/blog_list');
+        $data['title'] = 'Blog';
+        $user_id = $this->session->userdata('user_id');
+        $data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
+
+        $data['errors'] = $this->session->flashdata('errors') ?? [];
+        $data['old'] = $this->session->flashdata('old') ?? [];
+
+        $data['has_sidebar'] = false;
+
+        $keyword = $this->input->get('q');
+        $this->db->from('blog');
+        $this->db->where('status', 'approved');
+        if (!empty($keyword)) {
+            $this->db->like('title', $keyword);
+        }
+        $total_rows = $this->db->count_all_results();
+
+        $this->load->library('pagination');
+        $config['base_url'] = base_url('blog/index');
+        $config['total_rows'] = $total_rows;
+        $config['per_page'] = 36;
+        $config['page_query_string'] = TRUE;
+        $config['query_string_segment'] = 'page';
+        $config['reuse_query_string'] = TRUE;
+
+		$config['use_page_numbers'] = TRUE;
+		$config['full_tag_open']   = '<ul class="pagination">';
+		$config['full_tag_close']  = '</ul>';
+		$config['first_link']      = 'First';
+		$config['first_tag_open']  = '<li class="page-item">';
+		$config['first_tag_close'] = '</li>';
+		$config['last_link']       = 'Last';
+		$config['last_tag_open']   = '<li class="page-item">';
+		$config['last_tag_close']  = '</li>';
+		$config['next_link']       = 'Next';
+		$config['next_tag_open']   = '<li class="page-item">';
+		$config['next_tag_close']  = '</li>';
+		$config['prev_link']       = 'Previous';
+		$config['prev_tag_open']   = '<li class="page-item">';
+		$config['prev_tag_close']  = '</li>';
+		$config['cur_tag_open']    = '<li class="page-item active"><a class="page-link" href="#">';
+		$config['cur_tag_close']   = ' <span class="sr-only">(current)</span></a></li>';
+		$config['num_tag_open']    = '<li class="page-item">';
+		$config['num_tag_close']   = '</li>';
+		$config['attributes'] = ['class' => 'page-link'];
+
+        $this->pagination->initialize($config);
+
+        $limit = $config['per_page'];
+        $start = $this->input->get('page');
+        $start = ($start) ? $start : 0;
+
+        $this->db->from('blog');
+        $this->db->where('status', 'approved');
+        if (!empty($keyword)) {
+            $this->db->like('title', $keyword);
+        }
+        $this->db->order_by('blog_id', 'DESC');
+        $this->db->limit($limit, $start);
+        $data['blogs'] = $this->db->get()->result_array();
+
+        $data['pagination'] = $this->pagination->create_links();
+        $data['total'] = $total_rows;
+        $data['start'] = $start + 1;
+        $data['end'] = min($start + $limit, $total_rows);
+        $data['keyword'] = $keyword;
+
+        $this->load->view('blog/index', $data);
+        $this->load->view('layout/alert');
     }
+
+    public function view_blog($slug = null)
+	{
+		if (empty($slug)) {
+			$this->session->set_flashdata('error', 'Gagal mengakses halaman, Blog ID tidak ada.');
+			redirect("blog/pending_blog");
+		}
+
+		$blog = $this->db->get_where('blog', ['slug' => $slug])->row_array();
+		if (!$blog) {
+			$this->session->set_flashdata('error', 'Gagal mengakses halaman, Blog ID tidak ada.');
+			redirect("blog/pending_blog");
+		}
+
+		$data['blog'] = $blog;
+        $data['user_info'] = $this->db->get_where('user', ['id' => $blog['user_id']])->row_array();
+
+
+		$data['title'] = $blog['title'];
+
+		$data['errors'] = $this->session->flashdata('errors') ?? [];
+        $data['old'] = $this->session->flashdata('old') ?? [];
+
+        $data['has_sidebar'] = false;
+		$this->load->view('blog/view_blog', $data);
+        $this->load->view('layout/alert');
+	}
+
 
     public function blog_list()
     {
+        is_logged_in();
+
         $data['title'] = 'Blog';
         $user_id = $this->session->userdata('user_id');
         $data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
@@ -33,13 +131,14 @@ class Blog extends CI_Controller {
         $this->load->view('layout/header', $data);
 		$this->load->view('layout/navbar', $data);
 		$this->load->view('layout/sidebar', $data);
-		$this->load->view('blog/index', $data);
+		$this->load->view('blog/blog_list', $data);
 		$this->load->view('layout/alert');
 		$this->load->view('layout/footer');
     }
 
     public function blog_management()
 	{
+        is_logged_in();
         check_access(['2']);
 
 		$user_id = $this->session->userdata('user_id');
@@ -63,6 +162,8 @@ class Blog extends CI_Controller {
 
     public function bulk_delete_blog()
     {
+        is_logged_in();
+
         $redirect     = $this->input->server('HTTP_REFERER') ?? base_url('blog/blog_management');
         $bulkIdsJson  = $this->input->post('delete_blog_ids_bulk');
         $singleId     = $this->input->post('blog_id');
@@ -148,6 +249,7 @@ class Blog extends CI_Controller {
 
     public function ubah_status_blog()
 	{
+        is_logged_in();
         check_access(['2']);
 
 		$redirect = $this->input->server('HTTP_REFERER') ?? base_url('blog/blog_management');
@@ -217,6 +319,7 @@ class Blog extends CI_Controller {
 
     public function pending_blog()
     {
+        is_logged_in();
         check_access(['2']);
 
         $data['title'] = 'All Pending Blog';
@@ -321,6 +424,7 @@ class Blog extends CI_Controller {
 
     public function pending_blog_detail($slug = null)
 	{
+        is_logged_in();
         check_access(['2']);
         
 		if (empty($slug)) {
@@ -355,6 +459,7 @@ class Blog extends CI_Controller {
 
     public function submit_blog_status($encrypted_blog_id = null)
 	{
+        is_logged_in();
         check_access(['2']);
 
         $redirect = $this->input->server('HTTP_REFERER') ?? base_url('default-url');
@@ -404,7 +509,7 @@ class Blog extends CI_Controller {
                     'reason_rejected' => $status === 'rejected' ? $this->input->post('reason_rejected', TRUE) : null,
 
                     'date_published' => date('Y-m-d H:i:s'),
-                    'is_edited' => 0,
+                    // 'is_edited' => 0,
                 ];
                 $this->db->update('blog', $data, ['blog_id' => $blog_id]);
                 $this->session->set_flashdata('success', 'Berhasil merubah status blog.');
@@ -417,6 +522,7 @@ class Blog extends CI_Controller {
 
     public function new_blog()
     {
+        is_logged_in();
 
         if ($this->input->method() === 'post') {
             $this->form_validation->set_rules('title', 'Title', 'required|trim', [
@@ -501,6 +607,7 @@ class Blog extends CI_Controller {
 
     public function edit_blog($encrypted_blog_id = null)
     {
+        is_logged_in();
         $redirect = $this->input->server('HTTP_REFERER') ?? base_url('default-url');
 
         // $encrypted_blog_id = $this->input->post('blog_id');
@@ -646,6 +753,7 @@ class Blog extends CI_Controller {
 
     public function delete_blog()
     {
+        is_logged_in();
         $redirect = $this->input->server('HTTP_REFERER') ?? base_url('default-url');
         $encrypted_blog_id = $this->input->post('blog_id');
         if (!$encrypted_blog_id) {
