@@ -14,8 +14,13 @@ class Blog extends CI_Controller {
     public function index()
     {
         $data['title'] = 'Blog';
-        $user_id = $this->session->userdata('user_id');
-        $data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
+        if ($this->session->userdata('user_id')) {
+			$user_id = $this->session->userdata('user_id');
+
+			$user = $this->db->get_where('user', ['id' => $user_id])->row_array();
+			$data['user'] = $user;
+			$data['role_id'] = $user['role_id'];
+		}
 
         $data['errors'] = $this->session->flashdata('errors') ?? [];
         $data['old'] = $this->session->flashdata('old') ?? [];
@@ -86,6 +91,14 @@ class Blog extends CI_Controller {
 
     public function view_blog($slug = null)
 	{
+        if ($this->session->userdata('user_id')) {
+			$user_id = $this->session->userdata('user_id');
+
+			$user = $this->db->get_where('user', ['id' => $user_id])->row_array();
+			$data['user'] = $user;
+			$data['role_id'] = $user['role_id'];
+		}
+
 		if (empty($slug)) {
 			$this->session->set_flashdata('error', 'Gagal mengakses halaman, Blog ID tidak ada.');
 			redirect("blog/pending_blog");
@@ -97,8 +110,22 @@ class Blog extends CI_Controller {
 			redirect("blog/pending_blog");
 		}
 
+        if ($blog['status'] == 'pending' || $blog['status'] == 'rejected') {
+            if ($blog['user_id'] != $user_id) {
+                $this->session->set_flashdata('error', 'Blog ini belum bisa di akses oleh publik, harap login terlebih dahulu!');
+                redirect('blog');
+            }
+        }
+
 		$data['blog'] = $blog;
         $data['user_info'] = $this->db->get_where('user', ['id' => $blog['user_id']])->row_array();
+
+        // Ambil 4 blog approved, kecuali yang sedang dibuka
+        $this->db->where('status', 'approved');
+        $this->db->where('blog_id !=', $blog['blog_id']);
+        $this->db->order_by('blog_id', 'DESC');
+        $this->db->limit(4);
+        $data['blogs'] = $this->db->get('blog')->result_array();
 
 
 		$data['title'] = $blog['title'];
@@ -116,6 +143,7 @@ class Blog extends CI_Controller {
     {
         is_logged_in();
 
+        
         $data['title'] = 'Blog';
         $user_id = $this->session->userdata('user_id');
         $data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
@@ -578,11 +606,11 @@ class Blog extends CI_Controller {
                 }
                 $this->db->insert('blog', $data);
 
-                $this->db->trans_complete();
-
+                
                 $this->session->set_flashdata('blog_status', 'new');
-                $this->session->set_flashdata('blog_id', $blog_id = $this->db->insert_id());
+                $this->session->set_flashdata('blog_id', $this->db->insert_id());
                 $this->session->set_flashdata('success', 'Berhasil membuat blog baru.');
+                $this->db->trans_complete();
                 redirect('blog/blog_submit_success');
 			}
         }
@@ -690,11 +718,11 @@ class Blog extends CI_Controller {
                 }
                 $this->db->update('blog', $data, ['blog_id' => $blog_id]);
 
-                $this->db->trans_complete();
-
+                
                 $this->session->set_flashdata('blog_status', 'edit');
                 $this->session->set_flashdata('blog_id', $blog['blog_id']);
                 $this->session->set_flashdata('success', 'Berhasil melakukan perubahan pada blog.');
+                $this->db->trans_complete();
                 redirect('blog/blog_submit_success');
 			}
         }
@@ -725,7 +753,7 @@ class Blog extends CI_Controller {
 		
 		$blog_id = $this->session->flashdata('blog_id');
 		// $blog_id = 6;
-		$blog_status = $this->session->flashdata('blog');
+		$blog_status = $this->session->flashdata('blog_status');
 		// $blog_status = 'new';
 		$user_id = $this->session->userdata('user_id');
 

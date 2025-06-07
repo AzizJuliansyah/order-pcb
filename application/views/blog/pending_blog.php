@@ -10,7 +10,7 @@
 
 <div class="wrapper">
     <div class="content-page">
-        <div class="container-fluid">
+        <div class="container-fluid">   
             <div class="row">
                     <div class="col-lg-12">
                         <div class="card bottom-right shadow-showcase">
@@ -59,6 +59,8 @@
                             </div>
                         </div>
                     </div>
+            </div>
+            <div class="col-12">
                 <div id="grid" class="item-content animate__animated animate__fadeIn active" data-toggle-extra="tab-content">
                     <div class="row">
                         <?php if (!empty($blogs)): ?>
@@ -130,6 +132,8 @@
 
                     </div>
                 </div>
+            </div>
+            <div class="col-12">
                 <div id="list" class="item-content animate__animated animate__fadeIn" data-toggle-extra="tab-content">
                     <?php if (!empty($blogs)): ?>
                         <div class="table-responsive rounded bg-white mb-4">
@@ -185,9 +189,12 @@
                         </div>
                     <?php endif; ?>
                 </div>
+            </div>
+            <div class="col-12">
                 <div class="d-flex justify-content-center mt-4">
                     <?= $pagination_links ?>
                 </div>
+            </div>
         </div>
     </div>
 </div>

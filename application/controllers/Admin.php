@@ -112,6 +112,9 @@ class Admin extends CI_Controller {
 
 		$data['last_order'] = $last_order;
 
+		$settings = $this->db->get_where('settings', ['settings_id' => 7])->row_array();
+        $data['background'] = json_decode($settings['item'], true);
+        $data['background_dipakai'] = $settings['background_dipakai'];
 
 		// --- Load Views ---
 		$this->load->view('layout/header', $data);

@@ -87,6 +87,10 @@ class Superadmin extends CI_Controller {
 
         $data['global_user_stats'] = $global_query->row_array();
 
+        $settings = $this->db->get_where('settings', ['settings_id' => 7])->row_array();
+        $data['background'] = json_decode($settings['item'], true);
+        $data['background_dipakai'] = $settings['background_dipakai'];
+
         $this->load->view('layout/header', $data);
         $this->load->view('layout/navbar', $data);
         $this->load->view('layout/sidebar', $data);

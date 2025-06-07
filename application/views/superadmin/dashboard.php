@@ -1,5 +1,28 @@
 <!-- Wrapper Start -->
-<div class="wrapper">
+<style>
+.dashboard-wrapper::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    <?php if ($background_dipakai === 'color'): ?>
+        background: <?= $background['color'] ?>;
+    <?php elseif ($background_dipakai === 'gradient'): ?>
+        background: <?= $background['gradient'] ?>;
+    <?php elseif ($background_dipakai === 'image'): ?>
+        background-image: url('<?= base_url('public/' . $background['image']) ?>');
+    <?php endif; ?>
+}
+</style>
+
+
+<div class="wrapper dashboard-wrapper">
     <div class="content-page">
         <div class="container-fluid">
             <div class="row m-sm-0">

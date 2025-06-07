@@ -91,6 +91,40 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
+        .ck-content img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+        .readable-text {
+            font-size: 3rem; /* Ukuran agak besar */
+            font-weight: 600; /* Sedikit bold untuk keterbacaan */
+            color: #ffffff; /* Warna putih sebagai default */
+            text-shadow: 
+                2px 2px 4px rgba(0, 0, 0, 0.8),
+                -1px -1px 2px rgba(0, 0, 0, 0.5),
+                1px -1px 2px rgba(0, 0, 0, 0.5),
+                -1px 1px 2px rgba(0, 0, 0, 0.5);
+            /* background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.1) 0%, 
+                rgba(0, 0, 0, 0.1) 100%); */
+            backdrop-filter: blur(2px);
+            padding: 8px 12px;
+            border-radius: 6px;
+            /* border: 1px solid rgba(255, 255, 255, 0.2); */
+            line-height: 1.4;
+        }
+        @media (max-width: 576px) {
+            .recommend-blog-section {
+                margin: 30px 20px;
+            }
+        }
+        @media (min-width: 576px) {
+            .recommend-blog-section {
+                margin: 50px 80px;
+            }
+        }
     </style>
 
 </head>
@@ -227,35 +261,83 @@ $has_sidebar = isset($has_sidebar) ? $has_sidebar : true;
 
     <!-- Wrapper Start -->
     <div class="wrapper">
-        <div class="content-page">
-            <div class="container-fluid">
-            <div class="d-flex flex-column align-items-center mb-5">
-                <div class="card p-0 border-radius-5 mb-0 mb-1 w-100" style="max-width: 700px;">
-                    <div class="card-header border-bottom-0 p-0">
-                        <div class="text-center">
-                            <?php if ($blog['thumbnail'] && file_exists('public/' . $blog['thumbnail'])) { ?>
-                                <img src="<?= base_url('public/' . $blog['thumbnail']) ?>" alt="Thumbnail" class="img-fluid">
-                            <?php } else { ?>
-                                <span class="text-muted">No Thumbnail</span>
-                            <?php } ?>
-                        </div>
-                        <div class="form-group mb-0 mt-2 mx-2">
-                            <h4 class="mb-2"><?= $blog['title'] ?></h4>
-                        </div>
-                    </div>
-                </div>
-                <div class="card p-0 border-radius-5 w-100" style="max-width: 700px;">
-                        <div class="form-group mt-2 mx-2">
-                            <div class="ck-content">
-                                <?= $blog['content'] ?>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="text-center" style="position: relative; width: 100%; height: 300px; overflow: hidden;">
+            <?php if ($blog['thumbnail'] && file_exists('public/' . $blog['thumbnail'])) { ?>
+                <img src="<?= base_url('public/' . $blog['thumbnail']) ?>" alt="Thumbnail"
+                    style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                <div style="
+                    position: absolute;
+                    top: 0; left: 0; right: 0; bottom: 0;
+                    background: rgba(0, 0, 0, 0.2);
+                "></div>
+            <?php } else { ?>
+                <span class="text-muted">No Thumbnail</span>
+            <?php } ?>
+        </div>
 
+
+        <div class="d-flex justify-content-center">
+            <div style="max-width: 700px; width: 100%;">
+                <div class="mb-4 mx-1" style="z-index: 1; position: relative;">
+                    <span class="readable-text text-left"><?= $blog['title'] ?></span>
+                    <div class="d-flex justify-content-start">
+                        <div class="form-group mr-3">
+                        <img src="<?= base_url('public/' . ($user_info['foto'] ?? 'local_assets/images/user_default.png')) ?>" 
+                            class="logo-invoice img-fluid" alt="profile-image">
+                        </div>
+                        <div class="form-group">
+                        <h6 class="text-dark"><?= $user_info['nama'] ?></h6>
+                        <small><?= $user_info['email'] ?></small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Konten Blog -->
+                <div class="card p-0 border-radius-5 w-100">
+                    <div class="form-group mt-2 mx-2">
+                        <div class="ck-content">
+                        <?= $blog['content'] ?>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+
+        <div class="recommend-blog-section">
+            <h5 class="text-center mb-4">Rekomendasi Blog</h5>
+            <div class="d-flex justify-content-center">
+                <div class="row">
+                    <?php foreach ($blogs as $i => $item): ?>
+
+                        <div class="col-6 col-lg-3 p-0">
+                            <div class="card m-1">
+                                <div class="card-body p-0">
+                                    <div class="text-center">
+                                        <img src="<?= !empty($item['thumbnail']) ? base_url('public/' . $item['thumbnail']) : base_url('public/local_assets/images/notfound_image.png') ?>" alt="Thumbnail" class="img-fluid rounded-top">
+                                    </div>
+                                    <div class="p-2">
+                                        <a href="<?= base_url('blog/view_blog/' . $item['slug']) ?>">
+                                            <h6 class="mobile-truncate-3"><?= htmlspecialchars($item['title']) ?></h6>
+                                        </a>
+                                        <div class="d-flex justify-content-end mt-2">
+                                            <a href="<?= base_url('blog/view_blog/' . $item['slug']) ?>" class="btn btn-sm bg-primary-light d-flex align-items-center font-size-12 mr-2">
+                                                <span class="text-primary font-size-12 mr-1">View</span>
+                                                <i class="las la-angle-right font-size-14 text-primary mr-0"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <div class="text-left">
+                <a href="<?= base_url('blog') ?>" class="view-all-link">Lihat semua daftar blog</a>
+            </div>
+        </div>
+
+
     </div>
     <!-- Wrapper End-->
 
@@ -292,8 +374,8 @@ $has_sidebar = isset($has_sidebar) ? $has_sidebar : true;
                 <div class="row">
                     <div class="col-lg-6">
                         <ul class="list-inline mb-0">
-                            <li class="list-inline-item"><a href="../backend/privacy-policy.html">Privacy Policy</a></li>
-                            <li class="list-inline-item"><a href="../backend/terms-of-service.html">Terms of Use</a></li>
+                            <li class="list-inline-item"><a href="#">Privacy Policy</a></li>
+                            <li class="list-inline-item"><a href="#">Terms of Use</a></li>
                         </ul>
                     </div>
                     <div class="col-lg-6 text-right">

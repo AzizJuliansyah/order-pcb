@@ -241,7 +241,7 @@
                                <h6><?= $user_info['nama'] ?></h6>
                                <small><?= $user_info['email'] ?></small>
                             </div>
-                         </div>
+                        </div>
 
                          <?= form_open('blog/submit_blog_status/' . encrypt_id($blog['blog_id'])) ?>
                          <div class="form-group">
@@ -272,9 +272,7 @@
 
                         <div class="form-group" id="reason-group" style="display: none;">
                             <label for="reason">Alasan Penolakan:</label>
-                            <textarea class="form-control <?= !empty($errors['reason_rejected']) ? 'is-invalid' : '' ?>" name="reason_rejected" id="reason" rows="3">
-                            <?= (isset($old['reason_rejected'])) ? $old['reason_rejected'] : $blog['reason_rejected'] ?>
-                            </textarea>
+                            <textarea class="form-control <?= !empty($errors['reason_rejected']) ? 'is-invalid' : '' ?>" name="reason_rejected" id="reason" rows="3"><?= (isset($old['reason_rejected'])) ? $old['reason_rejected'] : $blog['reason_rejected'] ?></textarea>
                             <?php if (!empty($errors['reason_rejected'])): ?>
                                 <div class="invalid-feedback"><?= $errors['reason_rejected'] ?></div>
                             <?php endif; ?>

@@ -50,7 +50,7 @@
                                                     <div class="text-right">
                                                         <div class="form-group m-1">
                                                             <button type="button" class="btn btn-sm bg-primary" data-toggle="modal" data-target="#ubahStatusOrderBulk" onclick="tampilkanStatusTerpilih()">
-                                                                Ubah Status Order
+                                                                Ubah Status Blog
                                                             </button>
 
                                                         </div>

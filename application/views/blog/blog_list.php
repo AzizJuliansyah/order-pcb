@@ -20,7 +20,7 @@
                             </div>
                             <div class="d-flex align-items-center">
                                 <div class="form-group mb-0 mr-2">
-                                    <a href="#" class="btn btn-sm bg-info-light d-flex align-items-center">
+                                    <a href="<?= base_url('blog') ?>" class="btn btn-sm bg-info-light d-flex align-items-center">
                                         <span class="d-none d-md-block">See all Blogs</span>
                                         <i class="las la-eye font-size-20 ml-1"></i>
                                     </a>

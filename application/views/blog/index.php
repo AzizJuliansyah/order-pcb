@@ -238,6 +238,8 @@ $has_sidebar = isset($has_sidebar) ? $has_sidebar : true;
                             </div>
                         </div>
                     </form>
+                    <h5>Artikel Terbaru & Informasi Terkini</h5>
+                    <p class="text-muted">Kami menghadirkan kumpulan blog yang memuat wawasan, panduan, dan kabar terbaru untuk Anda. Silakan telusuri blog-blog pilihan berikut.</p>
                 </div>
                 <div class="col-12 mx-1">
                     <div id="grid" class="item-content animate__animated animate__fadeIn active" data-toggle-extra="tab-content">
@@ -327,8 +329,8 @@ $has_sidebar = isset($has_sidebar) ? $has_sidebar : true;
                 <div class="row">
                     <div class="col-lg-6">
                         <ul class="list-inline mb-0">
-                            <li class="list-inline-item"><a href="../backend/privacy-policy.html">Privacy Policy</a></li>
-                            <li class="list-inline-item"><a href="../backend/terms-of-service.html">Terms of Use</a></li>
+                            <li class="list-inline-item"><a href="#">Privacy Policy</a></li>
+                            <li class="list-inline-item"><a href="#">Terms of Use</a></li>
                         </ul>
                     </div>
                     <div class="col-lg-6 text-right">

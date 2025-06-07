@@ -1009,7 +1009,7 @@ $has_sidebar = isset($has_sidebar) ? $has_sidebar : true;
                                 <p class="section-subtitle fade-in">Pilih paket yang sesuai dengan kebutuhan proyek Anda</p>
                                 
                                 <div class="row justify-content-center">
-                                    <div class="col-lg-4 col-md-6 mb-4">
+                                    <div class="col-lg-4 col-md-6 mb-2">
                                         <div class="pricing-card fade-in">
                                             <h3>PCB Basic</h3>
                                             <div class="price">Rp 50K<span class="price-unit">/pcs</span></div>
@@ -1024,7 +1024,7 @@ $has_sidebar = isset($has_sidebar) ? $has_sidebar : true;
                                         </div>
                                     </div>
                                     
-                                    <div class="col-lg-4 col-md-6 mb-4">
+                                    <div class="col-lg-4 col-md-6 mb-5">
                                         <div class="pricing-card featured fade-in">
                                             <h3>PCB Professional</h3>
                                             <div class="price">Rp 120K<span class="price-unit">/pcs</span></div>
@@ -1040,7 +1040,7 @@ $has_sidebar = isset($has_sidebar) ? $has_sidebar : true;
                                         </div>
                                     </div>
                                     
-                                    <div class="col-lg-4 col-md-6 mb-4">
+                                    <div class="col-lg-4 col-md-6 mb-2">
                                         <div class="pricing-card fade-in">
                                             <h3>CNC Machining</h3>
                                             <div class="price">Rp 200K<span class="price-unit">/jam</span></div>
@@ -1138,9 +1138,9 @@ $has_sidebar = isset($has_sidebar) ? $has_sidebar : true;
                                             <?php foreach ($blogs as $i => $item): ?>
                                                 <?php if ($i % 8 === 0): ?>
                                                     <?php if ($i > 0): ?>
-                                                        </div> <!-- Tutup slide sebelumnya -->
+                                                        </div> 
                                                     <?php endif; ?>
-                                                    <div class="slide d-flex flex-wrap"> <!-- Buka slide baru -->
+                                                    <div class="slide d-flex flex-wrap">
                                                 <?php endif; ?>
 
                                                 <div class="blog-card col-6 col-lg-3 p-0">
@@ -1165,7 +1165,7 @@ $has_sidebar = isset($has_sidebar) ? $has_sidebar : true;
                                                 </div>
 
                                                 <?php if ($i === count($blogs) - 1): ?>
-                                                    </div> <!-- Tutup slide terakhir -->
+                                                    </div>
                                                 <?php endif; ?>
                                             <?php endforeach; ?>
                                         </div>
@@ -1237,7 +1237,6 @@ $has_sidebar = isset($has_sidebar) ? $has_sidebar : true;
         window.addEventListener('scroll', checkFadeIn);
         window.addEventListener('load', checkFadeIn);
 
-        // Smooth scrolling for CTA button
         document.querySelector('.cta-button').addEventListener('click', function(e) {
             e.preventDefault();
             document.querySelector('#pricing').scrollIntoView({
@@ -1255,7 +1254,7 @@ $has_sidebar = isset($has_sidebar) ? $has_sidebar : true;
                 this.totalBlogs = document.getElementById('totalBlogs');
                 
                 this.currentSlide = 0;
-                this.itemsPerSlide = 8; // Always 8 items per slide
+                this.itemsPerSlide = 8;
                 this.totalItems = document.querySelectorAll('.blog-card').length;
                 this.totalSlides = Math.ceil(this.totalItems / this.itemsPerSlide);
                 
@@ -1308,7 +1307,6 @@ $has_sidebar = isset($has_sidebar) ? $has_sidebar : true;
             }
         }
         
-        // Initialize slider when DOM is loaded
         document.addEventListener('DOMContentLoaded', function() {
             new BlogSlider();
         });
@@ -1326,8 +1324,8 @@ $has_sidebar = isset($has_sidebar) ? $has_sidebar : true;
                 <div class="row">
                     <div class="col-lg-6">
                         <ul class="list-inline mb-0">
-                            <li class="list-inline-item"><a href="../backend/privacy-policy.html">Privacy Policy</a></li>
-                            <li class="list-inline-item"><a href="../backend/terms-of-service.html">Terms of Use</a></li>
+                            <li class="list-inline-item"><a href="#">Privacy Policy</a></li>
+                            <li class="list-inline-item"><a href="#">Terms of Use</a></li>
                         </ul>
                     </div>
                     <div class="col-lg-6 text-right">

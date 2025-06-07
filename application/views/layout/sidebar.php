@@ -196,7 +196,7 @@
                                     <i class="las la-minus"></i><span>Blog Management</span>
                                 </a>
                             </li>
-                            <li class="<?= set_active(['pending_blog'], 'active', 2) ?>">
+                            <li class="<?= set_active(['pending_blog'], 'active', 2) ?> <?= set_active_with_from('pending_blog_detail', 'pending_blog') ?>">
                                 <a href="<?= base_url('blog/pending_blog') ?>">
                                     <i class="las la-minus"></i><span>Blog Pending</span>
                                 </a>
