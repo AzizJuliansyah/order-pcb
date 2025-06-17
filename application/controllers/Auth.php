@@ -8,7 +8,7 @@ class Auth extends CI_Controller {
         parent::__construct();
 		
 		date_default_timezone_set('Asia/Jakarta');
-
+		require_once APPPATH . '../vendor/autoload.php';
 
         $this->load->model('User_model');
         $this->load->library('form_validation');
@@ -22,6 +22,11 @@ class Auth extends CI_Controller {
 	public function login()
 	{
 		is_guest_redirect();
+
+		$data['old']    = $this->session->flashdata('old') ?? [];
+		$data['errors'] = $this->session->flashdata('errors') ?? [];
+
+		$data['title'] = 'Login Page';
 
 		if ($this->input->method() === 'post') {
 			$this->form_validation->set_rules('email', 'Email', 'required|valid_email|trim', [
@@ -44,7 +49,6 @@ class Auth extends CI_Controller {
 			} else {
 				$email = $this->input->post('email', TRUE);
 				$password = $this->input->post('password', TRUE);
-
 				$user = $this->db->get_where('user', ['email' => $email])->row_array();
 
 				if ($user) {
@@ -101,11 +105,7 @@ class Auth extends CI_Controller {
 				}
 			}
 		}
-
-		$data['old']    = $this->session->flashdata('old') ?? [];
-		$data['errors'] = $this->session->flashdata('errors') ?? [];
-
-		$data['title'] = 'Login Page';
+		
 		$this->load->view('layout/header', $data);
 		$this->load->view('layout/alert');
 		$this->load->view('auth/login', $data);
@@ -116,8 +116,6 @@ class Auth extends CI_Controller {
 	{
 		$google_id = $this->db->get_where('settings', ['id' => '1'])->row_array()['item'];
 		$google_secret = $this->db->get_where('settings', ['id' => '2'])->row_array()['item'];
-
-		require_once APPPATH . '../vendor/autoload.php';
 
 		$client = new Google_Client();
 		$client->setClientId($google_id);
@@ -136,8 +134,6 @@ class Auth extends CI_Controller {
 		$google_id = $this->db->get_where('settings', ['id' => '1'])->row_array()['item'];
 		$google_secret = $this->db->get_where('settings', ['id' => '2'])->row_array()['item'];
 
-		require_once APPPATH . '../vendor/autoload.php';
-
 		$client = new Google_Client();
 		$client->setClientId($google_id);
 		$client->setClientSecret($google_secret);
@@ -149,10 +145,8 @@ class Auth extends CI_Controller {
 
 			$oauth = new Google_Service_Oauth2($client);
 			$userinfo = $oauth->userinfo->get();
-
 			$email = $userinfo->email;
 			$name = $userinfo->name;
-
 			$user = $this->db->get_where('user', ['email' => $email])->row_array();
 
 			if ($user) {
@@ -188,13 +182,14 @@ class Auth extends CI_Controller {
 		}
 	}
 
-
-
-
-
 	public function register()
 	{
 		is_guest_redirect();
+
+		$data['old'] = $this->session->flashdata('old') ?? [];
+		$data['errors'] = $this->session->flashdata('errors') ?? [];
+
+		$data['title'] = 'Register Page';
 
 		if ($this->input->method() === 'post') {
 			$this->form_validation->set_rules('nama', 'Nama', 'required|trim', [
@@ -246,11 +241,7 @@ class Auth extends CI_Controller {
 				redirect('auth/login');
 			}
 		}
-	
-		$data['old'] = $this->session->flashdata('old') ?? [];
-		$data['errors'] = $this->session->flashdata('errors') ?? [];
-
-		$data['title'] = 'Register Page';
+		
 		$this->load->view('layout/header', $data);
 		$this->load->view('layout/alert');
 		$this->load->view('auth/register', $data);
@@ -270,6 +261,17 @@ class Auth extends CI_Controller {
 	public function forgot_password()
 	{
 		is_guest_redirect();
+		
+		if ($this->session->userdata('user_id')) {
+			$user_id = $this->session->userdata('user_id');
+			$data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
+			$data['role'] = $this->User_model->get_user_with_role($user_id);
+		}
+		
+		$data['old']    = $this->session->flashdata('old') ?? [];
+		$data['errors'] = $this->session->flashdata('errors') ?? [];
+
+		$data['title'] = 'Forgot Password';
 
 		if ($this->input->method() === 'post') {
 			$this->form_validation->set_rules('email', 'Email', 'required|valid_email|trim', [
@@ -287,11 +289,9 @@ class Auth extends CI_Controller {
 				redirect('auth/forgot_password');
 			} else {
 				$email = $this->input->post('email', TRUE);
-
 				$user = $this->db->get_where('user', ['email' => $email])->row_array();
 
 				if ($user) {
-
 					$token = bin2hex(random_bytes(50));
 
 					$this->db->delete('password_resets', ['email' => $email]);
@@ -301,10 +301,7 @@ class Auth extends CI_Controller {
 					]);
 
 					$reset_link = base_url("auth/reset_password/$token");
-
 					$this->_sendEmail($email, $reset_link);
-
-
 					redirect('auth/forgot_password');
 				} else {
 					$this->session->set_flashdata('old', [
@@ -317,19 +314,8 @@ class Auth extends CI_Controller {
 				}
 			}
 		}
-
-		if ($this->session->userdata('user_id')) {
-			$user_id = $this->session->userdata('user_id');
-			$data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
-			$data['role'] = $this->User_model->get_user_with_role($user_id);
-		}
-
-		$data['title'] = 'Forgot Password';
+		
 		$data['has_sidebar'] = false;
-
-		$data['old']    = $this->session->flashdata('old') ?? [];
-		$data['errors'] = $this->session->flashdata('errors') ?? [];
-
 		$this->load->view('layout/header', $data);
 		$this->load->view('auth/forgot_password', $data);
 		$this->load->view('layout/alert');
@@ -464,17 +450,6 @@ class Auth extends CI_Controller {
 			$this->session->set_flashdata('error', 'Token reset password tidak valid atau sudah kadaluarsa.');
 			redirect('auth/forgot_password');
 		}
-	}
-
-
-	public function reset_password1()
-	{
-		
-
-			$data['title'] = 'Reset Password';
-			$this->load->view('layout/header', $data);
-			$this->load->view('auth/reset_password', $data);
-			$this->load->view('layout/footer');
 	}
 
 }

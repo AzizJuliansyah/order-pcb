@@ -20,7 +20,7 @@
                         <?= form_open_multipart('blog/new_blog') ?>
                         <div class="card-header border-bottom-0 d-flex justify-content-between">
                             <div class="header-title">
-                                <h4 class="card-title d-flex align-items-center"><a href="<?= base_url('blog') ?>"><i class="las la-angle-left font-size-20 mr-3"></i></a> New Blog</h4>
+                                <h4 class="card-title d-flex align-items-center"><a href="<?= base_url('blog/blog_list') ?>"><i class="las la-angle-left font-size-20 mr-3"></i></a> New Blog</h4>
                             </div>
                             <div class="d-flex align-items-center">
                                 <div class="form-group mb-0 mr-2">

@@ -22,10 +22,10 @@ class Customer extends CI_Controller {
 		$user_id = $this->session->userdata('user_id');
 		$data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
 
-		$data['title'] = 'Customer Dashboard';
-
 		$data['errors'] = $this->session->flashdata('errors') ?? [];
 		$data['old'] = $this->session->flashdata('old') ?? [];
+
+		$data['title'] = 'Customer Dashboard';
 		
         // --- 1. Payment Status Stats ---
 		$payment_statuses = [
@@ -34,7 +34,6 @@ class Customer extends CI_Controller {
 			'payment_success',
 			'payment_cancelled'
 		];
-
 		$payment_stats = [];
 		foreach ($payment_statuses as $status) {
 			$row = $this->db->query("
@@ -49,7 +48,6 @@ class Customer extends CI_Controller {
 
 			$payment_stats[$status] = $row;
 		}
-
 		$data['payment_stats'] = $payment_stats;
 
 		// --- 2. Order Status Stats ---
@@ -62,7 +60,6 @@ class Customer extends CI_Controller {
 			'order_refunded',
 			'order_failed'
 		];
-
 		$order_stats = [];
 		foreach ($order_statuses as $status) {
 			$row = $this->db->query("
@@ -77,7 +74,6 @@ class Customer extends CI_Controller {
 
 			$order_stats[$status] = $row;
 		}
-
 		$data['order_stats'] = $order_stats;
 
 		// --- 3. Global Order Stats ---
@@ -89,7 +85,6 @@ class Customer extends CI_Controller {
 			FROM orders
 			WHERE user_id = ?
 		", [$user_id])->row_array();
-
 		$data['global_order_stats'] = $global_orders;
 
 		// --- Recent Order Users ---
@@ -102,7 +97,6 @@ class Customer extends CI_Controller {
 			->limit(5)
 			->get()
 			->result_array();
-
 		$data['recent_order_users'] = $recent_order_users;
 
 		// --- 4. Last Order ---
@@ -112,11 +106,9 @@ class Customer extends CI_Controller {
 		$this->db->order_by('orders.date_created', 'DESC');
 		$this->db->limit(1);
 		$last_order = $this->db->get()->row_array();
-
 		$data['last_order'] = $last_order;
 
 		$shipping_status_list = [];
-
 		if (!empty($last_order['shipping_status'])) {
 			$shipping_status_list = json_decode($last_order['shipping_status'], true);
 			if (!is_array($shipping_status_list)) {
@@ -128,7 +120,7 @@ class Customer extends CI_Controller {
 		$settings = $this->db->get_where('settings', ['settings_id' => 7])->row_array();
         $data['background'] = json_decode($settings['item'], true);
         $data['background_dipakai'] = $settings['background_dipakai'];
-		// --- Load Views ---
+		
 		$this->load->view('layout/header', $data);
 		$this->load->view('layout/navbar', $data);
 		$this->load->view('layout/sidebar', $data);
@@ -142,11 +134,11 @@ class Customer extends CI_Controller {
     {
         $user_id = $this->session->userdata('user_id');
         $data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
+		
         $data['title'] = 'Order List Page';
 
         $payment_status = $this->input->post('payment_status');
         $order_status = $this->input->post('order_status');
-
         $dari = $this->input->post('dari');
         $sampai = $this->input->post('sampai');
 
@@ -155,7 +147,6 @@ class Customer extends CI_Controller {
 
         $limit = 9;
         $offset = ($page - 1) * $limit;
-
         $this->db->from('orders');
         $this->db->join('user', 'user.id = orders.user_id', 'left');
         $this->db->where('orders.user_id', $user_id);
@@ -168,7 +159,6 @@ class Customer extends CI_Controller {
         if (!empty($dari) && !empty($sampai) && strtotime($dari) && strtotime($sampai)) {
             $this->db->where("DATE(orders.date_created) BETWEEN '$dari' AND '$sampai'");
         }
-
         $total_rows = $this->db->count_all_results();
 
         $this->db->select('orders.*, user.nama, user.email, user.foto');
@@ -214,7 +204,6 @@ class Customer extends CI_Controller {
         $config['num_tag_open']    = '<li class="page-item">';
         $config['num_tag_close']   = '</li>';
         $config['attributes'] = ['class' => 'page-link'];
-
         $this->pagination->initialize($config);
         $data['pagination_links'] = $this->pagination->create_links();
 
@@ -234,6 +223,14 @@ class Customer extends CI_Controller {
 
     public function order_detail($encrypted_id = null)
 	{
+		$user_id = $this->session->userdata('user_id');
+		$data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
+		
+		$data['errors'] = $this->session->flashdata('errors') ?? [];
+        $data['old'] = $this->session->flashdata('old') ?? [];
+
+		$data['title'] = 'Order List Page';
+
 		if (empty($encrypted_id)) {
 			$this->session->set_flashdata('error', 'Gagal mengakses halaman, Order ID tidak ada.');
 			redirect("customer/history");
@@ -253,7 +250,6 @@ class Customer extends CI_Controller {
 
         $user_info = $this->db->get_where('user', ['id' => $order['user_id']])->row_array();
 		$user_id = $this->session->userdata('user_id');
-
 		if (!$user_info) {
 			$this->session->set_flashdata('error', 'Gagal mengunduh PDF, data user tidak ditemukan.');
 			redirect("customer/history");
@@ -264,7 +260,7 @@ class Customer extends CI_Controller {
 		}
 
 		$data['order'] = $order;
-
+		
 		$this->db->where('order_id', $order['order_id']);
 		$query = $this->db->get('order_items');
 		$order_items = $query->result();
@@ -273,7 +269,6 @@ class Customer extends CI_Controller {
 		$pcb_items = [];
 		$cnc_items = [];
 
-		// Pisahkan berdasarkan product_type
 		foreach ($order_items as $item) {
 			if ($item->product_type === 'pcb') {
 				$pcb_items[] = $item;
@@ -298,13 +293,6 @@ class Customer extends CI_Controller {
 		}
 		$data['shipping_status_list'] = $shipping_status_list;
 
-		$user_id = $this->session->userdata('user_id');
-		$data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
-		$data['title'] = 'Order List Page';
-
-		$data['errors'] = $this->session->flashdata('errors') ?? [];
-        $data['old'] = $this->session->flashdata('old') ?? [];
-
 		$this->load->view('layout/header', $data);
 		$this->load->view('layout/navbar', $data);
 		$this->load->view('layout/sidebar', $data);
@@ -317,7 +305,6 @@ class Customer extends CI_Controller {
 	public function approve_order()
     {
         $redirect = $this->input->server('HTTP_REFERER') ?? base_url('default-url');
-
 
         if ($this->input->method() === 'post') {
             $this->form_validation->set_rules('order_id', 'order_id', 'required|trim', [
@@ -372,13 +359,31 @@ class Customer extends CI_Controller {
 								'gross_amount' => $clean_total_price,
 							],
 							'customer_details' => [
-								'first_name'    => $shipping_info['nama'],
-								'phone'         => $shipping_info['nomor'],
+								'email'      => $shipping_info['email'],
+								'first_name' => $shipping_info['nama'],
+								'phone'      => $shipping_info['nomor'],
+								'shipping_address' => [
+									'first_name'   => $shipping_info['nama'],
+									'phone'        => $shipping_info['nomor'],
+									'email'        => $shipping_info['email'],
+									'address'      => $shipping_info['alamat_lengkap'] . ', ' . $shipping_info['kecamatan'] . ', ' . $shipping_info['kota'] . ', ' . $shipping_info['provinsi'] . ' ' . $shipping_info['kode_pos'],
+									'postal_code'  => $shipping_info['kode_pos'],
+									'city'         => $shipping_info['kota'],
+									'country_code' => 'IDN', // Indonesia
+								],
+								'billing_address' => [
+									'first_name'   => $shipping_info['nama'],
+									'phone'        => $shipping_info['nomor'],
+									'email'        => $shipping_info['email'],
+									'address'      => $shipping_info['alamat_lengkap'] . ', ' . $shipping_info['kecamatan'] . ', ' . $shipping_info['kota'] . ', ' . $shipping_info['provinsi'] . ' ' . $shipping_info['kode_pos'],
+									'postal_code'  => $shipping_info['kode_pos'],
+									'city'         => $shipping_info['kota'],
+									'country_code' => 'IDN',
+								],
 							],
-						];
-
+						];						
 						$snapToken = \Midtrans\Snap::getSnapToken($params);
-
+						
 						$data = [
 							'snap_token' => $snapToken,
 							'approved_price' => $approved_price,
@@ -391,12 +396,10 @@ class Customer extends CI_Controller {
 						];
 					}
 
-
 					$this->db->where('order_id', $order_id);
 					$this->db->update('orders', $data);
 					$this->session->set_flashdata('success', 'Berhasil memilih payment method.');
                 }
-
             redirect($redirect);
         } else {
             $this->session->set_flashdata('error', 'Err.');

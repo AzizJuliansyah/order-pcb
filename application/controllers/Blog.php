@@ -6,26 +6,23 @@ class Blog extends CI_Controller {
     public function __construct()
     {
         parent::__construct();
-        // $this->load->model('Blog_model');
         $this->load->library('form_validation');
         
     }
 
     public function index()
     {
-        $data['title'] = 'Blog';
         if ($this->session->userdata('user_id')) {
-			$user_id = $this->session->userdata('user_id');
-
+            $user_id = $this->session->userdata('user_id');
 			$user = $this->db->get_where('user', ['id' => $user_id])->row_array();
 			$data['user'] = $user;
 			$data['role_id'] = $user['role_id'];
 		}
-
+        
         $data['errors'] = $this->session->flashdata('errors') ?? [];
         $data['old'] = $this->session->flashdata('old') ?? [];
 
-        $data['has_sidebar'] = false;
+        $data['title'] = 'Blog';
 
         $keyword = $this->input->get('q');
         $this->db->from('blog');
@@ -42,7 +39,6 @@ class Blog extends CI_Controller {
         $config['page_query_string'] = TRUE;
         $config['query_string_segment'] = 'page';
         $config['reuse_query_string'] = TRUE;
-
 		$config['use_page_numbers'] = TRUE;
 		$config['full_tag_open']   = '<ul class="pagination">';
 		$config['full_tag_close']  = '</ul>';
@@ -63,7 +59,6 @@ class Blog extends CI_Controller {
 		$config['num_tag_open']    = '<li class="page-item">';
 		$config['num_tag_close']   = '</li>';
 		$config['attributes'] = ['class' => 'page-link'];
-
         $this->pagination->initialize($config);
 
         $limit = $config['per_page'];
@@ -75,16 +70,17 @@ class Blog extends CI_Controller {
         if (!empty($keyword)) {
             $this->db->like('title', $keyword);
         }
+
         $this->db->order_by('blog_id', 'DESC');
         $this->db->limit($limit, $start);
         $data['blogs'] = $this->db->get()->result_array();
-
         $data['pagination'] = $this->pagination->create_links();
         $data['total'] = $total_rows;
         $data['start'] = $start + 1;
         $data['end'] = min($start + $limit, $total_rows);
         $data['keyword'] = $keyword;
 
+        $data['has_sidebar'] = false;
         $this->load->view('blog/index', $data);
         $this->load->view('layout/alert');
     }
@@ -93,11 +89,15 @@ class Blog extends CI_Controller {
 	{
         if ($this->session->userdata('user_id')) {
 			$user_id = $this->session->userdata('user_id');
-
 			$user = $this->db->get_where('user', ['id' => $user_id])->row_array();
 			$data['user'] = $user;
 			$data['role_id'] = $user['role_id'];
 		}
+
+		$data['errors'] = $this->session->flashdata('errors') ?? [];
+        $data['old'] = $this->session->flashdata('old') ?? [];
+
+        
 
 		if (empty($slug)) {
 			$this->session->set_flashdata('error', 'Gagal mengakses halaman, Blog ID tidak ada.');
@@ -110,29 +110,25 @@ class Blog extends CI_Controller {
 			redirect("blog/pending_blog");
 		}
 
-        if ($blog['status'] == 'pending' || $blog['status'] == 'rejected') {
-            if ($blog['user_id'] != $user_id) {
-                $this->session->set_flashdata('error', 'Blog ini belum bisa di akses oleh publik, harap login terlebih dahulu!');
-                redirect('blog');
+        if ($user['role_id'] != '2') {
+            if ($blog['status'] == 'pending' || $blog['status'] == 'rejected') {
+                if ($blog['user_id'] != $user_id) {
+                    $this->session->set_flashdata('error', 'Blog ini belum bisa di akses oleh publik, harap login terlebih dahulu!');
+                    redirect('blog');
+                }
             }
         }
 
 		$data['blog'] = $blog;
         $data['user_info'] = $this->db->get_where('user', ['id' => $blog['user_id']])->row_array();
 
-        // Ambil 4 blog approved, kecuali yang sedang dibuka
         $this->db->where('status', 'approved');
         $this->db->where('blog_id !=', $blog['blog_id']);
         $this->db->order_by('blog_id', 'DESC');
         $this->db->limit(4);
         $data['blogs'] = $this->db->get('blog')->result_array();
 
-
-		$data['title'] = $blog['title'];
-
-		$data['errors'] = $this->session->flashdata('errors') ?? [];
-        $data['old'] = $this->session->flashdata('old') ?? [];
-
+        $data['title'] = $blog['title'];
         $data['has_sidebar'] = false;
 		$this->load->view('blog/view_blog', $data);
         $this->load->view('layout/alert');
@@ -142,20 +138,18 @@ class Blog extends CI_Controller {
     public function blog_list()
     {
         is_logged_in();
-
         
-        $data['title'] = 'Blog';
         $user_id = $this->session->userdata('user_id');
         $data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
-
+        
         $data['errors'] = $this->session->flashdata('errors') ?? [];
 		$data['old'] = $this->session->flashdata('old') ?? [];
 
-        
+        $data['title'] = 'Blog';
+
         $this->db->order_by('blog_id', 'DESC');
         $data['blogs'] = $this->db->get_where('blog', ['user_id' => $user_id])->result_array();
 
-        // Load the blog view
         $this->load->view('layout/header', $data);
 		$this->load->view('layout/navbar', $data);
 		$this->load->view('layout/sidebar', $data);
@@ -171,6 +165,7 @@ class Blog extends CI_Controller {
 
 		$user_id = $this->session->userdata('user_id');
 		$data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
+
 		$data['title'] = 'Blog Management Page';
 		
 
@@ -197,10 +192,7 @@ class Blog extends CI_Controller {
         $singleId     = $this->input->post('blog_id');
         $maxBulk      = 50; // batas maksimal bulk hapus
 
-        // Fungsi bantu untuk hapus file gambar
         $this->load->helper('file');
-
-        // Ambil list ID blog yang akan dihapus
         $blog_ids = [];
 
         if ($bulkIdsJson) {
@@ -235,17 +227,14 @@ class Blog extends CI_Controller {
             redirect($redirect);
         }
 
-        // Proses penghapusan file dan data per blog
         foreach ($blog_ids as $blog_id) {
             $blog = $this->db->get_where('blog', ['blog_id' => $blog_id])->row_array();
             if (!$blog) continue;
 
-            // Hapus thumbnail jika ada
             if (!empty($blog['thumbnail']) && file_exists(FCPATH . 'public/' . $blog['thumbnail'])) {
                 unlink(FCPATH . 'public/' . $blog['thumbnail']);
             }
 
-            // Hapus gambar-gambar di konten
             $content = $blog['content'];
             $imageNames = [];
             $dom = new DOMDocument();
@@ -265,102 +254,110 @@ class Blog extends CI_Controller {
                 }
             }
 
-            // Hapus data dari database
             $this->db->delete('blog', ['blog_id' => $blog_id]);
         }
 
-        $msg = count($blog_ids) > 1 ? count($blog_ids) . " blog berhasil dihapus." : "Blog berhasil dihapus.";
-        $this->session->set_flashdata('success', $msg);
+        $jumlah = count($blog_ids);
+        if ($jumlah < 1) {
+            $this->session->set_flashdata('error', "Tidak ada blog yang dipilih untuk dihapus.");
+        } else {
+            $this->session->set_flashdata('success', "$jumlah blog berhasil dihapus.");
+        }
         redirect($redirect);
     }
 
 
     public function ubah_status_blog()
-	{
+    {
         is_logged_in();
         check_access(['2']);
 
-		$redirect = $this->input->server('HTTP_REFERER') ?? base_url('blog/blog_management');
+        $redirect = $this->input->server('HTTP_REFERER') ?? base_url('blog/blog_management');
 
-		$bulkIdsJson   = $this->input->post('ubahStatus_blog_ids_bulk');
-		$singleId      = $this->input->post('blog_id');
-		$blogStatus   = $this->input->post('blog_status');
+        $bulkIdsJson  = $this->input->post('ubahStatus_blog_ids_bulk');
+        $singleId     = $this->input->post('blog_id');
+        $blogStatus   = $this->input->post('blog_status');
+        $maxBulk      = 50;
 
-		if ($bulkIdsJson) {
-			$encrypted_ids = json_decode($bulkIdsJson, true);
+        $blog_ids = [];
 
-			if (is_array($encrypted_ids)) {
-				$blog_ids = [];
-				foreach ($encrypted_ids as $encrypted_id) {
-					$decrypted_id = decrypt_id($encrypted_id);
-					if (!empty($decrypted_id)) {
-						$blog_ids[] = $decrypted_id;
-					}
-				}
+        if ($bulkIdsJson) {
+            $encrypted_ids = json_decode($bulkIdsJson, true);
 
-				foreach ($blog_ids as $blogId) {
-                    $data = [];
-        
-                    if (!empty($blogStatus)) {
-                        $data = [
-                            'status' => $blogStatus,
-                            'reason_rejected' => $blogStatus === 'rejected' ? $this->input->post('reason_rejected', TRUE) : null,
-                        ];
-                    }
-        
-                    if (!empty($data)) {
-                        $this->db->where('blog_id', $blogId)->update('blog', $data);
-                    }
+            if (!is_array($encrypted_ids)) {
+                $this->session->set_flashdata('error', "Format data tidak valid.");
+                redirect($redirect);
+            }
+
+            foreach ($encrypted_ids as $encrypted_id) {
+                $id = decrypt_id($encrypted_id);
+                if ($id) {
+                    $blog_ids[] = $id;
                 }
-				$this->session->set_flashdata('success', count($blog_ids) . " blog berhasil diupdate statusnya.");
-				redirect($redirect);
-			} else {
-				$this->session->set_flashdata('error', "Format data tidak valid.");
-				redirect($redirect);
-			}
-		} elseif ($singleId) {
-			$decrypted_id = decrypt_id($singleId);
-			if (!empty($decrypted_id)) {
-                if (!empty($blogStatus)) {
-                    $data = [
-                        'status' => $blogStatus,
-                        'reason_rejected' => $blogStatus === 'rejected' ? $this->input->post('reason_rejected', TRUE) : null,
-                    ];
-                }
-    
-                if (!empty($data)) {
-                    $this->db->where('blog_id', $decrypted_id)->update('blog', $data);
-                }
-				$this->session->set_flashdata('success', "Status blog berhasil diperbarui.");
-				redirect($redirect);
-			} else {
-				$this->session->set_flashdata('error', "Blog ID tidak valid.");
-				redirect($redirect);
-			}
-		} else {
-			$this->session->set_flashdata('error', "Tidak ada blog ID yang dikirim.");
-			redirect($redirect);
-		}
+            }
 
-		redirect($redirect);
-	}
+            if (count($blog_ids) > $maxBulk) {
+                $this->session->set_flashdata('error', "Maksimal hanya bisa ubah status {$maxBulk} blog sekaligus.");
+                redirect($redirect);
+            }
+
+        } elseif ($singleId) {
+            $id = decrypt_id($singleId);
+            if ($id) {
+                $blog_ids[] = $id;
+            } else {
+                $this->session->set_flashdata('error', "Blog ID tidak valid.");
+                redirect($redirect);
+            }
+        } else {
+            $this->session->set_flashdata('error', "Tidak ada ID blog yang dikirim.");
+            redirect($redirect);
+        }
+
+        $updated = 0;
+
+        foreach ($blog_ids as $blog_id) {
+            $data = [];
+
+            if (!empty($blogStatus)) {
+                $data = [
+                    'status' => $blogStatus,
+                    'reason_rejected' => $blogStatus === 'rejected' ? $this->input->post('reason_rejected', TRUE) : null,
+                ];
+            }
+
+            if (!empty($data)) {
+                $this->db->where('blog_id', $blog_id)->update('blog', $data);
+                $updated++;
+            }
+        }
+
+        if ($updated < 1) {
+            $this->session->set_flashdata('error', "Tidak ada blog yang berhasil diubah statusnya.");
+        } else {
+            $this->session->set_flashdata('success', "$updated blog berhasil diubah statusnya.");
+        }
+
+        redirect($redirect);
+    }
+
 
     public function pending_blog()
     {
         is_logged_in();
         check_access(['2']);
 
-        $data['title'] = 'All Pending Blog';
         $user_id = $this->session->userdata('user_id');
         $data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
-
+        
         $data['errors'] = $this->session->flashdata('errors') ?? [];
 		$data['old'] = $this->session->flashdata('old') ?? [];
+
+        $data['title'] = 'All Pending Blog';
 
         $keyword = $this->input->post('q');
 		$dari = $this->input->post('dari');
 		$sampai = $this->input->post('sampai');
-
 		$page = (int) $this->input->get('page');
 		$page = $page < 1 ? 1 : $page;
 
@@ -383,7 +380,6 @@ class Blog extends CI_Controller {
                 $this->db->where("DATE(blog.date_created) BETWEEN '$dari' AND '$sampai'");
             }
 		}
-
         $total_rows = $this->db->count_all_results();
 
         $this->db->select('blog.*, user.nama, user.email, user.foto');
@@ -406,7 +402,6 @@ class Blog extends CI_Controller {
 		$this->db->limit($limit, $offset);
 		$data['blogs'] = $this->db->get()->result_array();
 
-        // Pagination
 		$config['base_url'] = base_url('blog/pending_blog');
 		$config['total_rows'] = $total_rows;
 		$config['per_page'] = $limit;
@@ -436,12 +431,10 @@ class Blog extends CI_Controller {
 
 		$this->pagination->initialize($config);
 		$data['pagination_links'] = $this->pagination->create_links();
-
         $data['search_keyword'] = $keyword;
 		$data['dari'] = $dari;
 		$data['sampai'] = $sampai;
 
-        // Load the blog view
         $this->load->view('layout/header', $data);
 		$this->load->view('layout/navbar', $data);
 		$this->load->view('layout/sidebar', $data);
@@ -454,6 +447,12 @@ class Blog extends CI_Controller {
 	{
         is_logged_in();
         check_access(['2']);
+
+        $user_id = $this->session->userdata('user_id');
+		$data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
+        
+		$data['errors'] = $this->session->flashdata('errors') ?? [];
+        $data['old'] = $this->session->flashdata('old') ?? [];
         
 		if (empty($slug)) {
 			$this->session->set_flashdata('error', 'Gagal mengakses halaman, Blog ID tidak ada.');
@@ -469,14 +468,7 @@ class Blog extends CI_Controller {
 		$data['blog'] = $blog;
         $data['user_info'] = $this->db->get_where('user', ['id' => $blog['user_id']])->row_array();
 
-
-		$user_id = $this->session->userdata('user_id');
-		$data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
-		$data['title'] = $blog['title'];
-
-		$data['errors'] = $this->session->flashdata('errors') ?? [];
-        $data['old'] = $this->session->flashdata('old') ?? [];
-
+        $data['title'] = $blog['title']; 
 		$this->load->view('layout/header', $data);
 		$this->load->view('layout/navbar', $data);
 		$this->load->view('layout/sidebar', $data);
@@ -489,7 +481,6 @@ class Blog extends CI_Controller {
 	{
         is_logged_in();
         check_access(['2']);
-
         $redirect = $this->input->server('HTTP_REFERER') ?? base_url('default-url');
         
 		$blog_id = decrypt_id($encrypted_blog_id);
@@ -506,13 +497,11 @@ class Blog extends CI_Controller {
 		$user_id = $this->session->userdata('user_id');
 
         if ($this->input->method() === 'post') {
-            $status = $this->input->post('status', TRUE);
-        
             $this->form_validation->set_rules('status', 'Status', 'required|trim', [
                 'required' => '%s wajib diisi.'
             ]);
-        
-            // Validasi reason_rejected hanya jika status === rejected
+            
+            $status = $this->input->post('status', TRUE);
             if ($status === 'rejected') {
                 $this->form_validation->set_rules('reason_rejected', 'Alasan Penolakan', 'required|trim', [
                     'required' => '%s wajib diisi.'
@@ -544,13 +533,20 @@ class Blog extends CI_Controller {
                 redirect($redirect);
             }
         }
-        
         redirect($redirect);
 	}
 
     public function new_blog()
     {
         is_logged_in();
+
+        $user_id = $this->session->userdata('user_id');
+        $data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
+        
+        $data['errors'] = $this->session->flashdata('errors') ?? [];
+		$data['old'] = $this->session->flashdata('old') ?? [];
+
+        $data['title'] = 'Blog';
 
         if ($this->input->method() === 'post') {
             $this->form_validation->set_rules('title', 'Title', 'required|trim', [
@@ -605,7 +601,6 @@ class Blog extends CI_Controller {
                     }
                 }
                 $this->db->insert('blog', $data);
-
                 
                 $this->session->set_flashdata('blog_status', 'new');
                 $this->session->set_flashdata('blog_id', $this->db->insert_id());
@@ -615,16 +610,6 @@ class Blog extends CI_Controller {
 			}
         }
 
-
-        $data['title'] = 'Blog';
-        $user_id = $this->session->userdata('user_id');
-        $data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
-
-        $data['errors'] = $this->session->flashdata('errors') ?? [];
-		$data['old'] = $this->session->flashdata('old') ?? [];
-
-
-        // Load the blog view
         $this->load->view('layout/header', $data);
 		$this->load->view('layout/navbar', $data);
 		$this->load->view('layout/sidebar', $data);
@@ -638,17 +623,25 @@ class Blog extends CI_Controller {
         is_logged_in();
         $redirect = $this->input->server('HTTP_REFERER') ?? base_url('default-url');
 
-        // $encrypted_blog_id = $this->input->post('blog_id');
-        // if (!$encrypted_blog_id) {
-        //     $this->session->set_flashdata('error', 'Akses halaman ini tidak diizinkan.');
-        //     redirect($redirect);
-        // }
+        $user_id = $this->session->userdata('user_id');
+        $data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
+
+        $data['errors'] = $this->session->flashdata('errors') ?? [];
+		$data['old'] = $this->session->flashdata('old') ?? [];
+
+        $data['title'] = 'Blog';
+
+        if (!$encrypted_blog_id) {
+            $this->session->set_flashdata('error', 'Akses halaman ini tidak diizinkan.');
+            redirect($redirect);
+        }
 
         $blog_id = decrypt_id($encrypted_blog_id);
         if (!$blog_id) {
             $this->session->set_flashdata('error', 'Akses halaman ini tidak diizinkan.');
             redirect($redirect);
         }
+
         $blog = $this->db->get_where('blog', ['blog_id' => $blog_id])->row_array();
         if (!$blog) {
             $this->session->set_flashdata('error', 'Data blog tidak ditemukan.');
@@ -695,7 +688,7 @@ class Blog extends CI_Controller {
                     $config['upload_path'] = './public/web_assets/images/blog_thumbnail_images/';
                     $config['allowed_types'] = 'jpg|jpeg|png';
                     $config['max_size'] = 5120;
-                    $config['file_name'] = 'blog' . '_' . time(); // biar unik
+                    $config['file_name'] = 'blog' . '_' . time();
     
                     $this->load->library('upload', $config);
     
@@ -717,7 +710,6 @@ class Blog extends CI_Controller {
                     }
                 }
                 $this->db->update('blog', $data, ['blog_id' => $blog_id]);
-
                 
                 $this->session->set_flashdata('blog_status', 'edit');
                 $this->session->set_flashdata('blog_id', $blog['blog_id']);
@@ -727,18 +719,8 @@ class Blog extends CI_Controller {
 			}
         }
 
-
-        $data['title'] = 'Blog';
-        $user_id = $this->session->userdata('user_id');
-        $data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
-
         $data['blog'] = $blog;
 
-        $data['errors'] = $this->session->flashdata('errors') ?? [];
-		$data['old'] = $this->session->flashdata('old') ?? [];
-
-
-        // Load the blog view
         $this->load->view('layout/header', $data);
 		$this->load->view('layout/navbar', $data);
 		$this->load->view('layout/sidebar', $data);
@@ -750,11 +732,10 @@ class Blog extends CI_Controller {
     public function blog_submit_success()
 	{
 		is_logged_in();
+		$data['title'] = 'Blog Submit Success';
 		
 		$blog_id = $this->session->flashdata('blog_id');
-		// $blog_id = 6;
 		$blog_status = $this->session->flashdata('blog_status');
-		// $blog_status = 'new';
 		$user_id = $this->session->userdata('user_id');
 
 		if (!$blog_id) {
@@ -767,12 +748,10 @@ class Blog extends CI_Controller {
 			$this->session->set_flashdata('error', 'Data blog tidak ditemukan.');
 			redirect(base_url('blog/blog_list'));
 		}
-
 		$data['blog_status'] = $blog_status;
 		$data['blog'] = $blog;
-		$data['title'] = 'Blog Submit Success';
+        
 		$data['has_sidebar'] = false;
-
 		$this->load->view('layout/header', $data);
 		$this->load->view('blog/blog_submit_success', $data);
 		$this->load->view('layout/alert');
@@ -783,6 +762,7 @@ class Blog extends CI_Controller {
     {
         is_logged_in();
         $redirect = $this->input->server('HTTP_REFERER') ?? base_url('default-url');
+
         $encrypted_blog_id = $this->input->post('blog_id');
         if (!$encrypted_blog_id) {
             $this->session->set_flashdata('error', 'Akses halaman ini tidak diizinkan.');
@@ -794,36 +774,34 @@ class Blog extends CI_Controller {
             $this->session->set_flashdata('error', 'Akses halaman ini tidak diizinkan.');
             redirect($redirect);
         }
+
         $blog = $this->db->get_where('blog', ['blog_id' => $blog_id])->row_array();
         if (!$blog) {
             $this->session->set_flashdata('error', 'Data blog tidak ditemukan.');
             redirect($redirect);
         }
-
-        // Hapus thumbnail jika ada
         if (!empty($blog['thumbnail']) && file_exists(FCPATH . 'public/' . $blog['thumbnail'])) {
             unlink(FCPATH . 'public/' . $blog['thumbnail']);
         }
 
         $content = $blog['content'];
+        $imageNames = [];
+        $deskDom = new DOMDocument();
+        @$deskDom->loadHTML($content);
+        $deskImgTags = $deskDom->getElementsByTagName('img');
+        foreach ($deskImgTags as $imgTag) {
+            $imgSrc = $imgTag->getAttribute('src');
+            $imgName = basename($imgSrc);
+            $imageNames[] = $imgName;
+        }
 
-            $imageNames = [];
-            $deskDom = new DOMDocument();
-            @$deskDom->loadHTML($content);
-            $deskImgTags = $deskDom->getElementsByTagName('img');
-            foreach ($deskImgTags as $imgTag) {
-                $imgSrc = $imgTag->getAttribute('src');
-                $imgName = basename($imgSrc);
-                $imageNames[] = $imgName;
+        $imageDirectory = FCPATH . 'public/web_assets/images/blog_content_images/';
+        foreach ($imageNames as $imageName) {
+            $imagePath = $imageDirectory . $imageName;
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
             }
-
-            $imageDirectory = FCPATH . 'public/web_assets/images/blog_content_images/';
-            foreach ($imageNames as $imageName) {
-                $imagePath = $imageDirectory . $imageName;
-                if (file_exists($imagePath)) {
-                    unlink($imagePath);
-                }
-            }
+        }
 
         $this->db->delete('blog', ['blog_id' => $blog_id]);
 
@@ -846,7 +824,6 @@ class Blog extends CI_Controller {
             $slug = $original_slug . '-' . $i;
             $i++;
         }
-
         return $slug;
     }
 
@@ -892,24 +869,24 @@ class Blog extends CI_Controller {
 
     public function blog_content_images_delete()
     {
-            $inputData = file_get_contents('php://input');
-            $data = json_decode($inputData, true); 
-            $filename = $data['filename'] ?? null;
+        $inputData = file_get_contents('php://input');
+        $data = json_decode($inputData, true); 
+        $filename = $data['filename'] ?? null;
 
-            if ($filename) {
-                $imagePath = FCPATH . 'public/web_assets/images/blog_content_images/' . $filename;
-                if (file_exists($imagePath)) {
-                    if (unlink($imagePath)) {
-                        echo json_encode(array('success' => true));
-                    } else {
-                        echo json_encode(array('success' => false, 'message' => 'Unable to delete file'));
-                    }
+        if ($filename) {
+            $imagePath = FCPATH . 'public/web_assets/images/blog_content_images/' . $filename;
+            if (file_exists($imagePath)) {
+                if (unlink($imagePath)) {
+                    echo json_encode(array('success' => true));
                 } else {
-                    echo json_encode(array('success' => false, 'message' => 'File not found'));
+                    echo json_encode(array('success' => false, 'message' => 'Unable to delete file'));
                 }
-            } else {
-                echo json_encode(array('success' => false, 'message' => 'Filename is missing'));
+             } else {
+                echo json_encode(array('success' => false, 'message' => 'File not found'));
             }
+        } else {
+            echo json_encode(array('success' => false, 'message' => 'Filename is missing'));
+        }
     }
 
     public function delete_temp_images()
@@ -921,11 +898,9 @@ class Blog extends CI_Controller {
         foreach ($filenames as $filename) {
             $imagePath = FCPATH . 'public/web_assets/images/blog_content_images/' . $filename;
             if (file_exists($imagePath)) {
-                unlink($imagePath); // Optional: log error if needed
+                unlink($imagePath);
             }
         }
-
-        // Tidak perlu response karena sendBeacon tidak menunggu
     }
 
     

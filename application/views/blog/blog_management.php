@@ -11,8 +11,8 @@
                                     <strong class="row ml-1 p-0">Action Terpilih :</strong>
                                     <div class="row d-flex flex-wrap align-items-center ml-1">
                                         <div class="border-right btn-new mr-3 pr-3">
-                                            <?= form_open('blog/ubah_status_blog') ?>
-                                            <div class="dropdown dropdown-project">
+                                            <?= form_open('blog/') ?>
+                                            <div class="dropdownubah_status_blog dropdown-project">
                                                 <div class="dropdown-toggle" id="dropdownMenuButton03" data-toggle="dropdown">
                                                     <div class="btn bg-body">
                                                         <span class="h6">Ubah Blog Status</span>
@@ -158,8 +158,6 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div class="card bottom-right shadow-showcase">
-                        <div class="card-header d-flex justify-content-between">
-                        </div>
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table id="datatable" class="table data-table table-striped mt-4" role="grid"

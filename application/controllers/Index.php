@@ -11,28 +11,10 @@ class Index extends CI_Controller {
 
 		require_once FCPATH . 'vendor/autoload.php';
 
-
 		$this->load->model('User_model');
 		$this->load->model('Order_model');
 		$this->load->library('form_validation');
     }
-    
-	// public function home()
-	// {
-	// 	if ($this->session->userdata('user_id')) {
-	// 		$user_id = $this->session->userdata('user_id');
-
-	// 		$user = $this->db->get_where('user', ['id' => $user_id])->row_array();
-	// 		$data['user'] = $user;
-	// 		$data['role_id'] = $user['role_id'];
-	// 	}
-
-	// 	$data['title'] = 'Home';
-	// 	$data['has_sidebar'] = false;
-
-	// 	$this->load->view('index/home', $data);
-	// 	$this->load->view('layout/alert');
-	// }
 
 	public function landingpage()
 	{
@@ -44,16 +26,15 @@ class Index extends CI_Controller {
 			$data['role_id'] = $user['role_id'];
 		}
 
-		$data['carousel_images'] = $this->db->get('carousel_images')->result();
-
+		$data['title'] = 'Landing Page';
+		
 		$this->db->limit(16);
 		$this->db->order_by('blog_id', 'DESC');
 		$data['blogs'] = $this->db->get_where('blog', ['status' => 'approved'])->result_array();
-
-		$data['title'] = 'Landing Page';
+		
+		$data['carousel_images'] = $this->db->get('carousel_images')->result();
 
 		$data['has_sidebar'] = false;
-
 		$this->load->view('index/landingpage', $data);
 		$this->load->view('layout/alert');
 	}
@@ -72,6 +53,11 @@ class Index extends CI_Controller {
 			$data['role_id'] = $user['role_id'];
 		}
 
+		$data['errors'] = $this->session->flashdata('errors') ?? [];
+        $data['old'] = $this->session->flashdata('old') ?? [];
+
+		$data['title'] = 'Order';
+
 		$data['cnc_material'] = $this->db->get('cnc_material')->result_array();
 		$data['cnc_finishing'] = $this->db->get('cnc_finishing')->result_array();
 
@@ -80,11 +66,7 @@ class Index extends CI_Controller {
 		$data['carts'] = $query->result();
 		$data['cart_item_count'] = $query->num_rows();
 
-		$data['errors'] = $this->session->flashdata('errors') ?? [];
-        $data['old'] = $this->session->flashdata('old') ?? [];
-		$data['title'] = 'Order';
 		$data['has_sidebar'] = false;
-
 		$this->load->view('layout/header', $data);
 		$this->load->view('layout/navbar', $data);
 		$this->load->view('index/order/order', $data);
@@ -103,13 +85,10 @@ class Index extends CI_Controller {
             $this->session->set_flashdata('error', 'Gagal mengakses halaman, user ID tidak ada.');
             redirect($redirect);
         }
-		
 
 		if ($this->input->method() === 'post') {
-
 			$this->form_validation->set_rules('leadfree', 'Lead Free', 'trim');
 			$this->form_validation->set_rules('functionaltest', 'Functional Test', 'trim');
-
 			$this->form_validation->set_rules('note', 'Note', 'required|min_length[1]|trim', [
                 'required'    => '%s wajib diisi.',
                 'min_length'  => '%s minimal 1 karakter.'
@@ -145,8 +124,6 @@ class Index extends CI_Controller {
 			} else {
 				$leadfree = $this->input->post('leadfree') ? 1 : 0;
 				$functionaltest = $this->input->post('functionaltest') ? 1 : 0;
-
-				
 				$file_fields = [
 					'gerberfile' => ['path' => './public/web_assets/pcb_file/gerberfile/', 'allowed' => 'zip|rar', 'max_size' => 20480],
 					'bomfile' => ['path' => './public/web_assets/pcb_file/bomfile/', 'allowed' => 'txt|csv', 'max_size' => 2048],
@@ -154,7 +131,6 @@ class Index extends CI_Controller {
 				];
 
 				$this->load->library('upload');
-
 				$errors = [];
 				$uploaded_files = [];
 
@@ -193,7 +169,6 @@ class Index extends CI_Controller {
 						if (file_exists('./public/' . $uploaded_file)) {
 							unlink('./public/' . $uploaded_file); 
 						}
-						
 					}
 					
 					$this->session->set_flashdata('errors', $errors);
@@ -419,9 +394,6 @@ class Index extends CI_Controller {
 					redirect($redirect);
 				}
 
-				// Decode product_info JSON
-				$product_info = json_decode($cart['product_info'], true);
-
 				if ($cart['product_type'] == 'pcb') {
 					$file_fields = ['gerberfile', 'bomfile', 'pickandplacefile'];
 				} elseif ($cart['product_type'] == 'cnc') {
@@ -429,7 +401,8 @@ class Index extends CI_Controller {
 				} else {
 					$file_fields = [];
 				}
-
+				
+				$product_info = json_decode($cart['product_info'], true);
 				foreach ($file_fields as $field) {
 					if (!empty($product_info[$field])) {
 						$clean_path = str_replace('\\', '/', $product_info[$field]);
@@ -442,8 +415,8 @@ class Index extends CI_Controller {
 				}
 
 				$this->db->delete('cart', ['cart_id' => $cart_id]);
-				$this->session->set_flashdata('success', 'Item cart berhasil dihapus.');
 
+				$this->session->set_flashdata('success', 'Item cart berhasil dihapus.');
 				redirect($redirect);
 			}
 		} else {
@@ -464,10 +437,13 @@ class Index extends CI_Controller {
             redirect($redirect);
         }
 
-
         if ($this->input->method() === 'post') {
             $this->form_validation->set_rules('nama', 'Nama Penerima', 'required|trim', [
                 'required' => '%s wajib diisi.'
+            ]);
+            $this->form_validation->set_rules('email', 'Email Penerima', 'required|valid_email|trim', [
+                'required' => '%s wajib diisi.',
+				'valid_email' => 'Format %s tidak valid.',
             ]);
             $this->form_validation->set_rules('nomor', 'Informasi Kontak', 'required|numeric|min_length[10]|max_length[15]|trim', [
                 'required'    => '%s wajib diisi.',
@@ -475,8 +451,6 @@ class Index extends CI_Controller {
                 'min_length'  => '%s minimal 10 digit.',
                 'max_length'  => '%s maksimal 15 digit.'
             ]);
-			
-
             $this->form_validation->set_rules('provinsi', 'Provinsi', 'required|trim', [
                 'required' => '%s wajib dipilih.'
             ]);
@@ -495,11 +469,11 @@ class Index extends CI_Controller {
                 'required'    => '%s wajib diisi.',
                 'min_length'  => '%s minimal 10 karakter.'
             ]);
-			
 
             if ($this->form_validation->run() === FALSE) {
 				$this->session->set_flashdata('errors', [
                     'nama'            => form_error('nama'),
+                    'email'            => form_error('email'),
                     'nomor'           => form_error('nomor'),
 
                     'provinsi'        => form_error('provinsi'),
@@ -510,6 +484,7 @@ class Index extends CI_Controller {
                 ]);            
 				$this->session->set_flashdata('old', [
                     'nama'            => set_value('nama'),
+                    'email'            => set_value('email'),
                     'nomor'           => set_value('nomor'),
 
                     'provinsi'        => set_value('provinsi'),
@@ -522,9 +497,9 @@ class Index extends CI_Controller {
 				redirect($redirect);
 			} else {
 				$this->db->trans_start();
-
-				$data = [
+				$customer_data = [
                     'nama' => $this->input->post('nama', TRUE),
+                    'email' => $this->input->post('email', TRUE),
                     'nomor' => $this->input->post('nomor', TRUE),
 
                     'provinsi' => $this->input->post('provinsi', TRUE),
@@ -542,7 +517,7 @@ class Index extends CI_Controller {
 
 				$order_data = [
 					'user_id'        => $user_id,
-					'shipping_info'  => json_encode($data),
+					'shipping_info'  => json_encode($customer_data),
 					'order_code'     => $order_code,
 				];
 				$this->db->insert('orders', $order_data);
@@ -581,12 +556,14 @@ class Index extends CI_Controller {
 	{
 		is_logged_in();
 		
-		$last_order_code = $this->session->flashdata('last_order_code');
 		$user_id = $this->session->userdata('user_id');
 
+		$data['title'] = 'Checkout Success';
+		
+		$last_order_code = $this->session->flashdata('last_order_code');
 		if (!$last_order_code) {
 			$this->session->set_flashdata('error', 'Akses halaman ini tidak diizinkan.');
-			redirect(base_url('order')); // arahkan balik
+			redirect(base_url('order'));
 		}
 
 		$order = $this->db->get_where('orders', ['order_code' => $last_order_code])->row_array();
@@ -600,9 +577,8 @@ class Index extends CI_Controller {
 		}
 
 		$data['order'] = $order;
-		$data['title'] = 'Checkout Success';
-		$data['has_sidebar'] = false;
 
+		$data['has_sidebar'] = false;
 		$this->load->view('layout/header', $data);
 		$this->load->view('index/order/checkout_success', $data);
 		$this->load->view('layout/alert');
@@ -654,8 +630,6 @@ class Index extends CI_Controller {
 			}
 		}
 
-		
-
 		$data['order'] = $order;
 		$order_code = $order['order_code'];
 		$data['order_items'] = $order_items;
@@ -669,7 +643,6 @@ class Index extends CI_Controller {
 		}
 
 		$html = $this->load->view('index/order/order_detail_pdf', $data, true);
-
 		$dompdf = new Dompdf();
 		$options = $dompdf->getOptions();
 		$options->set('isRemoteEnabled', true);
@@ -684,6 +657,11 @@ class Index extends CI_Controller {
 	public function order_detail($encrypted_id = null)
 	{
 		is_logged_in();
+
+		$user_id = $this->session->userdata('user_id');
+		$role_id = $this->session->userdata('role_id');
+		
+		$data['title'] = 'Order List Page';
 
 		if (empty($encrypted_id)) {
 			$this->session->set_flashdata('error', 'Gagal mengakses halaman, Order ID tidak ada.');
@@ -703,8 +681,6 @@ class Index extends CI_Controller {
 		}
 
 		$user_info = $this->db->get_where('user', ['id' => $order['user_id']])->row_array();
-		$user_id = $this->session->userdata('user_id');
-		$role_id = $this->session->userdata('role_id');
 
 		if (!$user_info) {
 			$this->session->set_flashdata('error', 'Gagal mengunduh PDF, data user tidak ditemukan.');
@@ -723,10 +699,8 @@ class Index extends CI_Controller {
 		$query = $this->db->get('order_items');
 		$order_items = $query->result();
 		
-		
 		$pcb_items = [];
 		$cnc_items = [];
-
 		foreach ($order_items as $item) {
 			if ($item->product_type === 'pcb') {
 				$pcb_items[] = $item;
@@ -744,8 +718,6 @@ class Index extends CI_Controller {
 		} else {
 			$data['profile_img_path'] = base_url('public/' . 'local_assets/images/user_default.png');
 		}
-		$data['title'] = 'Order List Page';
-
 		
 		$this->load->view('index/order/order_detail_pdf', $data);
 	}
@@ -755,29 +727,23 @@ class Index extends CI_Controller {
 	{
 		is_logged_in();
 		$redirect = $this->input->server('HTTP_REFERER') ?? base_url('order');
-		$user_id = $this->session->userdata('user_id');
 
-		$status = $this->input->get('status');
-		$order_code = $this->input->get('order_id');
+		$status = $this->input->get('status'); // dari Snap redirect
+		$order_code = $this->input->get('order_id'); // dari Snap redirect
+
 		if (!$order_code || !$status) {
 			$this->session->set_flashdata('error', 'Gagal mengakses halaman, Order ID atau Status tidak ada.');
 			redirect($redirect);
 		}
 
-		
 		$order = $this->db->get_where('orders', ['order_code' => $order_code])->row_array();
 		if (!$order) {
-			$this->session->set_flashdata('error', 'Gagal mengakses halaman, Order ID tidak ada.');
+			$this->session->set_flashdata('error', 'Gagal mengakses halaman, Order ID tidak ditemukan.');
 			redirect($redirect);
 		}
-		// if ($order['user_id'] != $user_id) {
-		// 	$this->session->set_flashdata('error', 'Anda tidak memiliki izin untuk mengakses order ini.');
-		// 	redirect($redirect);
-		// }
 
-		
+		// Konfigurasi Midtrans
 		$midtrans_server_key = $this->db->get_where('settings', ['settings_id' => '6'])->row_array();
-
 		\Midtrans\Config::$serverKey = $midtrans_server_key['item'];
 		\Midtrans\Config::$isProduction = false;
 		\Midtrans\Config::$isSanitized = true;
@@ -785,7 +751,6 @@ class Index extends CI_Controller {
 
 		try {
 			$transaction_status = \Midtrans\Transaction::status($order_code);
-
 			$payment_data = [
 				'status' => $transaction_status->transaction_status,
 				'payment_type' => $transaction_status->payment_type ?? '',
@@ -794,58 +759,56 @@ class Index extends CI_Controller {
 				'raw_response' => $transaction_status,
 			];
 
+			// Simpan info transaksi (log)
 			$this->Order_model->update_orders($order['order_id'], [
 				'payment_info' => json_encode($payment_data)
 			]);
 
+			// Simpan last order untuk view
+			$this->session->set_userdata('last_order_code', $order_code);
+
+			// Handle semua kemungkinan status
 			switch ($transaction_status->transaction_status) {
 				case 'capture':
 				case 'settlement':
-					// Update ke success
 					$this->Order_model->update_orders($order['order_id'], [
 						'payment_status' => 'payment_success',
 						'order_status' => 'order_processing'
 					]);
 					$this->session->set_flashdata('success', 'Pembayaran berhasil.');
-					$this->session->set_flashdata('last_order_code', $order_code);
 					redirect('index/payment_success');
 					break;
 
 				case 'pending':
-					// Update ke pending
 					$this->Order_model->update_orders($order['order_id'], [
 						'payment_status' => 'payment_pending'
 					]);
 					$this->session->set_flashdata('info', 'Pembayaran sedang diproses.');
-					$this->session->set_flashdata('last_order_code', $order_code);
 					redirect('index/payment_pending');
 					break;
 
 				case 'deny':
 				case 'cancel':
 				case 'expire':
-					// Update ke failed
 					$this->Order_model->update_orders($order['order_id'], [
 						'payment_status' => 'payment_cancelled',
 						'order_status' => 'order_failed'
 					]);
-					$this->session->set_flashdata('error', 'Pembayaran gagal atau dibatalkan.');
-					$this->session->set_flashdata('last_order_code', $order_code);
+					$this->session->set_flashdata('error', 'Pembayaran gagal, dibatalkan, atau kadaluarsa.');
 					redirect('index/payment_failed');
 					break;
 
 				default:
-					$this->session->set_flashdata('error', 'Status pembayaran tidak dikenal.');
-					$this->session->set_flashdata('last_order_code', $order_code);
-					redirect('order/payment_failed');
+					$this->session->set_flashdata('error', 'Status pembayaran tidak dikenali.');
+					redirect('index/payment_failed');
 			}
-
 		} catch (Exception $e) {
 			log_message('error', 'Midtrans error: ' . $e->getMessage());
-			$this->session->set_flashdata('error', 'Terjadi kesalahan saat memeriksa pembayaran.');
-			redirect('order/payment_failed');
+			$this->session->set_flashdata('error', 'Terjadi kesalahan saat memeriksa status pembayaran.');
+			redirect('index/payment_failed');
 		}
 	}
+
 
 	public function midtrans_webhook()
 	{
@@ -906,17 +869,18 @@ class Index extends CI_Controller {
 	public function payment_success()
 	{
 		is_logged_in();
-		
-		$last_order_code = $this->session->flashdata('last_order_code');
-		// $last_order_code = 'ABCDEF';
+
 		$user_id = $this->session->userdata('user_id');
 
-		if (!$last_order_code) {
+		$data['title'] = 'Payment success';
+		
+		$order_code = $this->session->userdata('last_order_code') ?: $this->input->get('order_id');
+		if (!$order_code) {
 			$this->session->set_flashdata('error', 'Akses halaman ini tidak diizinkan.');
 			redirect(base_url('customer/history'));
 		}
 
-		$order = $this->db->get_where('orders', ['order_code' => $last_order_code])->row_array();
+		$order = $this->db->get_where('orders', ['order_code' => $order_code])->row_array();
 		if (!$order) {
 			$this->session->set_flashdata('error', 'Data order tidak ditemukan.');
 			redirect(base_url('customer/history'));
@@ -925,11 +889,10 @@ class Index extends CI_Controller {
 			$this->session->set_flashdata('error', 'Anda tidak memiliki izin untuk mengakses order ini.');
 			redirect(base_url('customer/history'));
 		}
-
 		$data['order'] = $order;
-		$data['title'] = 'Payment success';
-		$data['has_sidebar'] = false;
 
+		$data['has_sidebar'] = false;
+		$this->session->unset_userdata('last_order_code');
 		$this->load->view('layout/header', $data);
 		$this->load->view('index/order/payment_success', $data);
 		$this->load->view('layout/alert');
@@ -940,13 +903,14 @@ class Index extends CI_Controller {
 	{
 		is_logged_in();
 		
-		$last_order_code = $this->session->flashdata('last_order_code');
-		// $last_order_code = 'ABCDEF';
 		$user_id = $this->session->userdata('user_id');
 
+		$data['title'] = 'Payment pending';
+
+		$last_order_code = $this->session->userdata('last_order_code') ?: $this->input->get('order_id');
 		if (!$last_order_code) {
 			$this->session->set_flashdata('error', 'Akses halaman ini tidak diizinkan.');
-			redirect(base_url('customer/history')); // arahkan balik
+			redirect(base_url('customer/history'));
 		}
 
 		$order = $this->db->get_where('orders', ['order_code' => $last_order_code])->row_array();
@@ -960,9 +924,9 @@ class Index extends CI_Controller {
 		}
 
 		$data['order'] = $order;
-		$data['title'] = 'Payment pending';
+		
 		$data['has_sidebar'] = false;
-
+		$this->session->unset_userdata('last_order_code');
 		$this->load->view('layout/header', $data);
 		$this->load->view('index/order/payment_pending', $data);
 		$this->load->view('layout/alert');
@@ -973,13 +937,14 @@ class Index extends CI_Controller {
 	{
 		is_logged_in();
 		
-		$last_order_code = $this->session->flashdata('last_order_code');
-		// $last_order_code = 'ABCDEF';
 		$user_id = $this->session->userdata('user_id');
 
+		$data['title'] = 'Payment failed';
+		
+		$last_order_code = $this->session->userdata('last_order_code') ?: $this->input->get('order_id');
 		if (!$last_order_code) {
 			$this->session->set_flashdata('error', 'Akses halaman ini tidak diizinkan.');
-			redirect(base_url('customer/history')); // arahkan balik
+			redirect(base_url('customer/history'));
 		}
 
 		$order = $this->db->get_where('orders', ['order_code' => $last_order_code])->row_array();
@@ -993,9 +958,9 @@ class Index extends CI_Controller {
 		}
 
 		$data['order'] = $order;
-		$data['title'] = 'Payment failed';
-		$data['has_sidebar'] = false;
 
+		$data['has_sidebar'] = false;
+		$this->session->unset_userdata('last_order_code');
 		$this->load->view('layout/header', $data);
 		$this->load->view('index/order/payment_failed', $data);
 		$this->load->view('layout/alert');

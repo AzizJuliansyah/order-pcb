@@ -3,9 +3,9 @@
     <div class="content-page">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-6 col-md-6 col-sm-12">
+                <div class="col-12">
                     <div class="card top-left shadow-showcase">
-                        <div class="card-header">
+                        <div class="card-header border-bottom-0">
                             <div class="float-left">
                                 <h5 class="card-title mb-0">Shipping Status</h5>
                             </div>

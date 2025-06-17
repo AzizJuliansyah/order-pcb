@@ -5,7 +5,7 @@
             <div class="row">
                 <div class="col-6 col-md-6 col-sm-12">
                     <div class="card top-left shadow-showcase">
-                        <div class="card-header">
+                        <div class="card-header border-bottom-0">
                             <div class="float-left">
                                 <h5 class="card-title mb-0">CNC Material</h5>
                             </div>
@@ -151,7 +151,7 @@
                 </div>
                 <div class="col-6 col-md-6 col-sm-12">
                     <div class="card top-left shadow-showcase">
-                        <div class="card-header">
+                        <div class="card-header border-bottom-0">
                             <div class="float-left">
                                 <h5 class="card-title mb-0">CNC Finishing</h5>
                             </div>

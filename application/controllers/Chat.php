@@ -5,7 +5,9 @@ class Chat extends CI_Controller {
 
     public function __construct() {
         parent::__construct();
+
         is_logged_in();
+
         $this->load->model('Chat_model');
     }
 
@@ -18,6 +20,8 @@ class Chat extends CI_Controller {
             $data['user'] = $user;
             $data['role_id'] = $user['role_id'];
         }
+
+        $data['title'] = 'Chat Page';
     
         $role_id = $user['role_id'];
     
@@ -29,10 +33,9 @@ class Chat extends CI_Controller {
                  AND chat.is_read = 0) AS unread_count
             ');
             $this->db->from('user');
-            $this->db->where('role_id', 4); // hanya customer service
+            $this->db->where('role_id', 4);
             $this->db->order_by('user.nama', 'ASC');
             $data['users'] = $this->db->get()->result_array();
-    
         } elseif ($role_id == 4) {
             $this->db->select('u.id, u.nama, u.role_id, u.foto,
                 (SELECT COUNT(*) FROM chat 
@@ -53,8 +56,6 @@ class Chat extends CI_Controller {
             $data['users'] = [];
         }
     
-        $data['title'] = 'Chat Page';
-    
         $this->load->view('layout/header', $data);
         $this->load->view('layout/navbar', $data);
         $this->load->view('index/chat/index', $data);
@@ -67,7 +68,6 @@ class Chat extends CI_Controller {
     {
         $receiver_id = $this->input->post('user_id');
         $sender_id = $this->session->userdata('user_id');
-
         $messages = $this->Chat_model->get_chat_between($sender_id, $receiver_id);
         $grouped = [];
 
@@ -81,7 +81,6 @@ class Chat extends CI_Controller {
         $data['receiver_id'] = $receiver_id;
 
         $renderedHtml = $this->load->view('index/chat/chat_messages_partial', $data, TRUE);
-
         $unreadCount = $this->db->where([
             'receiver_id' => $sender_id,
             'sender_id' => $receiver_id,
@@ -99,7 +98,6 @@ class Chat extends CI_Controller {
         $chat_id = $this->input->post('chat_id');
 
         $chat = $this->db->get_where('chat', ['chat_id' => $chat_id])->row_array();
-
         if ($chat) {
             if (!empty($chat['attachment'])) {
                 $file_path = FCPATH . 'public/' . $chat['attachment'];
@@ -109,7 +107,6 @@ class Chat extends CI_Controller {
             }
 
             $this->db->delete('chat', ['chat_id' => $chat_id]);
-
             echo json_encode(['status' => 'success']);
         } else {
             echo json_encode(['status' => 'error', 'message' => 'Pesan tidak ditemukan']);
@@ -174,8 +171,8 @@ class Chat extends CI_Controller {
         $message = $this->input->post('message');
         $receiver_id = $this->input->post('receiver_id');
         $sender_id = $this->session->userdata('user_id');
-
         $foto = null;
+        
         if (!empty($_FILES['foto']['name'])) {
             $config['upload_path'] = './public/web_assets/images/chat/';
             $config['allowed_types'] = 'jpg|jpeg|png|gif';

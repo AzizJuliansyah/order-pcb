@@ -20,7 +20,7 @@
                         <?= form_open_multipart('blog/edit_blog/' . encrypt_id($blog['blog_id'])) ?>
                         <div class="card-header border-bottom-0 mb-5">
                             <div class="float-left">
-                                <h4 class="card-title d-flex align-items-center"><a href="<?= base_url('blog') ?>"><i class="las la-angle-left font-size-20 mr-3"></i></a> Edit Blog: <span class="d-inline-block text-truncate" style="max-width: 100px;"><?= $blog['title'] ?></span></h4>
+                                <h4 class="card-title d-flex align-items-center"><a href="<?= base_url('blog/blog_list') ?>"><i class="las la-angle-left font-size-20 mr-3"></i></a> Edit Blog: <span class="d-inline-block text-truncate" style="max-width: 100px;"><?= $blog['title'] ?></span></h4>
                             </div>
                             <div class="float-right">
                             <div class="d-flex align-items-center">

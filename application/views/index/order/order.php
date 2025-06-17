@@ -677,16 +677,23 @@
                                                         <hr>
                                                     </div>
                                                     <div class="row">
-                                                        <div class="form-group col-sm-6">
+                                                        <div class="form-group col-sm-4">
                                                             <label for="nama" style="margin-bottom: -13px">Nama Penerima: <small class="text-danger">*</small></label>
                                                             <input type="text" class="form-control border-radius-5 max-height-40 <?= !empty($errors['nama']) ? 'is-invalid' : '' ?>" name="nama" id="nama" value="<?= (isset($old['nama'])) ? $old['nama'] : '' ?>">
                                                             <?php if (!empty($errors['nama'])): ?>
                                                                 <div class="invalid-feedback"><?= $errors['nama'] ?></div>
                                                             <?php endif; ?>
                                                         </div>
-                                                        <div class="form-group col-sm-6">
+                                                        <div class="form-group col-sm-4">
+                                                            <label for="email" style="margin-bottom: -13px">Email Penerima: <small class="text-danger">*</small></label>
+                                                            <input type="text" class="form-control border-radius-5 max-height-40 <?= !empty($errors['email']) ? 'is-invalid' : '' ?>" name="email" id="email" value="<?= (isset($old['email'])) ? $old['email'] : '' ?>">
+                                                            <?php if (!empty($errors['email'])): ?>
+                                                                <div class="invalid-feedback"><?= $errors['email'] ?></div>
+                                                            <?php endif; ?>
+                                                        </div>
+                                                        <div class="form-group col-sm-4">
                                                             <label for="nomor"style="margin-bottom: -13px">Informasi Kontak: <small class="text-danger">*</small></label>
-                                                            <input type="text" class="form-control border-radius-5 max-height-40 <?= !empty($errors['nomor']) ? 'is-invalid' : '' ?>" name="nomor" id="nomor" value="<?= (isset($old['nomor'])) ? $old['nomor'] : '' ?>">
+                                                            <input type="number" class="form-control border-radius-5 max-height-40 <?= !empty($errors['nomor']) ? 'is-invalid' : '' ?>" name="nomor" id="nomor" value="<?= (isset($old['nomor'])) ? $old['nomor'] : '' ?>">
                                                             <?php if (!empty($errors['nomor'])): ?>
                                                                 <div class="invalid-feedback"><?= $errors['nomor'] ?></div>
                                                             <?php endif; ?>
@@ -801,6 +808,7 @@
         document.getElementById('useProfile').addEventListener('change', function() {
             if (this.checked) {
                 document.getElementById('nama').value = '<?= $user['nama'] ?>';
+                document.getElementById('email').value = '<?= $user['email'] ?>';
                 document.getElementById('nomor').value = '<?= $user['nomor'] ?>';
                 document.getElementById('provinsi').value = '<?= $user['provinsi'] ?>';
                 document.getElementById('kota').value = '<?= $user['kota'] ?>';
@@ -809,6 +817,7 @@
                 document.getElementById('alamat_lengkap').value = '<?= $user['alamat_lengkap'] ?>';
             } else {
                 document.getElementById('nama').value = '';
+                document.getElementById('email').value = '';
                 document.getElementById('nomor').value = '';
                 document.getElementById('provinsi').value = '';
                 document.getElementById('kota').value = '';

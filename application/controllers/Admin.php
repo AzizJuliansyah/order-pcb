@@ -10,9 +10,7 @@ class Admin extends CI_Controller {
         check_access(['2']);
 
         $this->load->helper('time');
-
 		date_default_timezone_set('Asia/Jakarta');
-
 		require_once APPPATH . '../vendor/autoload.php';
 
         $this->load->model('User_model');
@@ -24,11 +22,11 @@ class Admin extends CI_Controller {
 	{
 		$user_id = $this->session->userdata('user_id');
 		$data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
-
-		$data['title'] = 'Admin Dashboard';
-
+		
 		$data['errors'] = $this->session->flashdata('errors') ?? [];
 		$data['old'] = $this->session->flashdata('old') ?? [];
+
+		$data['title'] = 'Admin Dashboard';
 
 		// --- 1. Payment Status Stats ---
 		$payment_statuses = [
@@ -116,7 +114,6 @@ class Admin extends CI_Controller {
         $data['background'] = json_decode($settings['item'], true);
         $data['background_dipakai'] = $settings['background_dipakai'];
 
-		// --- Load Views ---
 		$this->load->view('layout/header', $data);
 		$this->load->view('layout/navbar', $data);
 		$this->load->view('layout/sidebar', $data);
@@ -130,13 +127,14 @@ class Admin extends CI_Controller {
 	{
 		$user_id = $this->session->userdata('user_id');
 		$data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
-		$data['title'] = 'Admin Order Settings Cnc';
-        
-		$data['cnc_material'] = $this->db->get('cnc_material')->result_array();
-		$data['cnc_finishing'] = $this->db->get('cnc_finishing')->result_array();
-
+		
 		$data['errors'] = $this->session->flashdata('errors') ?? [];
         $data['old'] = $this->session->flashdata('old') ?? [];
+
+		$data['title'] = 'Admin Order Settings Cnc';
+
+		$data['cnc_material'] = $this->db->get('cnc_material')->result_array();
+		$data['cnc_finishing'] = $this->db->get('cnc_finishing')->result_array();
 
 		$this->load->view('layout/header', $data);
 		$this->load->view('layout/navbar', $data);
@@ -150,25 +148,24 @@ class Admin extends CI_Controller {
     {
         $redirect = $this->input->server('HTTP_REFERER') ?? base_url('default-url');
 
-
         if ($this->input->method() === 'post') {
             $this->form_validation->set_rules('nama', 'Nama Material', 'required|trim', [
                 'required' => '%s wajib diisi.'
             ]);
 
-                if ($this->form_validation->run() === FALSE) {
-                    $this->session->set_flashdata('old', [
-                        'nama'        => set_value('nama'),
-                    ]);
-                    $this->session->set_flashdata('errors', [
-                        'nama'        => form_error('nama'),
-                    ]);
-                    redirect($redirect);
-                } else {
-                    $nama = $this->input->post('nama', TRUE);
-					$this->Order_model->insert_cnc_material(['nama' => $nama]);
-					$this->session->set_flashdata('success', 'CNC Material berhasil ditambah.');
-                }
+            if ($this->form_validation->run() === FALSE) {
+                $this->session->set_flashdata('old', [
+                    'nama'        => set_value('nama'),
+                ]);
+                $this->session->set_flashdata('errors', [
+                    'nama'        => form_error('nama'),
+                ]);
+                redirect($redirect);
+            } else {
+                $nama = $this->input->post('nama', TRUE);
+				$this->Order_model->insert_cnc_material(['nama' => $nama]);
+				$this->session->set_flashdata('success', 'CNC Material berhasil ditambah.');
+            }
 
             redirect($redirect);
         } else {
@@ -180,7 +177,6 @@ class Admin extends CI_Controller {
 	public function edit_cnc_material()
     {
         $redirect = $this->input->server('HTTP_REFERER') ?? base_url('default-url');
-
 
         if ($this->input->method() === 'post') {
             $this->form_validation->set_rules('nama', 'Nama Material', 'required|trim', [
@@ -226,9 +222,7 @@ class Admin extends CI_Controller {
     {
         $redirect = $this->input->server('HTTP_REFERER') ?? base_url('default-url');
 
-
         if ($this->input->method() === 'post') {
-
 			$encrypted_material_id = $this->input->post('material_id');
             $material_id = decrypt_id($encrypted_material_id);
 
@@ -258,25 +252,24 @@ class Admin extends CI_Controller {
     {
         $redirect = $this->input->server('HTTP_REFERER') ?? base_url('default-url');
 
-
         if ($this->input->method() === 'post') {
             $this->form_validation->set_rules('nama', 'Nama Finishing', 'required|trim', [
                 'required' => '%s wajib diisi.'
             ]);
 
-                if ($this->form_validation->run() === FALSE) {
-                    $this->session->set_flashdata('old', [
-                        'nama'        => set_value('nama'),
-                    ]);
-                    $this->session->set_flashdata('errors', [
-                        'nama'        => form_error('nama'),
-                    ]);
-                    redirect($redirect);
-                } else {
-                    $nama = $this->input->post('nama', TRUE);
-					$this->Order_model->insert_cnc_finishing(['nama' => $nama]);
-					$this->session->set_flashdata('success', 'CNC Finishing berhasil ditambah.');
-                }
+            if ($this->form_validation->run() === FALSE) {
+                $this->session->set_flashdata('old', [
+                    'nama'        => set_value('nama'),
+                ]);
+                $this->session->set_flashdata('errors', [
+                    'nama'        => form_error('nama'),
+                ]);
+                redirect($redirect);
+            } else {
+                $nama = $this->input->post('nama', TRUE);
+				$this->Order_model->insert_cnc_finishing(['nama' => $nama]);
+				$this->session->set_flashdata('success', 'CNC Finishing berhasil ditambah.');
+            }
 
             redirect($redirect);
         } else {
@@ -288,7 +281,6 @@ class Admin extends CI_Controller {
 	public function edit_cnc_finishing()
     {
         $redirect = $this->input->server('HTTP_REFERER') ?? base_url('default-url');
-
 
         if ($this->input->method() === 'post') {
             $this->form_validation->set_rules('nama', 'Nama Finishing', 'required|trim', [
@@ -334,9 +326,7 @@ class Admin extends CI_Controller {
     {
         $redirect = $this->input->server('HTTP_REFERER') ?? base_url('default-url');
 
-
         if ($this->input->method() === 'post') {
-
 			$encrypted_finishing_id = $this->input->post('finishing_id');
             $finishing_id = decrypt_id($encrypted_finishing_id);
 
@@ -366,12 +356,13 @@ class Admin extends CI_Controller {
 	{
 		$user_id = $this->session->userdata('user_id');
 		$data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
-		$data['title'] = 'Settings Shipping Status';
-        
-		$data['shipping_status'] = $this->db->get('shipping_status')->result_array();
 
 		$data['errors'] = $this->session->flashdata('errors') ?? [];
         $data['old'] = $this->session->flashdata('old') ?? [];
+
+		$data['title'] = 'Settings Shipping Status';
+        
+		$data['shipping_status'] = $this->db->get('shipping_status')->result_array();
 
 		$this->load->view('layout/header', $data);
 		$this->load->view('layout/navbar', $data);
@@ -385,25 +376,24 @@ class Admin extends CI_Controller {
     {
         $redirect = $this->input->server('HTTP_REFERER') ?? base_url('default-url');
 
-
         if ($this->input->method() === 'post') {
             $this->form_validation->set_rules('nama', 'Nama Shipping Status', 'required|trim', [
                 'required' => '%s wajib diisi.'
             ]);
 
-                if ($this->form_validation->run() === FALSE) {
-                    $this->session->set_flashdata('old', [
-                        'nama'        => set_value('nama'),
-                    ]);
-                    $this->session->set_flashdata('errors', [
-                        'nama'        => form_error('nama'),
-                    ]);
-                    redirect($redirect);
-                } else {
-                    $nama = $this->input->post('nama', TRUE);
-					$this->Order_model->insert_shipping_status(['nama' => $nama]);
-					$this->session->set_flashdata('success', 'Shipping Status berhasil ditambah.');
-                }
+            if ($this->form_validation->run() === FALSE) {
+                $this->session->set_flashdata('old', [
+                    'nama'        => set_value('nama'),
+                ]);
+                $this->session->set_flashdata('errors', [
+                    'nama'        => form_error('nama'),
+                ]);
+                redirect($redirect);
+            } else {
+                $nama = $this->input->post('nama', TRUE);
+				$this->Order_model->insert_shipping_status(['nama' => $nama]);
+				$this->session->set_flashdata('success', 'Shipping Status berhasil ditambah.');
+            }
 
             redirect($redirect);
         } else {
@@ -415,7 +405,6 @@ class Admin extends CI_Controller {
 	public function edit_shipping_status()
     {
         $redirect = $this->input->server('HTTP_REFERER') ?? base_url('default-url');
-
 
         if ($this->input->method() === 'post') {
             $this->form_validation->set_rules('nama', 'Nama Shipping Status', 'required|trim', [
@@ -461,7 +450,6 @@ class Admin extends CI_Controller {
     {
         $redirect = $this->input->server('HTTP_REFERER') ?? base_url('default-url');
 
-
         if ($this->input->method() === 'post') {
 
 			$encrypted_shipping_status_id = $this->input->post('shipping_status_id');
@@ -492,8 +480,8 @@ class Admin extends CI_Controller {
 	{
 		$user_id = $this->session->userdata('user_id');
 		$data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
+
 		$data['title'] = 'Order Management Page';
-		
 
 		$this->db->select('orders.*, user.nama, user.email, user.foto');
 		$this->db->from('orders');
@@ -515,39 +503,33 @@ class Admin extends CI_Controller {
 		$redirect = $this->input->server('HTTP_REFERER') ?? base_url('admin/order_list');
 		$bulkIdsJson = $this->input->post('delete_order_ids_bulk');
 		$singleId    = $this->input->post('order_id');
-		$maxBulk     = 50; // batas maksimal bulk hapus
+		$maxBulk     = 50;
+
+		$order_ids = [];
 
 		if ($bulkIdsJson) {
 			$encrypted_ids = json_decode($bulkIdsJson, true);
 
-			if (is_array($encrypted_ids)) {
-				$order_ids = [];
-				foreach ($encrypted_ids as $encrypted_id) {
-					$decrypted_id = decrypt_id($encrypted_id);
-					if (!empty($decrypted_id)) {
-						$order_ids[] = $decrypted_id;
-					}
-				}
-
-				if (count($order_ids) > $maxBulk) {
-					$this->session->set_flashdata('error', "Maksimal hanya bisa hapus {$maxBulk} order sekaligus.");
-					redirect($redirect);
-				}
-
-				$this->delete_orders_and_files($order_ids);
-
-				$this->session->set_flashdata('success', count($order_ids) . " order berhasil dihapus.");
-				redirect($redirect);
-			} else {
+			if (!is_array($encrypted_ids)) {
 				$this->session->set_flashdata('error', "Format data tidak valid.");
 				redirect($redirect);
 			}
-		} elseif ($singleId) {
-			$decrypted_id = decrypt_id($singleId);
-			if (!empty($decrypted_id)) {
-				$this->delete_orders_and_files([$decrypted_id]);
-				$this->session->set_flashdata('success', "Order berhasil dihapus.");
+
+			foreach ($encrypted_ids as $encrypted_id) {
+				$id = decrypt_id($encrypted_id);
+				if ($id) {
+					$order_ids[] = $id;
+				}
+			}
+
+			if (count($order_ids) > $maxBulk) {
+				$this->session->set_flashdata('error', "Maksimal hanya bisa hapus {$maxBulk} order sekaligus.");
 				redirect($redirect);
+			}
+		} elseif ($singleId) {
+			$id = decrypt_id($singleId);
+			if ($id) {
+				$order_ids[] = $id;
 			} else {
 				$this->session->set_flashdata('error', "Order ID tidak valid.");
 				redirect($redirect);
@@ -556,11 +538,35 @@ class Admin extends CI_Controller {
 			$this->session->set_flashdata('error', "Tidak ada ID order yang dikirim.");
 			redirect($redirect);
 		}
+
+		$deleted = 0;
+
+		foreach ($order_ids as $order_id) {
+			$order = $this->db->get_where('orders', ['order_id' => $order_id])->row_array(); // ganti 'orders' sesuai tabel kamu
+			if (!$order) continue;
+
+			// Hapus file terkait jika ada (opsional, atau bisa via helper)
+			// if (!empty($order['bukti_transfer'])) {
+			// 	$filePath = FCPATH . 'public/uploads/bukti_transfer/' . $order['bukti_transfer'];
+			// 	if (file_exists($filePath)) unlink($filePath);
+			// }
+
+			$this->db->delete('orders', ['order_id' => $order_id]);
+			$deleted++;
+		}
+
+		if ($deleted < 1) {
+			$this->session->set_flashdata('error', "Tidak ada order yang berhasil dihapus.");
+		} else {
+			$this->session->set_flashdata('success', "$deleted order berhasil dihapus.");
+		}
+
+		redirect($redirect);
 	}
+
 
 	private function delete_orders_and_files(array $order_ids)
 	{
-		// Ambil semua order_items yang terkait sekaligus
 		$order_items = $this->db
 			->where_in('order_id', $order_ids)
 			->get('order_items')
@@ -589,10 +595,8 @@ class Admin extends CI_Controller {
 			}
 		}
 
-		// Hapus semua order_items sekaligus
 		$this->db->where_in('order_id', $order_ids)->delete('order_items');
 
-		// Hapus semua orders sekaligus
 		$this->db->where_in('order_id', $order_ids)->delete('orders');
 	}
 
@@ -606,32 +610,34 @@ class Admin extends CI_Controller {
 		$singleId      = $this->input->post('order_id');
 		$paymentStatus = $this->input->post('payment_status');
 		$orderStatus   = $this->input->post('order_status');
+		$maxBulk       = 50;
+
+		$order_ids = [];
 
 		if ($bulkIdsJson) {
 			$encrypted_ids = json_decode($bulkIdsJson, true);
 
-			if (is_array($encrypted_ids)) {
-				$order_ids = [];
-				foreach ($encrypted_ids as $encrypted_id) {
-					$decrypted_id = decrypt_id($encrypted_id);
-					if (!empty($decrypted_id)) {
-						$order_ids[] = $decrypted_id;
-					}
-				}
-
-				$this->Order_model->updateOrderStatuses($order_ids, $paymentStatus, $orderStatus);
-				$this->session->set_flashdata('success', count($order_ids) . " order berhasil diupdate statusnya.");
-				redirect($redirect);
-			} else {
+			if (!is_array($encrypted_ids)) {
 				$this->session->set_flashdata('error', "Format data tidak valid.");
 				redirect($redirect);
 			}
-		} elseif ($singleId) {
-			$decrypted_id = decrypt_id($singleId);
-			if (!empty($decrypted_id)) {
-				$this->Order_model->updateOrderStatuses([$decrypted_id], $paymentStatus, $orderStatus);
-				$this->session->set_flashdata('success', "Status order berhasil diperbarui.");
+
+			foreach ($encrypted_ids as $encrypted_id) {
+				$id = decrypt_id($encrypted_id);
+				if ($id) {
+					$order_ids[] = $id;
+				}
+			}
+
+			if (count($order_ids) > $maxBulk) {
+				$this->session->set_flashdata('error', "Maksimal hanya bisa ubah status {$maxBulk} order sekaligus.");
 				redirect($redirect);
+			}
+
+		} elseif ($singleId) {
+			$id = decrypt_id($singleId);
+			if ($id) {
+				$order_ids[] = $id;
 			} else {
 				$this->session->set_flashdata('error', "Order ID tidak valid.");
 				redirect($redirect);
@@ -639,6 +645,30 @@ class Admin extends CI_Controller {
 		} else {
 			$this->session->set_flashdata('error', "Tidak ada ID order yang dikirim.");
 			redirect($redirect);
+		}
+
+		$updated = 0;
+
+		foreach ($order_ids as $order_id) {
+			$data = [];
+
+			if (!empty($paymentStatus)) {
+				$data['payment_status'] = $paymentStatus;
+			}
+			if (!empty($orderStatus)) {
+				$data['order_status'] = $orderStatus;
+			}
+
+			if (!empty($data)) {
+				$this->db->where('order_id', $order_id)->update('orders', $data); // ganti 'orders' sesuai nama tabel kamu
+				$updated++;
+			}
+		}
+
+		if ($updated < 1) {
+			$this->session->set_flashdata('error', "Tidak ada order yang berhasil diubah statusnya.");
+		} else {
+			$this->session->set_flashdata('success', "$updated order berhasil diubah statusnya.");
 		}
 
 		redirect($redirect);
@@ -649,16 +679,17 @@ class Admin extends CI_Controller {
 
 
 
+
 	public function order_list()
 	{
 		$user_id = $this->session->userdata('user_id');
 		$data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
+
 		$data['title'] = 'Order List Page';
 
 		$payment_status = $this->input->post('payment_status');
 		$order_status = $this->input->post('order_status');
 		$keyword = $this->input->post('q');
-
 		$dari = $this->input->post('dari');
 		$sampai = $this->input->post('sampai');
 
@@ -742,8 +773,6 @@ class Admin extends CI_Controller {
 
 		$this->pagination->initialize($config);
 		$data['pagination_links'] = $this->pagination->create_links();
-
-		// Untuk menyimpan input ke view
 		$data['selected_payment_status'] = $payment_status;
 		$data['selected_order_status'] = $order_status;
 		$data['search_keyword'] = $keyword;
@@ -762,12 +791,12 @@ class Admin extends CI_Controller {
 	{
 		$user_id = $this->session->userdata('user_id');
 		$data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
+
 		$data['title'] = 'Order List Page';
 
 		$payment_status = $this->input->post('payment_status');
 		$order_status = $this->input->post('order_status');
 		$keyword = $this->input->post('q');
-
 		$dari = date('Y-m-d');
 		$sampai = date('Y-m-d');
 
@@ -846,8 +875,6 @@ class Admin extends CI_Controller {
 
 		$this->pagination->initialize($config);
 		$data['pagination_links'] = $this->pagination->create_links();
-
-		// Untuk menyimpan input ke view
 		$data['selected_payment_status'] = $payment_status;
 		$data['selected_order_status'] = $order_status;
 		$data['search_keyword'] = $keyword;
@@ -865,6 +892,14 @@ class Admin extends CI_Controller {
 
     public function order_detail($encrypted_id = null)
 	{
+		$user_id = $this->session->userdata('user_id');
+		$data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
+		
+		$data['errors'] = $this->session->flashdata('errors') ?? [];
+        $data['old'] = $this->session->flashdata('old') ?? [];
+
+		$data['title'] = 'Order List Page';
+
 		if (empty($encrypted_id)) {
 			$this->session->set_flashdata('error', 'Gagal mengakses halaman, Order ID tidak ada.');
 			redirect("admin/order_list");
@@ -883,16 +918,13 @@ class Admin extends CI_Controller {
 		}
 
 		$data['order'] = $order;
-
 		$this->db->where('order_id', $order['order_id']);
 		$query = $this->db->get('order_items');
 		$order_items = $query->result();
 		
-		
 		$pcb_items = [];
 		$cnc_items = [];
 
-		// Pisahkan berdasarkan product_type
 		foreach ($order_items as $item) {
 			if ($item->product_type === 'pcb') {
 				$pcb_items[] = $item;
@@ -916,13 +948,6 @@ class Admin extends CI_Controller {
 			}
 		}
 		$data['shipping_status_list'] = $shipping_status_list;
-
-		$user_id = $this->session->userdata('user_id');
-		$data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_array();
-		$data['title'] = 'Order List Page';
-
-		$data['errors'] = $this->session->flashdata('errors') ?? [];
-        $data['old'] = $this->session->flashdata('old') ?? [];
 
 		$this->load->view('layout/header', $data);
 		$this->load->view('layout/navbar', $data);
@@ -957,7 +982,6 @@ class Admin extends CI_Controller {
 		}
 
 		if ($action === 'terima_order') {
-			// ---- TERIMA ORDER LOGIC ----
 			$encrypted_operator_id = $this->input->post('operator_id');
 			$operator_id = decrypt_id($encrypted_operator_id);
 			if (empty($operator_id)) {
@@ -1010,13 +1034,10 @@ class Admin extends CI_Controller {
 				}
 
 				$this->Order_model->update_orders($order_id, $data);
-
-				
 				redirect($redirect);
 			}
 
 		} elseif ($action === 'update_snap_token') {
-			// ---- UPDATE SNAP TOKEN LOGIC ----
 			$midtrans_server_key = $this->db->get_where('settings', ['settings_id' => '6'])->row_array();
 			$shipping_info = json_decode($order['shipping_info'], true);
 
@@ -1086,13 +1107,7 @@ class Admin extends CI_Controller {
 			redirect($redirect);
 		}
 	}
-
-
-
-
-
-
-
+	
 }
 
 ?>

@@ -209,7 +209,7 @@
                         </ul>
                     </li>
                 <?php } else { ?>
-                    <li class="<?= set_active(['blog/blog_list'], 'active', 2) ?>">
+                    <li class="<?= set_active(['blog_list'], 'active', 2) ?> <?= set_active_with_from('new_blog', 'blog_list') ?> <?= set_active_with_from('edit_blog', 'blog_list') ?>">
                         <a href="<?= base_url('blog/blog_list') ?>">
                             <i class="las la-blog font-size-32"></i>
                             <span class="ml-4">Blog</span>

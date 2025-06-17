@@ -1,20 +1,11 @@
 <!-- Wrapper Start -->
-<style>
-    .dragover {
-        border: 2px dashed #007bff;
-        background-color: #f0f8ff;
-    }
-</style>
-
-
-
 <div class="wrapper">
     <div class="content-page">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
                     <div class="card top-left shadow-showcase">
-                        <div class="card-header d-flex justify-content-between">
+                        <div class="card-header border-bottom-0 d-flex justify-content-between">
                             <div class="header-title">
                                 <h4 class="card-title">Blogs by You</h4>
                             </div>
@@ -26,7 +17,7 @@
                                     </a>
                                 </div>
                                 <div class="form-group mb-0 mr-2">
-                                    <a href="<?= base_url('blog/new_blog') ?>" class="btn btn-sm bg-primary-light d-flex align-items-center">
+                                    <a href="<?= base_url('blog/new_blog?from=blog_list') ?>" class="btn btn-sm bg-primary-light d-flex align-items-center">
                                         <span class="d-none d-md-block">Make new Blog</span>
                                         <i class="las la-plus font-size-20 ml-1"></i>
                                     </a>
@@ -114,7 +105,7 @@
                                                             <span class="text-primary mr-1">View</span>
                                                             <i class="las la-eye font-size-20 text-primary mr-0"></i>
                                                         </a>
-                                                        <a href="<?= base_url('blog/edit_blog/' . encrypt_id($item['blog_id'])) ?>" class="btn btn-sm bg-warning-light d-flex align-items-center mr-2">
+                                                        <a href="<?= base_url('blog/edit_blog/' . encrypt_id($item['blog_id']) . '?from=blog_list') ?>" class="btn btn-sm bg-warning-light d-flex align-items-center mr-2">
                                                             <span class="text-dark mr-1">Edit</span>
                                                             <i class="las la-edit font-size-20 text-dark mr-0"></i>
                                                         </a>
